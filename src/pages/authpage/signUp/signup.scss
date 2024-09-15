@@ -1,0 +1,107 @@
+.signup-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+    .signup-container {
+      width: 550px;
+      border-radius: 8px;
+      text-align: center;
+  
+  
+      h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+  
+      .subtext {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 30px;
+      }
+  
+      .signup-form {
+        .form-group {
+          margin-bottom: 20px;
+          text-align: left;
+  
+          label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: #333;
+          }
+  
+          input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+          }
+        }
+  
+        .signup-button {
+          width: 100%;
+          padding: 12px;
+          background-color: #800080; /* Purple color for the button */
+          color: #fff;
+          border: none;
+          border-radius: 4px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+  
+          &:hover {
+            background-color: #5a005a; /* Darker shade of purple */
+          }
+        }
+      }
+  
+      .social-signin {
+        margin-top: 20px;
+  
+        p {
+          margin-bottom: 15px;
+          color: #666;
+        }
+  
+        button {
+          width: 100%;
+          padding: 10px;
+          border: none;
+          border-radius: 4px;
+          font-size: 14px;
+          cursor: pointer;
+          margin-bottom: 10px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: background-color 0.3s;
+  
+          img {
+            margin-right: 8px;
+          }
+        }
+  
+        .google-signin {
+          background-color: #4285f4;
+          color: #fff;
+  
+          &:hover {
+            background-color: #357ae8;
+          }
+        }
+  
+        .facebook-signin {
+          background-color: #1877f2;
+          color: #fff;
+  
+          &:hover {
+            background-color: #1465d4;
+          }
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,65 @@
+:root {
+  --pmu-primary: #8E2D8E;  
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+
+:-webkit-scrollbar{
+width: 4px;
+
+}
+
+@font-face {
+  font-family: GeneralFont;
+  src: url(/src/assets/fonts/static/DMSans-Regular.ttf);
+}
+@font-face {
+  font-family: GeneralFont;
+  src: url(/src/assets/fonts/static/DMSans-Regular.ttf);
+}
+@font-face {
+  font-family: BoldFont;
+  src: url(/src/assets/fonts/static/DMSans-Bold.ttf);
+}
+@font-face {
+  font-family: ExtraBoldFont;
+  src: url(/src/assets/fonts/static/DMSans-ExtraBold.ttf);
+}
+@font-face {
+  font-family: LightFont;  
+  src: url(/src/assets/fonts/static/DMSans-Light.ttf);
+}
+@font-face {
+  font-family: ThinFont;
+  src: url(/src/assets/fonts/static/DMSans-Thin.ttf);
+}
+@font-face {
+  font-family: MediumFont;
+  src: url(/src/assets/fonts/static/DMSans-Medium.ttf);
+}
+h1{
+  font-family: ExtraBoldFont;
+}
+h2{
+  font-family: BoldFont;
+}
+h6{
+  font-family: MediumFont;
+}
+p{
+  font-family: RegularFont;
+}
