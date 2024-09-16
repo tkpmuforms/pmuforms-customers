@@ -16,7 +16,7 @@
   
       .navbar__link {
         text-decoration: none;
-        color: #333;
+        color: black;
         font-size: 1rem;
         transition: color 0.3s;
   
@@ -43,7 +43,7 @@
         transition: background-color 0.3s, color 0.3s;
   
         &--outline {
-          border: 1px solid var(--pmu-primary); ; // Use primary color or your chosen color for outline
+          border: 1px solid var(--pmu-primary); ; 
           color: var(--pmu-primary); ;
   
           &:hover {
@@ -52,12 +52,12 @@
         }
   
         &--primary {
-          background-color: var(--pmu-primary); ; // Use your primary color
+          background-color: var(--pmu-primary); ;
           color: #fff;
           border-radius: 5px;
   
           &:hover {
-            background-color: #4e2a8e; // Darker shade of primary color
+            color: darken(#8E2D8E, 10%); 
           }
         }
       }

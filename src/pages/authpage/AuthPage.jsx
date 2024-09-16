@@ -35,6 +35,23 @@ const Authpage = () => {
         <LogoSvg/>
         </div>
         {page === "login" ? <LoginPage /> : <SignupPage />}
+        <div className="switch-auth">
+          {page === "login" ? (
+            <p>
+              Don't have an account?{" "}
+              <button onClick={() => handlePageChange("signup")} className="switch-auth-button">
+                Sign up
+              </button>
+            </p>
+          ) : (
+            <p>
+              Already have an account?{" "}
+              <button onClick={() => handlePageChange("login")} className="switch-auth-button">
+                Log in
+              </button>
+            </p>
+          )}
+        </div>
          
         <p>Or sign in with</p>
         <div className="social-signin">

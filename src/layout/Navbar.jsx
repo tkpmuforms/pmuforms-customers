@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom';
 import './navbar.scss';
 import { LogoSvg } from '../assets/svgs/AuthSvg';
 
-const Navbar = () => {
+const Navbar = ({
+  CreatenewClick
+}) => {
   return (
     <nav className="navbar">
       {/* Logo on the left */}
@@ -21,7 +23,7 @@ const Navbar = () => {
       {/* Buttons on the right */}
       <div className="navbar__buttons">
         <button className="navbar__button navbar__button--outline">Download App</button>
-        <button className="navbar__button navbar__button--primary">Create an Account</button>
+        <button className="navbar__button navbar__button--primary" onClick={CreatenewClick}>Create an Account</button>
       </div>
     </nav>
   );
