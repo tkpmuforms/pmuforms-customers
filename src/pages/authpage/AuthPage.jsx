@@ -3,10 +3,16 @@ import Navbar from "../../layout/Navbar";
 import LoginPage from "./login/Login";
 import SignupPage from "./signUp/SignUp";
 import "./authpage.scss"; 
+import { signInWithPopup } from "firebase/auth";
+import { auth, googleProvider, facebookProvider } from "../../firebase/firebase";
 import { FacebookLoginSvg, GoogleLoginSvg, LogoSvg } from "../../assets/svgs/AuthSvg";
+import { useNavigate } from "react-router-dom";
+import { log } from "../../firebase/firebaseServices";
+
 
 const Authpage = () => {
   const [page, setPage] = useState("login");
+  const navigate = useNavigate()
 
   const handlePageChange = (page) => {
     setPage(page);
@@ -14,14 +20,14 @@ const Authpage = () => {
 
   // Handle social login (Google, Facebook, etc.)
   const handleSocialLogin = async (provider) => {
-    // try {
-    //   await signInWithPopup(auth, provider);
-    //   log("User logged in with social provider successfully"); // Log user login
-    //   history.push("/dashboard"); // Redirect to dashboard or desired page
-    // } catch (error) {
-    //   log("Social login error", error.message); // Log any errors
-    //   alert("Social login failed. Please try again.");
-    // }
+    try {
+      await signInWithPopup(auth, provider);
+      log("User logged in with social provider successfully"); // Log user login
+      navigate("/dashboard"); // Redirect to dashboard or desired page
+    } catch (error) {
+      log("Social login error", error.message); // Log any errors
+      alert("Social login failed. Please try again.");
+    }
   };
   return (
     <>
@@ -55,9 +61,8 @@ const Authpage = () => {
          
         <p>Or sign in with</p>
         <div className="social-signin">
-     
-          <GoogleLoginSvg/>
-          <FacebookLoginSvg/>
+        <GoogleLoginSvg onClick={() => handleSocialLogin(googleProvider)} />
+          <FacebookLoginSvg onClick={() => handleSocialLogin(facebookProvider)} />
          
         </div>
         <p className="terms-text">

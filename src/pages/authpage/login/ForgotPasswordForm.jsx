@@ -1,17 +1,26 @@
 import React, { useState } from "react";
+import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import "./forgotPasswordForm.scss"; // Import the CSS file for styling
 
-const ForgotPasswordForm = () => {
+const ForgotPasswordForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");
+  const auth = getAuth(); // Get Firebase Auth instance
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle password reset logic here
-    console.log("Reset link sent to: ", email);
+    try {
+      // Send password reset email
+      await sendPasswordResetEmail(auth, email);
+      alert(`Reset link sent to: ${email}`);
+      onCancel(); // Call the callback to switch back to the login form
+    } catch (error) {
+      console.error("Error sending password reset email:", error.message);
+      alert("Failed to send reset link. Please try again.");
+    }
   };
 
   return (
@@ -34,20 +43,21 @@ const ForgotPasswordForm = () => {
               required
             />
           </div>
-
+          <a onClick={onCancel} className="back-to-login">
+          Back to Login
+        </a>
           <button type="submit" className="reset-button">
             Send Reset Link
           </button>
         </form>
+       
 
         <div className="terms-text">
           By proceeding, you agree to our <a href="#">Terms and conditions</a> and our <a href="#">Privacy policy</a>.
         </div>
-      </div>
 
-      <footer className="footer">
-        <p>Powered by PMU Forms</p>
-      </footer>
+     
+      </div>
     </div>
   );
 };

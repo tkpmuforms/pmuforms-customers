@@ -6,12 +6,15 @@ import { getFirestore } from "firebase/firestore";
 
 // Firebase configuration object
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
-  projectId: "",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: ""
+    apiKey: "AIzaSyBi-mI94whRK_BsInEM-FNE_gttCiBKE6A",
+    authDomain: "pmu-beauty-forms.firebaseapp.com",
+    databaseURL: "https://pmu-beauty-forms.firebaseio.com",
+    projectId: "pmu-beauty-forms",
+    storageBucket: "pmu-beauty-forms.appspot.com",
+    messagingSenderId: "265429654619",
+    appId: "1:265429654619:web:d63b84351986c62206b37e",
+    measurementId: "G-JJMKD3JM75"
+
 };
 
 // Initialize Firebase
