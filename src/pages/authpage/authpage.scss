@@ -3,13 +3,32 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-  }
   
   .auth-logo {
     margin-bottom: 20px;
     display: flex;
     justify-content: center;
   }
+
+  .switch-auth {
+    margin-top: 10px;
+    text-align: center;
+
+    .switch-auth-button {
+      background: none;
+      border: none;
+      color: var(--pmu-primary); // Use your primary color variable
+      cursor: pointer;
+      font-weight: bold;
+      text-decoration: underline;
+      padding: 0;
+    }
+
+    .switch-auth-button:hover {
+      color: darken(#8E2D8E, 10%); 
+    }
+  }
+
   
   .social-signin {
     display: flex;
@@ -31,4 +50,4 @@
       }
     }
   }
-  
+}

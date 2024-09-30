@@ -1,0 +1,108 @@
+.verify-email-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 100vh;
+    background-color: #f8f9fa; /* Light background color */
+  
+    .verify-email-container {
+      width: 400px;
+      text-align: center;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  
+      h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+        color: #333;
+      }
+  
+      .subtext {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 30px;
+      }
+  
+      .verify-email-form {
+        .code-inputs {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+  
+          input {
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+          }
+        }
+  
+        .resend-button {
+          width: 100%;
+          padding: 12px;
+          background-color: #d1d5db; /* Light grey button color */
+          color: #333; /* Dark text color */
+          border: none;
+          border-radius: 5px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+          margin-bottom: 20px;
+  
+          &:hover {
+            background-color: #c0c4c9; /* Slightly darker grey on hover */
+          }
+  
+          &:disabled {
+            background-color: #e0e0e0; /* Disabled color */
+            cursor: not-allowed;
+          }
+        }
+  
+        .continue-button {
+          width: 100%;
+          padding: 12px;
+          background-color: #d1d5db; /* Light grey button color */
+          color: #333; /* Dark text color */
+          border: none;
+          border-radius: 5px;
+          font-size: 16px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+  
+          &:hover {
+            background-color: #c0c4c9; /* Slightly darker grey on hover */
+          }
+        }
+      }
+  
+      .terms-text {
+        font-size: 12px;
+        color: #666;
+        margin-top: 20px;
+  
+        a {
+          color: #333;
+          text-decoration: underline;
+        }
+      }
+    }
+  
+    .footer {
+      margin-top: 20px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+  
+      p {
+        margin: 0;
+      }
+    }
+  }
+  

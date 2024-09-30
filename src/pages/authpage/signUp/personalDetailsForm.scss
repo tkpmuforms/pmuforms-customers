@@ -1,18 +1,21 @@
-.login-page {
+.personal-details-page {
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 550px;
+    padding: 20px;
   
-    .login-container {
- 
+    .personal-details-container {
+      width: 600px;
       text-align: center;
-  
-
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   
       h2 {
         font-size: 18px;
         margin-bottom: 10px;
+        color: #333;
       }
   
       .subtext {
@@ -21,7 +24,7 @@
         margin-bottom: 30px;
       }
   
-      .login-form {
+      .personal-details-form {
         .form-group {
           margin-bottom: 20px;
           text-align: left;
@@ -30,47 +33,33 @@
             display: block;
             margin-bottom: 8px;
             font-size: 14px;
-            font-family: BoldFont;
             color: #333;
           }
   
           input {
-            width: calc(100% - 17px);
-            padding: 10px;
+            width: 100%;
+            padding: 12px;
             border: 1px solid #ddd;
-            background-color: #BCBBC133;
-            border-radius: 10px;
+            border-radius: 5px;
             font-size: 14px;
+            box-sizing: border-box;
+            background-color: #f9f9f9;
           }
         }
   
-        .forgot-password {
-          text-align: right;
-          margin-bottom: 20px;
-  
-          a {
-            color: #800080; /* Purple color for the link */
-            text-decoration: none;
-  
-            &:hover {
-              text-decoration: underline;
-            }
-          }
-        }
-  
-        .login-button {
+        .submit-button {
           width: 100%;
           padding: 12px;
-          background-color: var(--pmu-primary); /* Purple color for the button */
+          background-color: #800080; /* Primary color */
           color: #fff;
           border: none;
-          border-radius: 10px;
+          border-radius: 5px;
           font-size: 16px;
           cursor: pointer;
           transition: background-color 0.3s;
   
           &:hover {
-            background-color: darken(#8E2D8E, 10%); 
+            background-color: #5a005a; /* Darker shade of primary color */
           }
         }
       }

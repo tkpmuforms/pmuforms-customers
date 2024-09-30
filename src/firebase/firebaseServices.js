@@ -111,9 +111,7 @@ export const isLoggedIn = () => {
   });
 };
 
-/**
- * Logs out the user and clears the local storage.
- */
+
 export const logout = async () => {
   try {
     await auth.signOut();
@@ -123,4 +121,3 @@ export const logout = async () => {
   }
 };
 
-// You can continue converting other methods similarly...
