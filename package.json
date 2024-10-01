@@ -5,11 +5,13 @@
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
-    "@mui/material": "^6.1.0",
+    "@mui/material": "^6.1.1",
+    "@mui/x-date-pickers": "^7.18.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
     "firebase": "^10.13.1",
     "firebaseui": "^6.1.0",
     "formik": "^2.4.6",
@@ -24,7 +26,7 @@
     "yup": "^1.4.0"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=4300 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
