@@ -1,0 +1,124 @@
+.authenticatedNavbarContainer{
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  padding: 10px 100px;
+  box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  z-index: 2000;
+
+  .authLogo{
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+    cursor: pointer;
+
+    svg{
+      /* Add custom styling for the logo SVG here if needed */
+    }
+  }
+  
+  .authlinks{
+    display: flex;
+    align-items: center; /* Aligns text properly */
+    margin-left: 40px; /* Adds spacing between logo and links */
+
+    ul{
+      display: flex;
+      align-items: center;
+      gap: 20px;
+
+      li{
+        list-style: none;
+        position: relative;
+        cursor: pointer;
+        color: #101928;
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 20px;
+
+        .dropdown{
+          cursor: pointer;
+
+          .arrow{
+            margin-left: 5px;
+            cursor: pointer;
+          }
+        }
+
+        a{
+          text-decoration: none;
+          color: #101928;
+          font-size: 14px;
+          font-weight: 600;
+          line-height: 20px;
+
+          &:hover{
+            color: var(--color-blue-dark);
+          }
+        }
+      }
+    }
+  }
+  
+  .avatar{
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    img{
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+  }
+  
+  .hamburger-menu {
+    display: none;
+    font-size: 24px;
+    cursor: pointer;
+  }
+}
+
+@media screen and (max-width: 768px){
+  .authenticatedNavbarContainer{
+    .authlinks{
+      display: none;
+      &.visible {
+        display: block;
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        padding: 20px 0;
+
+        ul {
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
+
+          li {
+            a {
+              font-size: 16px;
+            }
+
+            .dropdown-menu {
+              position: static;
+              width: 100%;
+              box-shadow: none;
+
+              a {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+    .hamburger-menu{
+      display: block;
+    }
+  }
+}

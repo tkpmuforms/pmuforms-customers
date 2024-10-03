@@ -1,0 +1,108 @@
+.medical-form-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  
+  .header {
+    text-align: left;
+    margin-bottom: 30px;
+
+    .back-button {
+      background: none;
+      color: #800080;
+      font-size: 14px;
+      text-transform: none;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #800080;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #555555;
+      margin-top: 0;
+    }
+  }
+
+  .form-section {
+    text-align: left;
+
+    h3 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #800080;
+      margin-bottom: 10px;
+    }
+
+    h4 {
+      font-size: 18px;
+      font-weight: 500;
+      color: #000000;
+      margin-top: 20px;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #777777;
+      margin-bottom: 30px;
+    }
+
+    .small-note {
+      font-size: 12px;
+      color: #800080;
+      margin-top: 5px;
+      margin-bottom: 20px;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin: 10px 0;
+
+      label {
+        font-size: 14px;
+        margin-left: 8px;
+        color: #555555;
+      }
+
+      .MuiCheckbox-root {
+        color: #800080;
+
+        &.Mui-checked {
+          color: #800080;
+        }
+      }
+    }
+
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+
+      .back-button {
+        background: #f5e6f8;
+        color: #800080;
+
+        &:hover {
+          background: #eed9f4;
+        }
+      }
+
+      .submit-button {
+        background: #800080;
+        color: #ffffff;
+
+        &:hover {
+          background: #6e006e;
+        }
+      }
+    }
+  }
+}
