@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { LogoSvg } from "../assets/svgs/AuthSvg";
+import { LogoSvg } from "../../assets/svgs/AuthSvg";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import "./AuthenticatedNavbar.scss";

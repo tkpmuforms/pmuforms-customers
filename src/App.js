@@ -11,6 +11,7 @@ import AllAppointments from "./pages/appointsments/AllAppointments";
 import AppointmentDetails from "./pages/appointsments/AppointmentDetails";
 import RequireAuth from "./routes/RouteGuard";
 import { AuthProvider } from "./context/AuthContext";
+import AuthenticatedLayout from "./layout/authenticated/AuthenticatedLayout";
 
 function App() {
   return (
@@ -32,17 +33,21 @@ function App() {
             <Route path="/" element={<AuthPage />} />
             <Route path="*" element={<h1>Not Found</h1>} />
             <Route
-              path="/dashboard"
               element={
-                <RequireAuth>
-                  <Dashboard />
-                </RequireAuth>
+                // <RequireAuth>
+                <AuthenticatedLayout />
               }
-            />
-            <Route path="/book-appointments" element={<BookAppointment />} />
-            <Route path="/medical-form" element={<MedicalForm />} />
-            <Route path="/appointments" element={<AllAppointments />} />
-            <Route path="/appointments/:id" element={<AppointmentDetails />} />
+            >
+              {/* All routes below will share the DashboardLayout */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/book-appointments" element={<BookAppointment />} />
+              <Route path="/medical-form" element={<MedicalForm />} />
+              <Route path="/appointments" element={<AllAppointments />} />
+              <Route
+                path="/appointments/:id"
+                element={<AppointmentDetails />}
+              />
+            </Route>
           </Routes>
         </Router>
       </AuthProvider>

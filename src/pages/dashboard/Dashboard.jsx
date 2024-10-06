@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./dashboard.scss"; // Import the SCSS file for styling
-import AuthenticatedNavbar from "../../layout/AuthenticatedNavbar";
+import AuthenticatedNavbar from "../../layout/authenticated/AuthenticatedNavbar";
 import {
   BookAnAppointmentSvg,
   DeleteAppointmentButtonSvg,
@@ -78,7 +78,7 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-page">
-      <AuthenticatedNavbar />
+      {/* <AuthenticatedNavbar /> */}
       <div className="dashboard-container">
         <header className="dashboard-header">
           <h3>

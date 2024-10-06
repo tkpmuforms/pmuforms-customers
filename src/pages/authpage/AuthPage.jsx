@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../../layout/Navbar";
+import Navbar from "../../layout/public/Navbar";
 import LoginPage from "./login/Login";
 import SignupPage from "./signUp/SignUp";
 import "./authpage.scss";
