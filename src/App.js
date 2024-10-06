@@ -9,6 +9,8 @@ import "./index.css";
 import MedicalForm from "./pages/medicalForm/MedicalForm";
 import AllAppointments from "./pages/appointsments/AllAppointments";
 import AppointmentDetails from "./pages/appointsments/AppointmentDetails";
+import RequireAuth from "./routes/RouteGuard";
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
   return (
@@ -24,17 +26,26 @@ function App() {
         draggable
         pauseOnHover
       />
-      <Router>
-        <Routes>
-          <Route path="/" element={<AuthPage />} />
-          <Route path="*" element={<h1>Not Found</h1>} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/book-appointments" element={<BookAppointment />} />
-          <Route path="/medical-form" element={<MedicalForm />} />
-          <Route path="/appointments" element={<AllAppointments />} />
-          <Route path="/appointments/:id" element={<AppointmentDetails />} />
-        </Routes>
-      </Router>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<AuthPage />} />
+            <Route path="*" element={<h1>Not Found</h1>} />
+            <Route
+              path="/dashboard"
+              element={
+                <RequireAuth>
+                  <Dashboard />
+                </RequireAuth>
+              }
+            />
+            <Route path="/book-appointments" element={<BookAppointment />} />
+            <Route path="/medical-form" element={<MedicalForm />} />
+            <Route path="/appointments" element={<AllAppointments />} />
+            <Route path="/appointments/:id" element={<AppointmentDetails />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
     </div>
   );
 }

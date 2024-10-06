@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./dashboard.scss"; // Import the SCSS file for styling
 import AuthenticatedNavbar from "../../layout/AuthenticatedNavbar";
 import {
@@ -11,7 +11,8 @@ import {
   NoAppointmentsSvg,
   BookAnAppointmentButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
-
+import { useNavigate } from "react-router-dom";
+import { getAppointmentsForClient } from "../../firebase/firebaseServices";
 const RenderAppointmentCard = ({
   title,
   date,
@@ -39,26 +40,41 @@ const RenderAppointmentCard = ({
 };
 
 const Dashboard = () => {
-  const appointments = [
-    // {
-    //   title: "Lash Extension",
-    //   date: "12th August, 2021",
-    //   formsFilled: 3,
-    //   status: "completed",
-    // },
-    // {
-    //   title: "Brow Shaping",
-    //   date: "15th August, 2021",
-    //   formsFilled: 2,
-    //   status: "not-completed",
-    // },
-    // {
-    //   title: "Facial Treatment",
-    //   date: "20th August, 2021",
-    //   formsFilled: 4,
-    //   status: "completed",
-    // },
-  ];
+  const [appointments, setAppointments] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await getAppointmentsForClient();
+      setAppointments(response);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
+  };
+  // const appointments = [
+  //   // {
+  //   //   title: "Lash Extension",
+  //   //   date: "12th August, 2021",
+  //   //   formsFilled: 3,
+  //   //   status: "completed",
+  //   // },
+  //   // {
+  //   //   title: "Brow Shaping",
+  //   //   date: "15th August, 2021",
+  //   //   formsFilled: 2,
+  //   //   status: "not-completed",
+  //   // },
+  //   // {
+  //   //   title: "Facial Treatment",
+  //   //   date: "20th August, 2021",
+  //   //   formsFilled: 4,
+  //   //   status: "completed",
+  //   // },
+  // ];
 
   return (
     <div className="dashboard-page">
