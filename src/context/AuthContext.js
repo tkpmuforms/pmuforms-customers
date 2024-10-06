@@ -1,6 +1,6 @@
-// src/context/AuthContext.js
-import React, { useContext, useEffect, useState, createContext } from "react";
-import { auth } from "../firebase/firebase";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth, signInWithEmailAndPassword } from "../firebase/firebase";
+import { Toast } from "../utils/toast/Toast";
 
 const AuthContext = createContext();
 
@@ -19,13 +19,21 @@ export const AuthProvider = ({ children }) => {
     return unsubscribe;
   }, []);
 
+  const login = (email, password) => {
+    const userCredential = signInWithEmailAndPassword(auth, email, password);
+    return userCredential;
+  };
+
+  const logout = () => auth.signOut();
+
+  const signup = (email, password) =>
+    auth.createUserWithEmailAndPassword(email, password);
+
   const value = {
     currentUser,
-    login: (email, password) =>
-      auth.signInWithEmailAndPassword(email, password),
-    logout: () => auth.signOut(),
-    signup: (email, password) =>
-      auth.createUserWithEmailAndPassword(email, password),
+    login,
+    logout,
+    signup,
   };
 
   return (

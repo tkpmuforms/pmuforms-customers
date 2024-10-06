@@ -1,5 +1,5 @@
 // src/pages/firebase/firebase.js
-import { initializeApp } from "firebase/app";
+import { getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
   GoogleAuthProvider,
@@ -22,10 +22,22 @@ const firebaseConfig = {
   measurementId: "G-JJMKD3JM75",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// // Initialize Firebase
+// const app = initializeApp(firebaseConfig);
+// console.log("Firebase initialized:", app.name);
 
-// Initialize Firebase services
+// // Initialize Firebase services
+// const auth = getAuth(app);
+// const firestore = getFirestore(app);
+let app;
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+  console.log("Firebase App Initialized Successfully");
+} else {
+  app = getApps()[0];
+  console.log("Firebase App Already Initialized");
+}
+
 const auth = getAuth(app);
 const firestore = getFirestore(app);
 

@@ -1,31 +1,51 @@
 import React, { useState } from "react";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom"; // or `history` depending on your router
+import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { useAuth } from "../../../context/AuthContext";
+import { Toast } from "../../../utils/toast/Toast";
+import { createCustomer } from "../../../firebase/firebaseServices";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
   const [forgetpassword, setForgotPassword] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   // Handle user login with email and password
   const handleLogin = async (e) => {
     e.preventDefault();
+    console.log("Attempting to log in with email:", email);
     try {
-      await login(email, password);
+      const result = await login(email, password);
+      signInSuccessWithAuthResult(result);
+      Toast("success", "Login successful");
       navigate("/dashboard");
     } catch (error) {
       console.error("Failed to log in:", error);
+      Toast("error", "Login failed: " + error.message);
+    }
+  };
+  const signInSuccessWithAuthResult = async (authResult) => {
+    const user = authResult.user;
+
+    try {
+      // Save user details if needed or create a new customer entry
+      await createCustomer(user.email, user.displayName || "Guest", user.uid);
+      console.log("User signed in successfully:", user);
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userId", user.uid);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error during sign-in callback:", error);
+      Toast("error", "Sign-in failed: " + error.message);
     }
   };
 
   return (
     <>
-      {forgetpassword === true ? (
+      {forgetpassword ? (
         <ForgotPasswordForm onCancel={() => setForgotPassword(false)} />
       ) : (
         <div className="login-page">
