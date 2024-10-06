@@ -78,6 +78,8 @@ const MedicalForm = () => {
             label="Upload png or jpg"
             type="file"
             fullWidth
+            size="small"
+            color="secondary"
             variant="outlined"
             InputLabelProps={{ shrink: true }}
           />
@@ -127,7 +129,9 @@ const MedicalForm = () => {
           <TextField
             label="Other Allergies"
             variant="outlined"
+            color="secondary"
             fullWidth
+            size="small"
             value={others}
             onChange={(e) => setOthers(e.target.value)}
             multiline
@@ -150,13 +154,40 @@ const MedicalForm = () => {
           <TextField
             label="Signature (Full Name)"
             variant="outlined"
+            color="secondary"
             fullWidth
+            size="small"
+            sx={{
+              background: "whitesmokes",
+            }}
           />
+
           <DatePicker
-            label="Date"
             value={selectedDate}
+            slotProps={{
+              openPickerIcon: { fontSize: "small" },
+              openPickerButton: { color: "secondary" },
+              textField: {
+                variant: "outlined",
+                color: "secondary",
+                fullWidth: true,
+                size: "small",
+                sx: {
+                  "& .MuiInputBase-root": {
+                    border: "none",
+                    borderRadius: "8px",
+                    backgroundColor: "#f8f8f8",
+                    boxShadow: "none",
+                    padding: "5px 10px",
+                  },
+                  "& .MuiOutlinedInput-notchedOutline": {
+                    border: "none",
+                  },
+                },
+              },
+            }}
             onChange={(newValue) => setSelectedDate(newValue)}
-            renderInput={(params) => <TextField {...params} fullWidth />}
+            fullWidth
           />
 
           <div className="button-group">

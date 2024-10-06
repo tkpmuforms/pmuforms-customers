@@ -40,24 +40,24 @@ const RenderAppointmentCard = ({
 
 const Dashboard = () => {
   const appointments = [
-    {
-      title: "Lash Extension",
-      date: "12th August, 2021",
-      formsFilled: 3,
-      status: "completed",
-    },
-    {
-      title: "Brow Shaping",
-      date: "15th August, 2021",
-      formsFilled: 2,
-      status: "not-completed",
-    },
-    {
-      title: "Facial Treatment",
-      date: "20th August, 2021",
-      formsFilled: 4,
-      status: "completed",
-    },
+    // {
+    //   title: "Lash Extension",
+    //   date: "12th August, 2021",
+    //   formsFilled: 3,
+    //   status: "completed",
+    // },
+    // {
+    //   title: "Brow Shaping",
+    //   date: "15th August, 2021",
+    //   formsFilled: 2,
+    //   status: "not-completed",
+    // },
+    // {
+    //   title: "Facial Treatment",
+    //   date: "20th August, 2021",
+    //   formsFilled: 4,
+    //   status: "completed",
+    // },
   ];
 
   return (

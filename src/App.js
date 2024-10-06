@@ -7,6 +7,8 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import BookAppointment from "./pages/bookAppointment/BookAppointment";
 import "./index.css";
 import MedicalForm from "./pages/medicalForm/MedicalForm";
+import AllAppointments from "./pages/appointsments/AllAppointments";
+import AppointmentDetails from "./pages/appointsments/AppointmentDetails";
 
 function App() {
   return (
@@ -29,6 +31,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/book-appointments" element={<BookAppointment />} />
           <Route path="/medical-form" element={<MedicalForm />} />
+          <Route path="/appointments" element={<AllAppointments />} />
+          <Route path="/appointments/:id" element={<AppointmentDetails />} />
         </Routes>
       </Router>
     </div>
