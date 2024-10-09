@@ -1,4 +1,14 @@
 // src/services/firebaseService.js
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { firestore, auth } from "../firebase/firebase";
 import axios from "axios";
 
@@ -14,7 +24,7 @@ export const log = async (message, error = "") => {
   const artistBusinessName = localStorage.getItem("businessName");
 
   try {
-    await firestore.collection("log").add({
+    await setDoc(doc(collection(firestore, "log")), {
       log: message.toString(),
       error: error || "",
       time: new Date(),
@@ -34,10 +44,10 @@ export const log = async (message, error = "") => {
  */
 export const createCustomer = async (email, name, id) => {
   try {
-    const customerRef = firestore.collection("customers").doc(id);
-    const customer = await customerRef.get();
-    if (!customer.exists) {
-      await customerRef.set({
+    const customerRef = doc(firestore, "customers", id);
+    const customer = await getDoc(customerRef);
+    if (!customer.exists()) {
+      await setDoc(customerRef, {
         email,
         info: { client_name: name },
         id,
@@ -56,7 +66,7 @@ export const createCustomer = async (email, name, id) => {
  */
 export const getAllServices = async () => {
   try {
-    const servicesSnapshot = await firestore.collection("services").get();
+    const servicesSnapshot = await getDocs(collection(firestore, "services"));
     return servicesSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (err) {
     log("Error getting all services", err);
@@ -69,10 +79,12 @@ export const getAllServices = async () => {
  */
 export const getAllFormsForService = async (id) => {
   try {
-    const formsSnapshot = await firestore
-      .collection("form-templates")
-      .where("services", "array-contains", id)
-      .get();
+    const formsSnapshot = await getDocs(
+      query(
+        collection(firestore, "form-templates"),
+        where("services", "array-contains", id)
+      )
+    );
     return formsSnapshot.docs.map((doc) => ({
       id: doc.id,
       title: doc.get("title"),
@@ -88,10 +100,8 @@ export const getAllFormsForService = async (id) => {
  */
 export const getCustomer = async (customerId) => {
   try {
-    const customerDoc = await firestore
-      .collection("customers")
-      .doc(customerId)
-      .get();
+    const customerRef = doc(firestore, "customers", customerId);
+    const customerDoc = await getDoc(customerRef);
     return { info: customerDoc.get("info"), id: customerDoc.get("id") };
   } catch (err) {
     log("Error getting customer", err);
@@ -110,16 +120,17 @@ export const logout = async () => {
     log("Error during logout", err);
   }
 };
-
 /**
  * Retrieves all filled forms for a specific appointment.
  */
 export const getAllFilledFormsForAppointment = async (appointmentId) => {
   try {
-    const formsSnapshot = await firestore
-      .collection("filled-forms")
-      .where("appointment_id", "==", appointmentId)
-      .get();
+    const formsSnapshot = await getDocs(
+      query(
+        collection(firestore, "filled-forms"),
+        where("appointment_id", "==", appointmentId)
+      )
+    );
     return formsSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   } catch (err) {
     log("Error getting filled forms for appointment", err);
@@ -132,10 +143,7 @@ export const getAllFilledFormsForAppointment = async (appointmentId) => {
  */
 export const createAppointment = async (appointment) => {
   try {
-    await firestore
-      .collection("appointments")
-      .doc(appointment.id)
-      .set(appointment);
+    await setDoc(doc(firestore, "appointments", appointment.id), appointment);
   } catch (err) {
     log("Error creating appointment", err);
     throw err;
@@ -147,10 +155,8 @@ export const createAppointment = async (appointment) => {
  */
 export const updateAppointment = async (appointmentId, update) => {
   try {
-    await firestore
-      .collection("appointments")
-      .doc(appointmentId)
-      .update(update);
+    const appointmentRef = doc(firestore, "appointments", appointmentId);
+    await updateDoc(appointmentRef, update);
   } catch (err) {
     log("Error updating appointment", err);
     throw err;
@@ -162,10 +168,12 @@ export const updateAppointment = async (appointmentId, update) => {
  */
 export const getAppointmentsForClient = async (clientId) => {
   try {
-    const appointmentsSnapshot = await firestore
-      .collection("appointments")
-      .where("customer_id", "==", clientId)
-      .get();
+    const appointmentsSnapshot = await getDocs(
+      query(
+        collection(firestore, "appointments"),
+        where("customer_id", "==", clientId)
+      )
+    );
     return appointmentsSnapshot.docs.map((doc) => ({
       id: doc.id,
       ...doc.data(),
@@ -220,7 +228,7 @@ export const getLatestTemplateVersion = async (
  */
 export const getArtist = async (userId) => {
   try {
-    const artistDoc = await firestore.collection("users").doc(userId).get();
+    const artistDoc = await getDoc(doc(firestore, "users", userId));
     return artistDoc.data();
   } catch (err) {
     log("Error getting artist information", err);
@@ -233,7 +241,7 @@ export const getArtist = async (userId) => {
  */
 export const createFilledForm = async (form, formId) => {
   try {
-    await firestore.collection("filled-forms").doc(formId).set(form);
+    await setDoc(doc(firestore, "filled-forms", formId), form);
   } catch (err) {
     log("Error creating filled form", err);
     throw err;
@@ -245,7 +253,7 @@ export const createFilledForm = async (form, formId) => {
  */
 export const updateCustomerInfo = async (id, info, user) => {
   await createCustomerIfNecessary(id, user);
-  const customerRef = firestore.collection("customers").doc(id);
+  const customerRef = doc(firestore, "customers", id);
 
   const current_datetime = new Date();
   const formatted_date = `${current_datetime.getDate()}-${
@@ -254,7 +262,7 @@ export const updateCustomerInfo = async (id, info, user) => {
   info.date_updated = formatted_date;
 
   try {
-    await customerRef.update({
+    await updateDoc(customerRef, {
       name: info.client_name,
       info,
     });
@@ -279,10 +287,10 @@ export const isLoggedIn = () => {
  * If the customer doesn't exist, create it.
  */
 export const createCustomerIfNecessary = async (id, user) => {
-  const customerRef = firestore.collection("customers").doc(id);
-  const customer = await customerRef.get();
+  const customerRef = doc(firestore, "customers", id);
+  const customer = await getDoc(customerRef);
 
-  if (!customer.exists) {
+  if (!customer.exists()) {
     try {
       await createCustomer(user.email, user.displayName, user.uid);
       return true;
@@ -291,4 +299,23 @@ export const createCustomerIfNecessary = async (id, user) => {
       return false;
     }
   }
+};
+/**
+ * Gets all the fille out forms for a customer
+ * @param customerId The id of the customer to get the filled out forms for
+ */
+export const getFilledFormsForCustomer = async (customerId) => {
+  const filledFormsRef = collection(firestore, "filled-forms");
+  const q = query(filledFormsRef, where("client_id", "==", customerId));
+
+  // Execute the query and get the documents
+  const querySnapshot = await getDocs(q);
+
+  // Map the documents to an array of form objects
+  const filledForms = querySnapshot.docs.map((doc) => ({
+    id: doc.id,
+    data: doc.data(),
+  }));
+
+  return filledForms;
 };

@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth, signInWithEmailAndPassword } from "../firebase/firebase";
-import { Toast } from "../utils/toast/Toast";
 
 const AuthContext = createContext();
 

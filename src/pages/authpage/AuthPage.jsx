@@ -31,11 +31,10 @@ const Authpage = () => {
     try {
       const result = await signInWithPopup(auth, provider);
       socialSignInSuccessWithAuthResult(result);
-      log("User logged in with social provider successfully");
       Toast("success", "Login successful");
       navigate("/dashboard");
     } catch (error) {
-      log("Social login error", error.message); // Log any errors
+      log("Social login error", error.message);
       Toast("error", "Login failed: " + error.message);
     }
   };
@@ -45,8 +44,6 @@ const Authpage = () => {
     const userToken = await user.getIdToken();
 
     try {
-      // Log user info and token
-      log(`User logged in with provider successfully. Email: ${user.email}`);
       localStorage.setItem("userEmail", user.email);
       localStorage.setItem("userId", user.uid);
       localStorage.setItem("idToken", userToken);
@@ -54,7 +51,6 @@ const Authpage = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error during social login callback:", error);
-      alert("An error occurred during login. Please try again.");
     }
   };
   return (

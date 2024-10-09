@@ -136,74 +136,74 @@ export const NoAppointmentsSvg = ({ ...props }) => {
       <path
         d="M133.208 183.815L66.8552 186.146C65.4448 186.205 64.0575 185.773 62.9308 184.922C61.8042 184.072 61.0082 182.856 60.6792 181.483L43.3642 84.5459C43.2442 83.8941 43.2784 83.2232 43.4642 82.5869L42.0342 87.0869C41.7789 87.8133 41.7195 88.5942 41.8622 89.3509L59.2002 186.283C59.4899 187.628 60.2352 188.833 61.3102 189.692C62.3852 190.552 63.724 191.013 65.1002 191L131.593 189.216C132.551 189.232 133.486 188.917 134.239 188.325C134.992 187.733 135.519 186.9 135.73 185.965L137.036 181.84C136.601 182.449 136.026 182.946 135.361 183.29C134.695 183.633 133.957 183.813 133.208 183.815Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M56.5681 79.2L47.8081 79.508C44.8751 79.608 42.8861 81.866 43.3641 84.545L60.6791 181.481C61.0085 182.854 61.8045 184.069 62.931 184.92C64.0575 185.771 65.4447 186.204 66.8551 186.145L133.208 183.814C136.14 183.714 138.13 181.456 137.651 178.777L121.134 86.307"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M103.674 180.178C104.703 177.974 103.437 175.207 100.847 173.999C98.2573 172.792 95.3243 173.6 94.2963 175.805C93.2683 178.01 94.5343 180.776 97.1233 181.984C99.7133 183.192 102.646 182.383 103.674 180.178Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M127.076 142.138L58.4282 144.55L53.4622 116.999L122.11 114.587L127.076 142.138Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M98.9253 126.625L61.7693 127.697"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M92.4992 132.527L63.0032 133.564"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M116.993 123.506L108.192 123.815L109.751 132.465L118.552 132.156L116.993 123.506Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M132.042 169.689L63.3932 172.101L58.4282 144.55L127.076 142.138L132.042 169.689Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M95.2353 150.465L65.7393 151.501"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M96.2311 155.614L66.7351 156.651"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M97.2152 161.207L67.7192 162.243"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M121.206 151.135L112.405 151.444L113.964 160.094L122.765 159.785L121.206 151.135Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M117.144 87.0359L48.5002 89.4479L53.4622 117L122.11 114.588L117.144 87.0359ZM106.569 104.552L105.01 95.8999L113.81 95.5899L115.369 104.241L106.569 104.552Z"
@@ -212,26 +212,26 @@ export const NoAppointmentsSvg = ({ ...props }) => {
       <path
         d="M122.11 114.587L53.4623 116.999L48.4963 89.4489L117.144 87.0359L122.11 114.587Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M101.68 95.593L55.9822 97.198"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M86.7191 102.547L57.2231 103.584"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M113.811 95.593L105.01 95.903L106.569 104.552L115.371 104.243L113.811 95.593Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M50.839 88.59C60.386 83.922 65.109 68.743 54.991 54.617C48.66 45.777 44.636 40.923 41.035 37.217L27.635 44.1C34.6705 47.0662 41.0484 51.3973 46.4 56.843C62.71 73.938 56.033 85.45 50.839 88.59Z"
@@ -240,86 +240,86 @@ export const NoAppointmentsSvg = ({ ...props }) => {
       <path
         d="M50.839 88.59C60.386 83.922 65.109 68.743 54.991 54.617C48.66 45.777 44.636 40.923 41.035 37.217L27.635 44.1C34.6705 47.0662 41.0484 51.3973 46.4 56.843C62.71 73.938 56.033 85.45 50.839 88.59Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M139.688 47.672C136.465 30.056 125.3 13.193 110.8 1C110.8 1 57.6081 16.483 28.5371 25.686C38.6521 35.092 41.8531 36.275 54.9901 54.617C65.8301 69.752 59.6351 86.095 48.7241 89.425L116.162 87.07C126.329 86.132 133.289 82.085 137.195 74.384C141.101 66.683 141.4 57.044 139.688 47.672Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M8.4571 112.579C7.4871 111.468 5.0931 111.972 3.1101 113.704C1.1271 115.436 0.310102 117.74 1.2761 118.851L3.5761 121.489L10.7581 115.217L8.4571 112.579Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M43.1801 155.859L35.1071 143.096L10.7611 115.217L3.5791 121.489L27.9251 149.368L39.4841 159.087L43.1801 155.859Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M47.112 162.074L43.18 155.859L39.48 159.087L45.109 163.82C45.817 164.412 47.6 162.851 47.112 162.074Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M142.751 163.951L149.621 170.821"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M142.751 170.821L149.621 163.951"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M22.9502 171.688L26.4542 175.192"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M22.9502 175.192L26.4542 171.688"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M7.49316 103.298L10.4972 108.253L14.0292 100.851"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M112.277 61.26H121.993"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M117.135 66.1191V56.4031"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M87.6191 72.8989H92.9191"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M90.269 75.549V70.249"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M136.284 110.662L118.344 128.602L109.246 119.503L94.3992 134.351L118.344 158.296L151.132 125.509L136.284 110.662Z"
@@ -328,8 +328,8 @@ export const NoAppointmentsSvg = ({ ...props }) => {
       <path
         d="M136.284 110.662L118.344 128.602L109.246 119.503L94.3992 134.351L118.344 158.296L151.132 125.509L136.284 110.662Z"
         stroke="#4A4A4B"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

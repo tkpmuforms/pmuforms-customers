@@ -31,7 +31,6 @@ const LoginPage = () => {
     const user = authResult.user;
 
     try {
-      // Save user details if needed or create a new customer entry
       await createCustomer(user.email, user.displayName || "Guest", user.uid);
       console.log("User signed in successfully:", user);
       localStorage.setItem("userEmail", user.email);
@@ -85,7 +84,7 @@ const LoginPage = () => {
               </div>
 
               <div className="forgot-password">
-                <a onClick={() => setForgotPassword(true)}>Forgot Password?</a>
+                <p onClick={() => setForgotPassword(true)}>Forgot Password?</p>
               </div>
 
               <button type="submit" className="login-button">

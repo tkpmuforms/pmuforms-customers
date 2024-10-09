@@ -2,34 +2,44 @@ import React from "react";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./personalDetailsForm.scss"; // Import the CSS file for styling
+import { updateCustomerInfo } from "../../../firebase/firebaseServices";
+import { useAuth } from "../../../context/AuthContext";
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
+  const userId = localStorage.getItem("userId");
+  const { currentUser } = useAuth();
   const initialValues = {
     firstName: "",
     lastName: "",
-    dob: "",
-    homeAddress: "",
-    primaryPhone: "",
-    referralSource: "",
-    emergencyContactName: "",
-    emergencyContactPhone: "",
+    date_of_birth: "",
+    home_address: "",
+    cell_phone: "",
+    referred: "",
+    emergency_contact_name: "",
+    emergency_contact_phone: "",
   };
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
     lastName: Yup.string().required("Required"),
-    dob: Yup.string().required("Required"),
-    homeAddress: Yup.string().required("Required"),
-    primaryPhone: Yup.string().required("Required"),
-    referralSource: Yup.string(),
-    emergencyContactName: Yup.string(),
-    emergencyContactPhone: Yup.string(),
+    date_of_birth: Yup.string().required("Required"),
+    home_address: Yup.string().required("Required"),
+    cell_phone: Yup.string().required("Required"),
+    referred: Yup.string().required("Required"),
+    emergency_contact_name: Yup.string().required("Required"),
+    emergency_contact_phone: Yup.string().required("Required"),
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
-    console.log("Form Data Submitted: ", values);
-    setSubmitting(false);
-    onSubmitClick(); // Handle what happens when the form is submitted successfully
+    console.log("Form data:", values);
+    updateCustomerInfo(userId, values, currentUser)
+      .then(() => {
+        setSubmitting(false);
+        onSubmitClick();
+      })
+      .catch((error) => {
+        console.error("Error updating customer info:", error);
+      });
   };
 
   return (
@@ -50,60 +60,118 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             <Form className="personal-details-form">
               <div className="form-group">
                 <label htmlFor="firstName">First Name</label>
-                <Field type="text" id="firstName" name="firstName" placeholder="Enter your first name" />
-                <ErrorMessage name="firstName" component="div" className="error" />
+                <Field
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  placeholder="Enter your first name"
+                />
+                <ErrorMessage
+                  name="firstName"
+                  component="div"
+                  className="error"
+                />
               </div>
 
               <div className="form-group">
                 <label htmlFor="lastName">Last Name</label>
-                <Field type="text" id="lastName" name="lastName" placeholder="Enter your last name" />
-                <ErrorMessage name="lastName" component="div" className="error" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="dob">Date of Birth</label>
-                <Field type="date" id="dob" name="dob" placeholder="DD/MM/YYYY" />
-                <ErrorMessage name="dob" component="div" className="error" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="homeAddress">Home Address</label>
-                <Field type="text" id="homeAddress" name="homeAddress" placeholder="Enter your home address" />
-                <ErrorMessage name="homeAddress" component="div" className="error" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="primaryPhone">Primary Phone Number</label>
-                <Field type="tel" id="primaryPhone" name="primaryPhone" placeholder="Enter your primary phone number" />
-                <ErrorMessage name="primaryPhone" component="div" className="error" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="referralSource">Referral Source</label>
-                <Field type="text" id="referralSource" name="referralSource" placeholder="How did you hear about us?" />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="emergencyContactName">Emergency Contact Name (Optional)</label>
                 <Field
                   type="text"
-                  id="emergencyContactName"
-                  name="emergencyContactName"
+                  id="lastName"
+                  name="lastName"
+                  placeholder="Enter your last name"
+                />
+                <ErrorMessage
+                  name="lastName"
+                  component="div"
+                  className="error"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="date_of_birth">Date of Birth</label>
+                <Field
+                  type="date"
+                  id="date_of_birth"
+                  name="date_of_birth"
+                  placeholder="DD/MM/YYYY"
+                />
+                <ErrorMessage
+                  name="date_of_birth"
+                  component="div"
+                  className="error"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="home_address">Home Address</label>
+                <Field
+                  type="text"
+                  id="home_address"
+                  name="home_address"
+                  placeholder="Enter your home address"
+                />
+                <ErrorMessage
+                  name="home_address"
+                  component="div"
+                  className="error"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="cell_phone">Primary Phone Number</label>
+                <Field
+                  type="tel"
+                  id="cell_phone"
+                  name="cell_phone"
+                  placeholder="Enter your primary phone number"
+                />
+                <ErrorMessage
+                  name="cell_phone"
+                  component="div"
+                  className="error"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="referred">Referral Source</label>
+                <Field
+                  type="text"
+                  id="referred"
+                  name="referred"
+                  placeholder="How did you hear about us?"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="emergency_contact_name">
+                  Emergency Contact Name (Optional)
+                </label>
+                <Field
+                  type="text"
+                  id="emergency_contact_name"
+                  name="emergency_contact_name"
                   placeholder="Enter Emergency Contact Name"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="emergencyContactPhone">Emergency Contact Phone Number (Optional)</label>
+                <label htmlFor="emergency_contact_phone">
+                  Emergency Contact Phone Number (Optional)
+                </label>
                 <Field
                   type="tel"
-                  id="emergencyContactPhone"
-                  name="emergencyContactPhone"
+                  id="emergency_contact_phone"
+                  name="emergency_contact_phone"
                   placeholder="Enter Contact Phone Number"
                 />
               </div>
 
-              <button type="submit" className="submit-button" disabled={isSubmitting}>
+              <button
+                type="submit"
+                className="submit-button"
+                disabled={isSubmitting}
+              >
                 Save Personal Details
               </button>
             </Form>
