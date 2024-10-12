@@ -23,7 +23,10 @@ export const AuthProvider = ({ children }) => {
     return userCredential;
   };
 
-  const logout = () => auth.signOut();
+  const logout = () => {
+    auth.signOut();
+    localStorage.clear();
+  };
 
   const signup = (email, password) =>
     auth.createUserWithEmailAndPassword(email, password);

@@ -31,11 +31,19 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<AuthPage />} />
-            <Route path="*" element={<h1>Not Found</h1>} />
+            <Route
+              path="*"
+              element={
+                <h1 style={{ textAlign: "center", marginTop: "20px" }}>
+                  Not Found
+                </h1>
+              }
+            />
             <Route
               element={
-                // <RequireAuth>
-                <AuthenticatedLayout />
+                <RequireAuth>
+                  <AuthenticatedLayout />
+                </RequireAuth>
               }
             >
               {/* All routes below will share the DashboardLayout */}

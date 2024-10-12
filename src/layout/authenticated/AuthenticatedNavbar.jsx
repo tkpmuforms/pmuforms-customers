@@ -1,13 +1,17 @@
 import React, { useEffect, useRef, useState } from "react";
 import { LogoSvg } from "../../assets/svgs/AuthSvg";
 import { Link, useNavigate } from "react-router-dom";
-import { Avatar } from "@mui/material";
+import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import "./AuthenticatedNavbar.scss";
+import { useAuth } from "../../context/AuthContext";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
+  const { logout, currentUser } = useAuth(); // Assuming `currentUser` provides username
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const mobileMenuRef = useRef(null);
+  const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown
+  const isDropdownOpen = Boolean(anchorEl);
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
@@ -20,6 +24,19 @@ const AuthenticatedNavbar = () => {
     ) {
       setMobileMenuVisible(false);
     }
+  };
+
+  const handleAvatarClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleDropdownClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
   };
 
   useEffect(() => {
@@ -49,15 +66,35 @@ const AuthenticatedNavbar = () => {
             <li>
               <Link to="/support">Contact Support</Link>
             </li>
+            {/* Add Logout to Mobile Links */}
+            <li className="mobile-logout">
+              <span onClick={handleLogout}>Logout</span>
+            </li>
           </ul>
         </div>
       </div>
 
       {/* Right Aligned Content */}
       <div style={{ display: "flex", alignItems: "center" }}>
-        <div className="avatar">
+        <div className="avatar" onClick={handleAvatarClick}>
           <Avatar />
         </div>
+        <Menu
+          anchorEl={anchorEl}
+          open={isDropdownOpen}
+          onClose={handleDropdownClose}
+          PaperProps={{
+            style: {
+              marginTop: "20px",
+            },
+          }}
+        >
+          <MenuItem disabled>
+            <Typography>{currentUser?.displayName || "User"}</Typography>
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>Logout</MenuItem>
+        </Menu>
+
         <div className="hamburger-menu" onClick={toggleMobileMenu}>
           &#9776;
         </div>

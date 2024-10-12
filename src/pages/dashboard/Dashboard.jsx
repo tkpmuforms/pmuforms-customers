@@ -66,10 +66,6 @@ const Dashboard = () => {
     try {
       const response = await getAppointmentsForClient(userID);
       setAppointments(response);
-      // Check if there are any appointments; if not, show the Personal Information form
-      if (response.length === 0) {
-        setShowPersonalInfo(true);
-      }
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }

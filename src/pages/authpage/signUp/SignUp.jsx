@@ -19,7 +19,9 @@ const SignupPage = () => {
 
   const validationSchema = Yup.object({
     email: Yup.string().email("Invalid email format").required("Required"),
-    password: Yup.string().min(6, "Password must be at least 6 characters").required("Required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Required"),
     confirmPassword: Yup.string()
       .oneOf([Yup.ref("password"), null], "Passwords must match")
       .required("Required"),
@@ -29,11 +31,14 @@ const SignupPage = () => {
     const { email, password } = values;
 
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+      const userCredential = await auth.createUserWithEmailAndPassword(
+        email,
+        password
+      );
       const user = userCredential.user;
-      await createCustomer(user.email, "New Customer", user.uid); // Create customer in Firestore
-      log(`User ${email} signed up successfully`); // Log user signup
-      setSecondPage(true); // Move to the second page
+      await createCustomer(user.email, "New Customer", user.uid);
+      log(`User ${email} signed up successfully`);
+      setSecondPage(true);
     } catch (error) {
       log("Signup error", error.message);
       alert("Signup failed. Please try again.");
@@ -44,9 +49,12 @@ const SignupPage = () => {
   return (
     <div className="signup-page">
       <div className="signup-container">
-        <h2>Sign up now to complete required forms for your next appointment</h2>
+        <h2>
+          Sign up now to complete required forms for your next appointment
+        </h2>
         <p className="subtext">
-          Important: Don't wait until the day of your appointment. Some of this information must be filled out a few days in advance.
+          Important: Don't wait until the day of your appointment. Some of this
+          information must be filled out a few days in advance.
         </p>
 
         {!secondPage ? (
@@ -65,7 +73,11 @@ const SignupPage = () => {
                     name="email"
                     placeholder="Enter your email address"
                   />
-                  <ErrorMessage name="email" component="div" className="error" />
+                  <ErrorMessage
+                    name="email"
+                    component="div"
+                    className="error"
+                  />
                 </div>
 
                 <div className="form-group">
@@ -76,7 +88,11 @@ const SignupPage = () => {
                     name="password"
                     placeholder="Enter Password"
                   />
-                  <ErrorMessage name="password" component="div" className="error" />
+                  <ErrorMessage
+                    name="password"
+                    component="div"
+                    className="error"
+                  />
                 </div>
 
                 <div className="form-group">
@@ -87,10 +103,18 @@ const SignupPage = () => {
                     name="confirmPassword"
                     placeholder="Re-enter Password"
                   />
-                  <ErrorMessage name="confirmPassword" component="div" className="error" />
+                  <ErrorMessage
+                    name="confirmPassword"
+                    component="div"
+                    className="error"
+                  />
                 </div>
 
-                <button type="submit" className="signup-button" disabled={isSubmitting}>
+                <button
+                  type="submit"
+                  className="signup-button"
+                  disabled={isSubmitting}
+                >
                   Create Account
                 </button>
               </Form>

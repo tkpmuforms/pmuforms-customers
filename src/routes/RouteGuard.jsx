@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { Navigate, useLocation } from "react-router-dom";
 
 const RequireAuth = ({ children }) => {
   const { currentUser } = useAuth();
-  let location = useLocation();
+  const location = useLocation();
+
+  useEffect(() => {
+    console.log("RequireAuth currentUser:", currentUser);
+  }, [currentUser]);
 
   if (!currentUser) {
-    // Redirect them to the login page, and pass the current location
     return <Navigate to="/" state={{ from: location }} />;
   }
 

@@ -1,9 +1,10 @@
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import "./personalDetailsForm.scss"; // Import the CSS file for styling
-import { updateCustomerInfo } from "../../../firebase/firebaseServices";
+import { LogoSvg } from "../../../assets/svgs/AuthSvg";
 import { useAuth } from "../../../context/AuthContext";
+import { updateCustomerInfo } from "../../../firebase/firebaseServices";
+import "./personalDetailsForm.scss"; // Import the CSS file for styling
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
   const userId = localStorage.getItem("userId");
@@ -31,6 +32,8 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   });
 
   const handleSubmit = (values, { setSubmitting }) => {
+    const client_name = values.firstName + " " + values.lastName;
+    values = { ...values, client_name };
     console.log("Form data:", values);
     updateCustomerInfo(userId, values, currentUser)
       .then(() => {
@@ -45,6 +48,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   return (
     <div className="personal-details-page">
       <div className="personal-details-container">
+        <LogoSvg />
         <h2>We would like to know a little about you</h2>
         <p className="subtext">
           Important: Don't wait until the day of your appointment. Some of this
@@ -58,34 +62,36 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
         >
           {({ isSubmitting }) => (
             <Form className="personal-details-form">
-              <div className="form-group">
-                <label htmlFor="firstName">First Name</label>
-                <Field
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Enter your first name"
-                />
-                <ErrorMessage
-                  name="firstName"
-                  component="div"
-                  className="error"
-                />
-              </div>
+              <div className="grid-container">
+                <div className="form-group">
+                  <label htmlFor="firstName">First Name</label>
+                  <Field
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    placeholder="Enter your first name"
+                  />
+                  <ErrorMessage
+                    name="firstName"
+                    component="div"
+                    className="error"
+                  />
+                </div>
 
-              <div className="form-group">
-                <label htmlFor="lastName">Last Name</label>
-                <Field
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  placeholder="Enter your last name"
-                />
-                <ErrorMessage
-                  name="lastName"
-                  component="div"
-                  className="error"
-                />
+                <div className="form-group">
+                  <label htmlFor="lastName">Last Name</label>
+                  <Field
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    placeholder="Enter your last name"
+                  />
+                  <ErrorMessage
+                    name="lastName"
+                    component="div"
+                    className="error"
+                  />
+                </div>
               </div>
 
               <div className="form-group">
@@ -95,6 +101,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                   id="date_of_birth"
                   name="date_of_birth"
                   placeholder="DD/MM/YYYY"
+                  format="dd/MM/yyyy"
                 />
                 <ErrorMessage
                   name="date_of_birth"
