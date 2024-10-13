@@ -5,6 +5,7 @@ import {
   getAppointmentsForClient,
   getCustomer,
   getFilledFormsForCustomer,
+  updateAppointment,
 } from "../../firebase/firebaseServices";
 import {
   BookAnAppointmentSvg,
@@ -17,6 +18,7 @@ import {
   BookAnAppointmentButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
 import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
+import { Toast } from "../../utils/toast/Toast";
 
 const RenderAppointmentCard = ({
   title,
@@ -47,11 +49,14 @@ const RenderAppointmentCard = ({
 // Main Dashboard component
 const Dashboard = () => {
   const [appointments, setAppointments] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [forms, setForms] = useState([]);
   const [clientName, setClientName] = useState("");
   const [personalInfoComplete, setPersonalInfoComplete] = useState(false);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const userID = localStorage.getItem("userId");
+  const businesName = localStorage.getItem("businessName");
   const navigate = useNavigate();
 
   // Fetch appointments and forms for the logged-in user
@@ -100,8 +105,24 @@ const Dashboard = () => {
     }
   };
 
+  const deleteAppointments = (appointmentId) => {
+    setPastAppointments((prev) =>
+      prev.filter((element) => element.data.id !== appointmentId)
+    );
+    setUpcomingAppointments((prev) =>
+      prev.filter((element) => element.data.id !== appointmentId)
+    );
+    updateAppointment(appointmentId, { deleted: true })
+      .then(() => {
+        Toast("success", "Appointment deleted successfully");
+      })
+      .catch((error) => {
+        Toast("error", "Error deleting appointment");
+      });
+  };
+
   if (showPersonalInfo) {
-    return <PersonalDetailsForm />;
+    return <PersonalDetailsForm onSubmitClick={setShowPersonalInfo(false)} />;
   }
 
   return (
@@ -111,7 +132,7 @@ const Dashboard = () => {
           <h3>
             Hello, <span>{clientName}</span> Welcome back.
           </h3>
-          <p>Welcome to Britney Lashes</p>
+          <p>Welcome to {businesName}</p>
           <div className="alert">
             <WarningSvg />
             <p>
@@ -121,7 +142,10 @@ const Dashboard = () => {
         </header>
 
         <div className="actions-section">
-          <div className="action-card">
+          <div
+            className="action-card"
+            onClick={() => navigate("/book-appointments")}
+          >
             <BookAnAppointmentSvg />
             <div>
               <h5>Book an Appointment</h5>
@@ -131,7 +155,10 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className="action-card">
+          <div
+            className="action-card"
+            onClick={() => navigate("/appointments")}
+          >
             <ViewPastAppointmentsSvg />
             <div>
               <h5>View Past Appointments</h5>
@@ -141,7 +168,10 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          <div className="action-card">
+          <div
+            className="action-card"
+            onClick={() => setShowPersonalInfo(true)}
+          >
             <EditPersonalInformationSvg />
             <div>
               <h5>Edit Personal Information</h5>
@@ -153,7 +183,7 @@ const Dashboard = () => {
         <section className="appointments-section">
           <h3>Upcoming Appointments</h3>
           <div className="see-all-appointments">
-            <a href="#">See All Appointments</a>
+            <a href="/appointments">See All Appointments</a>
           </div>
           <div className="appointments-list">
             {appointments?.map((appointment, index) => (
@@ -169,7 +199,10 @@ const Dashboard = () => {
               <div className="no-appointments">
                 <NoAppointmentsSvg />
                 <p>You have no upcoming appointments</p>
-                <BookAnAppointmentButtonSvg />
+                <BookAnAppointmentButtonSvg
+                  onClick={() => navigate("/book-appointments")}
+                  style={{ cursor: "pointer", marginTop: "1rem" }}
+                />
               </div>
             )}
           </div>

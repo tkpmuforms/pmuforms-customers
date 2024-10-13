@@ -21,6 +21,9 @@ const Navbar = ({ CreatenewClick }) => {
     }
   };
 
+  const videolink =
+    "https://pmuforms.crunch.help/en/pmuforms-functionality/how-to-use-pmu-forms";
+
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -46,7 +49,9 @@ const Navbar = ({ CreatenewClick }) => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/how-to">[Watch Video] “How to use PMU Forms”</Link>
+            <a href={videolink} target="_blank" rel="noopener noreferrer">
+              [Watch Video] “How to use PMU Forms”
+            </a>
           </li>
           <li>
             <Link to="/about">About</Link>

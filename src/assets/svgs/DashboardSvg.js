@@ -343,6 +343,8 @@ export const BookAnAppointmentButtonSvg = ({ onClick, ...props }) => {
       viewBox="0 0 340 56"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      onClick={onClick}
+      {...props}
     >
       <rect width="340" height="56" rx="16" fill="#F4EAF4" />
       <path
