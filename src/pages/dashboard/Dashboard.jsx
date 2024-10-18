@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./dashboard.scss"; // Import the SCSS file for styling
+import "./dashboard.scss";
 import { useNavigate } from "react-router-dom";
 import {
   getAppointmentsForClient,
@@ -193,6 +193,7 @@ const Dashboard = () => {
                 date={appointment.date}
                 formsFilled={appointment.formsFilled}
                 status={appointment.status}
+                DeleteClick={deleteAppointments}
               />
             ))}
             {appointments.length === 0 && (

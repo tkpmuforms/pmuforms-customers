@@ -235,6 +235,16 @@ export const getArtist = async (userId) => {
     throw err;
   }
 };
+export const getServicesForArtistWithId = async (id) => {
+  try {
+    const artist = await getArtist(id);
+    const services = artist.services || [];
+    return services;
+  } catch (err) {
+    console.error("Error getting services for artist", err);
+    throw err;
+  }
+};
 
 /**
  * Creates and saves a filled-out form.

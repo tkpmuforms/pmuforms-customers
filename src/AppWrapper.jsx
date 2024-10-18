@@ -21,7 +21,6 @@ function AppWrapper() {
 
   useEffect(() => {
     if (artistId) {
-      // Save artistId to local storage if it exists
       localStorage.setItem("artistId", artistId);
     }
   }, [artistId]);

@@ -59,7 +59,15 @@ const Navbar = ({ CreatenewClick }) => {
         </ul>
       </div>
       <div className="buttons">
-        <button className="download">Download App</button>
+        <button className="download">
+          <a
+            href="https://apps.apple.com/us/app/pmu-forms/id1497270923"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download App
+          </a>
+        </button>
         <button onClick={CreatenewClick} className="create-an-account">
           Create an Account
         </button>

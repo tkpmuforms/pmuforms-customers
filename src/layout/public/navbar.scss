@@ -3,7 +3,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 10px 100px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
   z-index: 2000;
@@ -102,6 +102,25 @@
     gap: 20px;
 
     .download {
+      padding: 10px 20px;
+      background-color: var(--pmu-primary); 
+      color: #fff ;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+     
+      a{
+        color: white;
+        text-decoration: none;
+      }
+
+      &:hover {
+        background-color: darken($color: #8E2D8E, $amount: 10%);
+      
+      }
+    }
+    .create-an-account {
       background-color: transparent;
       border: 1px solid var(--pmu-primary); 
       color: var(--pmu-primary); 
@@ -113,19 +132,7 @@
 
       &:hover {
         background-color: darken($color: #fff, $amount: 10%);
-      }
-    }
-    .create-an-account {
-      padding: 10px 20px;
-      background-color: var(--pmu-primary); 
-      color: #fff ;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-
-      &:hover {
-        background-color: darken($color: #8E2D8E, $amount: 10%);
+        
       }
     }
   }
