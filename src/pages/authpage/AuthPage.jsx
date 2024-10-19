@@ -30,10 +30,14 @@ const Authpage = () => {
   const handleSocialLogin = async (provider) => {
     try {
       const result = await signInWithPopup(auth, provider);
+      if (!result) {
+        throw new Error("Authentication failed. No result received.");
+      }
       socialSignInSuccessWithAuthResult(result);
       Toast("success", "Login successful");
       navigate("/dashboard");
     } catch (error) {
+      console.error("Social login error:", error); // Additional logging for debugging
       log("Social login error", error.message);
       Toast("error", "Login failed: " + error.message);
     }

@@ -1,15 +1,19 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { LogoSvg } from "../../../assets/svgs/AuthSvg";
 import { useAuth } from "../../../context/AuthContext";
-import { updateCustomerInfo } from "../../../firebase/firebaseServices";
+import {
+  getCustomer,
+  updateCustomerInfo,
+} from "../../../firebase/firebaseServices";
 import "./personalDetailsForm.scss"; // Import the CSS file for styling
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
   const userId = localStorage.getItem("userId");
   const { currentUser } = useAuth();
-  const initialValues = {
+
+  const [initialValues, setInitialValues] = useState({
     firstName: "",
     lastName: "",
     date_of_birth: "",
@@ -18,7 +22,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     referred: "",
     emergency_contact_name: "",
     emergency_contact_phone: "",
-  };
+  });
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
@@ -45,6 +49,31 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
       });
   };
 
+  const fetchInfo = async () => {
+    try {
+      const customer = await getCustomer(userId);
+
+      if (customer && customer.info) {
+        setInitialValues({
+          firstName: customer.info.client_name.split(" ")[0] || "",
+          lastName: customer.info.client_name.split(" ")[1] || "",
+          date_of_birth: customer.info.date_of_birth || "",
+          home_address: customer.info.home_address || "",
+          cell_phone: customer.info.cell_phone || "",
+          referred: customer.info.referred || "",
+          emergency_contact_name: customer.info.emergency_contact_name || "",
+          emergency_contact_phone: customer.info.emergency_contact_phone || "",
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching customer info:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+
   return (
     <div className="personal-details-page">
       <div className="personal-details-container">
@@ -56,6 +85,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
         </p>
 
         <Formik
+          enableReinitialize
           initialValues={initialValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -148,6 +178,11 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                   name="referred"
                   placeholder="How did you hear about us?"
                 />
+                <ErrorMessage
+                  name="referred"
+                  component="div"
+                  className="error"
+                />
               </div>
 
               <div className="form-group">
@@ -160,6 +195,11 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                   name="emergency_contact_name"
                   placeholder="Enter Emergency Contact Name"
                 />
+                <ErrorMessage
+                  name="emergency_contact_name"
+                  component="div"
+                  className="error"
+                />
               </div>
 
               <div className="form-group">
@@ -171,6 +211,11 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                   id="emergency_contact_phone"
                   name="emergency_contact_phone"
                   placeholder="Enter Contact Phone Number"
+                />
+                <ErrorMessage
+                  name="emergency_contact_phone"
+                  component="div"
+                  className="error"
                 />
               </div>
 

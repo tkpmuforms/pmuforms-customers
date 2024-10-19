@@ -5,6 +5,7 @@ import {
   getAppointmentsForClient,
   getCustomer,
   getFilledFormsForCustomer,
+  getServicesForArtistWithId,
   updateAppointment,
 } from "../../firebase/firebaseServices";
 import {
@@ -55,63 +56,85 @@ const Dashboard = () => {
   const [clientName, setClientName] = useState("");
   const [personalInfoComplete, setPersonalInfoComplete] = useState(false);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
-  const userID = localStorage.getItem("userId");
+  const userId = localStorage.getItem("userId");
   const businesName = localStorage.getItem("businessName");
   const navigate = useNavigate();
+  // New state for services
+  const [services, setServices] = useState([]);
 
-  // Fetch appointments and forms for the logged-in user
   useEffect(() => {
-    fetchAppointments(userID);
-    fetchForms(userID);
-    checkPersonalInformation(userID);
-  }, [userID]);
+    fetchAppointments(userId);
+    fetchForms(userId);
+    checkPersonalInformation(userId);
+    const artistId = localStorage.getItem("artistId");
+    if (artistId) {
+      fetchServices(artistId);
+    }
+  }, [userId]);
 
-  // Fetch user appointments
-  const fetchAppointments = async (userID) => {
+  const fetchAppointments = async (userId) => {
     try {
-      const response = await getAppointmentsForClient(userID);
+      const response = await getAppointmentsForClient(userId);
       setAppointments(response);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-    }
+      categorizeAppointments(response);
+    } catch (error) {}
   };
 
-  // Fetch user filled forms
-  const fetchForms = async (userID) => {
+  const categorizeAppointments = (appointments) => {
+    const now = new Date();
+    const past = appointments.filter(
+      (appointment) => new Date(appointment.date) < now && !appointment.deleted
+    );
+    const upcoming = appointments.filter(
+      (appointment) => new Date(appointment.date) >= now && !appointment.deleted
+    );
+
+    setPastAppointments(past);
+    setUpcomingAppointments(upcoming);
+  };
+
+  const fetchForms = async (userId) => {
     try {
-      const response = await getFilledFormsForCustomer(userID);
+      const response = await getFilledFormsForCustomer(userId);
       setForms(response);
-    } catch (error) {
-      console.error("Error fetching forms:", error);
-    }
+    } catch (error) {}
   };
 
-  // Check if the user's personal information is complete
-  const checkPersonalInformation = async (userID) => {
+  const fetchServices = async (artistId) => {
     try {
-      const customer = await getCustomer(userID);
-      console.log("Customer info:", customer);
-      console.log("Customer name:", customer?.info?.client_name);
+      const response = await getServicesForArtistWithId(artistId);
+      setServices(response);
+    } catch (error) {}
+  };
+
+  const checkPersonalInformation = async (userId) => {
+    try {
+      const customer = await getCustomer(userId);
+
       setClientName(customer?.info?.client_name);
       if (customer && customer.info) {
         setPersonalInfoComplete(true);
         setShowPersonalInfo(false);
+        localStorage.setItem("clientName", customer.info.client_name);
+        localStorage.setItem("businessName", customer.info.businessName);
       } else {
         setPersonalInfoComplete(false);
         setShowPersonalInfo(true);
       }
-    } catch (error) {
-      console.error("Error fetching user details:", error);
-    }
+    } catch (error) {}
   };
 
   const deleteAppointments = (appointmentId) => {
-    setPastAppointments((prev) =>
-      prev.filter((element) => element.data.id !== appointmentId)
+    const newPastAppointments = pastAppointments.filter(
+      (element) => element.data.id !== appointmentId
     );
-    setUpcomingAppointments((prev) =>
-      prev.filter((element) => element.data.id !== appointmentId)
+    const newUpcomingAppointments = upcomingAppointments.filter(
+      (element) => element.data.id !== appointmentId
     );
+
+    setPastAppointments(newPastAppointments);
+    setUpcomingAppointments(newUpcomingAppointments);
+
     updateAppointment(appointmentId, { deleted: true })
       .then(() => {
         Toast("success", "Appointment deleted successfully");
@@ -122,7 +145,9 @@ const Dashboard = () => {
   };
 
   if (showPersonalInfo) {
-    return <PersonalDetailsForm onSubmitClick={setShowPersonalInfo(false)} />;
+    return (
+      <PersonalDetailsForm onSubmitClick={() => setShowPersonalInfo(false)} />
+    );
   }
 
   return (
