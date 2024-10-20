@@ -9,9 +9,10 @@ import {
   getArtist,
   getServicesForArtistWithId,
 } from "../../firebase/firebaseServices";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { v4 as uuidv4 } from "uuid";
+import { Toast } from "../../utils/toast/Toast";
 
 const BookAppointment = () => {
   const artistId = "jsb0kVT5ToNX5Q87H1tsglkDIh12";
@@ -24,11 +25,11 @@ const BookAppointment = () => {
   const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {
+    // Fetch artist and services
     getArtist(artistId).then((artist) => {
       setCompanyName(artist.businessName);
     });
     getServicesForArtistWithId(artistId).then((services) => {
-      console.log(services);
       setServices(services);
     });
   }, [artistId]);
@@ -44,6 +45,7 @@ const BookAppointment = () => {
 
   // Continue button handler
   const handleContinue = async () => {
+    // Validate input
     if (!appointmentDate) {
       setFormError("Please select an appointment date.");
       return;
@@ -55,26 +57,39 @@ const BookAppointment = () => {
       return;
     }
 
-    const appointmentId = uuidv4(); // Generate unique appointment ID
+    // Create a new appointment
+    const appointmentId = uuidv4();
     const appointment = {
-      appointmentDate,
+      date: new Date(appointmentDate),
       id: appointmentId,
-      artistId,
-      services: selectedServices,
-      userId: currentUser().uid,
+      artistId: artistId,
+      customer_id: currentUser.uid,
+      services: selectedServices.map((service) => service.id),
+      createdAt:
+        new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
     };
 
     try {
+      // Save appointment to the backend
+      console.log("Creating appointment:", appointment);
       await createAppointment(appointment);
+      console.log("Appointment created:", appointment);
+      Toast("success", "Appointment created successfully");
+      // Navigate to the next screen
       navigate(
-        `/forms/services/${selectedServices}/artist/${artistId}/appointment/${appointmentId}`
+        `/forms/services/${selectedServices.map(
+          (s) => s.id
+        )}/artist/${artistId}/appointment/${appointmentId}`
       );
     } catch (error) {
-      setFormError("Error creating the appointment. Please try again.");
-      console.error(error);
+      Toast("error", "Error creating the appointment");
+      console.error("Error creating the appointment:", error);
     }
   };
 
+  useEffect(() => {
+    localStorage.setItem("artistId", artistId);
+  }, []);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="book-appointment-page">
@@ -91,6 +106,7 @@ const BookAppointment = () => {
           <div className="date-picker">
             <DatePicker
               value={appointmentDate}
+              onChange={(newValue) => setAppointmentDate(newValue)}
               slotProps={{
                 openPickerIcon: { fontSize: "small" },
                 openPickerButton: { color: "secondary" },
@@ -113,7 +129,6 @@ const BookAppointment = () => {
                   },
                 },
               }}
-              onChange={(newValue) => newValue}
               fullWidth
             />
           </div>
@@ -128,7 +143,6 @@ const BookAppointment = () => {
             {services.map((service) => (
               <div key={service?.id} className="checkbox-item">
                 <Checkbox
-                  {...{ service }}
                   sx={{
                     color: "#800080",
                     "&.Mui-checked": {
@@ -142,7 +156,7 @@ const BookAppointment = () => {
                   checked={selectedServices.includes(service)}
                   onChange={() => handleServiceChange(service)}
                 />
-                <label htmlFor={service}>{service?.service}</label>
+                <label>{service?.service}</label>
               </div>
             ))}
           </div>
@@ -156,8 +170,12 @@ const BookAppointment = () => {
         </div>
 
         <div className="button-group">
-          <button className="go-back-button">Go Back</button>
-          <button className="continue-button">Continue</button>
+          <button className="go-back-button" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+          <button className="continue-button" onClick={handleContinue}>
+            Continue
+          </button>
         </div>
       </div>
     </LocalizationProvider>

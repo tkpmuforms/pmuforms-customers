@@ -374,3 +374,25 @@ export const EditFormSvg = ({ onClick, ...props }) => {
     </svg>
   );
 };
+
+export const GoBackSvg = ({ onClick, ...props }) => {
+  return (
+    <svg
+      width="48"
+      height="48"
+      viewBox="0 0 48 48"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle opacity="0.1" cx="24" cy="24" r="24" fill="#8E2D8E" />
+      <path
+        d="M27 31.9201L20.48 25.4001C19.71 24.6301 19.71 23.3701 20.48 22.6001L27 16.0801"
+        stroke="#8E2D8E"
+        stroke-width="1.5"
+        stroke-miterlimit="10"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};

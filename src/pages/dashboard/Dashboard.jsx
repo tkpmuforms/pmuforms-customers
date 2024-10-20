@@ -29,11 +29,12 @@ const RenderAppointmentCard = ({
   ViewClick,
   DeleteClick,
 }) => {
+  const formattedDate = new Date(date.seconds * 1000).toLocaleDateString();
   return (
     <div className="appointment-card">
       <div className="appointment-info">
         <h4>{title}</h4>
-        <p>Date of Appointment: {date}</p>
+        <p>Date of Appointment: {formattedDate}</p>
         <p>Forms filled: {formsFilled}</p>
         <span className={`status ${status}`}>
           {status === "completed" ? "Forms Completed" : "Forms Not Completed"}
@@ -75,6 +76,7 @@ const Dashboard = () => {
   const fetchAppointments = async (userId) => {
     try {
       const response = await getAppointmentsForClient(userId);
+      console.log("appointments", response);
       setAppointments(response);
       categorizeAppointments(response);
     } catch (error) {}
@@ -96,6 +98,7 @@ const Dashboard = () => {
   const fetchForms = async (userId) => {
     try {
       const response = await getFilledFormsForCustomer(userId);
+      console.log("forms", response);
       setForms(response);
     } catch (error) {}
   };
@@ -103,6 +106,7 @@ const Dashboard = () => {
   const fetchServices = async (artistId) => {
     try {
       const response = await getServicesForArtistWithId(artistId);
+      console.log("services", response);
       setServices(response);
     } catch (error) {}
   };
@@ -110,6 +114,7 @@ const Dashboard = () => {
   const checkPersonalInformation = async (userId) => {
     try {
       const customer = await getCustomer(userId);
+      console.log("customer", customer);
 
       setClientName(customer?.info?.client_name);
       if (customer && customer.info) {
@@ -214,11 +219,12 @@ const Dashboard = () => {
             {appointments?.map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
-                title={appointment.title}
-                date={appointment.date}
-                formsFilled={appointment.formsFilled}
-                status={appointment.status}
-                DeleteClick={deleteAppointments}
+                title={appointment.title || "Appointment"}
+                date={appointment.date} // Pass the date object directly
+                formsFilled={appointment.formsFilled || 0}
+                status={appointment.status || "pending"}
+                ViewClick={() => navigate(`/appointments/${appointment.id}`)}
+                DeleteClick={() => deleteAppointments(appointment.id)}
               />
             ))}
             {appointments.length === 0 && (

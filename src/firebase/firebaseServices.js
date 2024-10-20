@@ -6,11 +6,12 @@ import {
   getDocs,
   query,
   setDoc,
+  Timestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
 import { firestore, auth } from "../firebase/firebase";
-import axios from "axios";
+import axiosInstance from "../context/axiossetup";
 
 const BASE_URL = "https://api.pmuforms.com";
 
@@ -143,9 +144,23 @@ export const getAllFilledFormsForAppointment = async (appointmentId) => {
  */
 export const createAppointment = async (appointment) => {
   try {
+    // Convert date to Firestore Timestamp if it is a valid date
+    if (appointment.date instanceof Date) {
+      appointment.date = Timestamp.fromDate(appointment.date);
+    } else {
+      // If the date is a string, convert it to a Date first
+      const parsedDate = new Date(appointment.date);
+      if (!isNaN(parsedDate.getTime())) {
+        appointment.date = Timestamp.fromDate(parsedDate);
+      } else {
+        throw new Error("Invalid appointment date");
+      }
+    }
+
+    // Save the appointment document in Firestore
     await setDoc(doc(firestore, "appointments", appointment.id), appointment);
   } catch (err) {
-    log("Error creating appointment", err);
+    console.error("Error creating appointment:", err);
     throw err;
   }
 };
@@ -189,7 +204,7 @@ export const getAppointmentsForClient = async (clientId) => {
  */
 export const getRootTemplates = async () => {
   try {
-    const response = await axios.get(`${BASE_URL}/forms`);
+    const response = await axiosInstance.get(`${BASE_URL}/forms`);
     return response.data;
   } catch (err) {
     log("Error getting root templates", err);
@@ -206,8 +221,13 @@ export const getLatestTemplateVersion = async (
   services
 ) => {
   try {
-    const response = await axios.get(
-      `${BASE_URL}/artists/${artistId}/forms/${rootTemplateId}/latest`
+    const response = await axiosInstance.get(
+      `${BASE_URL}/artists/${artistId}/forms/${rootTemplateId}/latest`,
+      {
+        params: {
+          services: services.join(","),
+        },
+      }
     );
     const data = response.data;
     if (Array.isArray(data) && data.length > 0) {
@@ -328,4 +348,69 @@ export const getFilledFormsForCustomer = async (customerId) => {
   }));
 
   return filledForms;
+};
+
+/**
+ * Retrieves all form templates for the specified service IDs and artist.
+ * @param {Array} serviceIds - An array of service IDs to filter by.
+ * @param {string} artistId - The ID of the artist to filter forms for.
+ * @returns {Promise<Array>} - A promise that resolves to an array of form templates.
+ */
+export const getAllFormsForServicesFromFirebase = async (
+  serviceIds,
+  artistId
+) => {
+  try {
+    // Retrieve all root templates from Firestore
+    let forms = await getRootTemplates();
+
+    log(`Retrieved all form templates for the service ids: ${serviceIds}`);
+
+    // Filter forms based on the provided service IDs
+    forms = filterFormsByServiceId(forms, serviceIds);
+
+    // Get the latest form templates for each root template for the artist
+    const latestFormTemplatesPromises = forms.map((f) =>
+      getLatestTemplateVersion(f.id, artistId, f.services)
+    );
+
+    let latestForms = await Promise.all(latestFormTemplatesPromises);
+
+    // Separate forms using service array versioning
+    let formsUsingServiceArrayVersioning = latestForms.filter(
+      (f) => f.usesServicesArrayVersioning
+    );
+
+    // Further filter these forms by service ID
+    formsUsingServiceArrayVersioning = filterFormsByServiceId(
+      formsUsingServiceArrayVersioning,
+      serviceIds
+    );
+
+    // Exclude forms that use service array versioning from the latest forms
+    latestForms = latestForms.filter((f) => !f.usesServicesArrayVersioning);
+
+    // Combine the forms together
+    latestForms = [...latestForms, ...formsUsingServiceArrayVersioning];
+
+    // Sort forms by the order field in ascending order
+    latestForms.sort((a, b) => a.order - b.order);
+
+    console.log(latestForms);
+    return latestForms;
+  } catch (err) {
+    console.error("Error getting forms:", err);
+    log("Error getting forms", err);
+    throw err;
+  }
+};
+
+const filterFormsByServiceId = (forms, serviceIds) => {
+  return forms.filter((form) =>
+    form.services.some((serviceId) => serviceIds.includes(serviceId))
+  );
+};
+
+export const getAuthToken = () => {
+  return localStorage.getItem("idToken");
 };

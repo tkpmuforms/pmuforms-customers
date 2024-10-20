@@ -13,6 +13,7 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import MedicalForm from "./pages/medicalForm/MedicalForm";
 import RequireAuth from "./routes/RouteGuard";
 import "./utils/toast/toast.css";
+import DynamicForms from "./pages/forms/DymamicForms";
 
 function AppWrapper() {
   const location = useLocation();
@@ -54,6 +55,10 @@ function AppWrapper() {
           <Route path="/medical-form" element={<MedicalForm />} />
           <Route path="/appointments" element={<AllAppointments />} />
           <Route path="/appointments/:id" element={<AppointmentDetails />} />
+          <Route
+            path="/forms/services/:serviceIds/artist/:artistId/appointment/:appointmentId"
+            element={<DynamicForms />}
+          />
         </Route>
       </Routes>
     </div>
