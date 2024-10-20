@@ -414,3 +414,30 @@ const filterFormsByServiceId = (forms, serviceIds) => {
 export const getAuthToken = () => {
   return localStorage.getItem("idToken");
 };
+
+/**
+ * Get all the forms that need to be filled out for the list of services provided.
+ * @param {number[]} serviceIds - The services that the user will be getting done for this appointment.
+ * @param {Array} formTemplates - The available form templates.
+ * @returns {Array} - List of form templates for the specified services.
+ */
+export const getAllFormsForServices = (serviceIds, formTemplates) => {
+  if (!formTemplates || formTemplates.length === 0) {
+    return [];
+  }
+
+  let appointmentFormTemplates = [];
+
+  serviceIds.forEach((id) => {
+    formTemplates.forEach((template) => {
+      if (
+        template.services.includes(id) &&
+        !appointmentFormTemplates.includes(template)
+      ) {
+        appointmentFormTemplates.push(template);
+      }
+    });
+  });
+
+  return appointmentFormTemplates;
+};

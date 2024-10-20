@@ -6,6 +6,7 @@ import {
   getCustomer,
   getFilledFormsForCustomer,
   getServicesForArtistWithId,
+  getAllFormsForServices,
   updateAppointment,
 } from "../../firebase/firebaseServices";
 import {
@@ -55,7 +56,6 @@ const Dashboard = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [forms, setForms] = useState([]);
   const [clientName, setClientName] = useState("");
-  const [personalInfoComplete, setPersonalInfoComplete] = useState(false);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const userId = localStorage.getItem("userId");
   const businesName = localStorage.getItem("businessName");
@@ -67,6 +67,7 @@ const Dashboard = () => {
     fetchAppointments(userId);
     fetchForms(userId);
     checkPersonalInformation(userId);
+    fetchFormsForServices(services);
     const artistId = localStorage.getItem("artistId");
     if (artistId) {
       fetchServices(artistId);
@@ -118,15 +119,21 @@ const Dashboard = () => {
 
       setClientName(customer?.info?.client_name);
       if (customer && customer.info) {
-        setPersonalInfoComplete(true);
         setShowPersonalInfo(false);
         localStorage.setItem("clientName", customer.info.client_name);
         localStorage.setItem("businessName", customer.info.businessName);
       } else {
-        setPersonalInfoComplete(false);
         setShowPersonalInfo(true);
       }
     } catch (error) {}
+  };
+
+  const getServiceTitle = (serviceIds) => {
+    // Map service IDs to service names
+    const serviceNames = services
+      .filter((service) => serviceIds.includes(service.id))
+      .map((service) => service.service);
+    return serviceNames.join(", ") || "Appointment";
   };
 
   const deleteAppointments = (appointmentId) => {
@@ -147,6 +154,14 @@ const Dashboard = () => {
       .catch((error) => {
         Toast("error", "Error deleting appointment");
       });
+  };
+
+  const fetchFormsForServices = async (services) => {
+    try {
+      const response = await getAllFormsForServices(services);
+      console.log("forms for services", response);
+      setForms(response);
+    } catch (error) {}
   };
 
   if (showPersonalInfo) {
@@ -219,10 +234,10 @@ const Dashboard = () => {
             {appointments?.map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
-                title={appointment.title || "Appointment"}
-                date={appointment.date} // Pass the date object directly
-                formsFilled={appointment.formsFilled || 0}
-                status={appointment.status || "pending"}
+                title={getServiceTitle(appointment?.services)}
+                date={appointment?.date}
+                formsFilled={appointment?.formsFilled || 0}
+                status={appointment?.status}
                 ViewClick={() => navigate(`/appointments/${appointment.id}`)}
                 DeleteClick={() => deleteAppointments(appointment.id)}
               />
