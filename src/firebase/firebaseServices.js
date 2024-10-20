@@ -422,6 +422,8 @@ export const getAuthToken = () => {
  * @returns {Array} - List of form templates for the specified services.
  */
 export const getAllFormsForServices = (serviceIds, formTemplates) => {
+  console.log("serviceIds", serviceIds);
+  console.log("formTemplates", formTemplates);
   if (!formTemplates || formTemplates.length === 0) {
     return [];
   }

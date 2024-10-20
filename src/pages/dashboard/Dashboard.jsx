@@ -156,9 +156,9 @@ const Dashboard = () => {
       });
   };
 
-  const fetchFormsForServices = async (services) => {
+  const fetchFormsForServices = (services) => {
     try {
-      const response = await getAllFormsForServices(services);
+      const response = getAllFormsForServices(services);
       console.log("forms for services", response);
       setForms(response);
     } catch (error) {}
