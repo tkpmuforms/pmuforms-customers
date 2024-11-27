@@ -1,23 +1,40 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./bookAppointment.scss";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
 import { Checkbox } from "@mui/material";
+import {
+  createAppointment,
+  getArtist,
+  getServicesForArtistWithId,
+} from "../../firebase/firebaseServices";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { v4 as uuidv4 } from "uuid";
+import { Toast } from "../../utils/toast/Toast";
 
 const BookAppointment = () => {
-  const [value, setValue] = useState(null);
+  const artistId = "jsb0kVT5ToNX5Q87H1tsglkDIh12";
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
+  const [appointmentDate, setAppointmentDate] = useState(null);
+  const [formError, setFormError] = useState("");
+  const [companyName, setCompanyName] = useState("");
 
-  const services = [
-    "BB Glow",
-    "Dry Needling",
-    "Micro Needling",
-    "Plasma Skin Tightening",
-    "Tattoo Removal",
-    "Areola Reconstruction",
-  ];
+  useEffect(() => {
+    // Fetch artist and services
+    getArtist(artistId).then((artist) => {
+      setCompanyName(artist.businessName);
+    });
+    getServicesForArtistWithId(artistId).then((services) => {
+      setServices(services);
+    });
+  }, [artistId]);
 
+  // Toggle service selection
   const handleServiceChange = (service) => {
     setSelectedServices((prevSelected) =>
       prevSelected.includes(service)
@@ -26,6 +43,53 @@ const BookAppointment = () => {
     );
   };
 
+  // Continue button handler
+  const handleContinue = async () => {
+    // Validate input
+    if (!appointmentDate) {
+      setFormError("Please select an appointment date.");
+      return;
+    }
+    if (selectedServices.length === 0) {
+      setFormError(
+        "You didn't select any services. Please select at least one service."
+      );
+      return;
+    }
+
+    // Create a new appointment
+    const appointmentId = uuidv4();
+    const appointment = {
+      date: new Date(appointmentDate),
+      id: appointmentId,
+      artistId: artistId,
+      customer_id: currentUser.uid,
+      services: selectedServices.map((service) => service.id),
+      createdAt:
+        new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
+    };
+
+    try {
+      // Save appointment to the backend
+      console.log("Creating appointment:", appointment);
+      await createAppointment(appointment);
+      console.log("Appointment created:", appointment);
+      Toast("success", "Appointment created successfully");
+      // Navigate to the next screen
+      navigate(
+        `/forms/services/${selectedServices.map(
+          (s) => s.id
+        )}/artist/${artistId}/appointment/${appointmentId}`
+      );
+    } catch (error) {
+      Toast("error", "Error creating the appointment");
+      console.error("Error creating the appointment:", error);
+    }
+  };
+
+  useEffect(() => {
+    localStorage.setItem("artistId", artistId);
+  }, []);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="book-appointment-page">
@@ -41,7 +105,8 @@ const BookAppointment = () => {
           </p>
           <div className="date-picker">
             <DatePicker
-              value={value}
+              value={appointmentDate}
+              onChange={(newValue) => setAppointmentDate(newValue)}
               slotProps={{
                 openPickerIcon: { fontSize: "small" },
                 openPickerButton: { color: "secondary" },
@@ -64,7 +129,6 @@ const BookAppointment = () => {
                   },
                 },
               }}
-              onChange={(newValue) => setValue(newValue)}
               fullWidth
             />
           </div>
@@ -77,9 +141,8 @@ const BookAppointment = () => {
           </p>
           <div className="services-list">
             {services.map((service) => (
-              <div key={service} className="checkbox-item">
+              <div key={service?.id} className="checkbox-item">
                 <Checkbox
-                  {...{ service }}
                   sx={{
                     color: "#800080",
                     "&.Mui-checked": {
@@ -93,7 +156,7 @@ const BookAppointment = () => {
                   checked={selectedServices.includes(service)}
                   onChange={() => handleServiceChange(service)}
                 />
-                <label htmlFor={service}>{service}</label>
+                <label>{service?.service}</label>
               </div>
             ))}
           </div>
@@ -107,8 +170,12 @@ const BookAppointment = () => {
         </div>
 
         <div className="button-group">
-          <button className="go-back-button">Go Back</button>
-          <button className="continue-button">Continue</button>
+          <button className="go-back-button" onClick={() => navigate(-1)}>
+            Go Back
+          </button>
+          <button className="continue-button" onClick={handleContinue}>
+            Continue
+          </button>
         </div>
       </div>
     </LocalizationProvider>

@@ -1,18 +1,26 @@
 import React, { useState } from "react";
-import Navbar from "../../layout/Navbar";
+import Navbar from "../../layout/public/Navbar";
 import LoginPage from "./login/Login";
 import SignupPage from "./signUp/SignUp";
-import "./authpage.scss"; 
+import "./authpage.scss";
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider, facebookProvider } from "../../firebase/firebase";
-import { FacebookLoginSvg, GoogleLoginSvg, LogoSvg } from "../../assets/svgs/AuthSvg";
+import {
+  auth,
+  googleProvider,
+  facebookProvider,
+} from "../../firebase/firebase";
+import {
+  FacebookLoginSvg,
+  GoogleLoginSvg,
+  LogoSvg,
+} from "../../assets/svgs/AuthSvg";
 import { useNavigate } from "react-router-dom";
-import { log } from "../../firebase/firebaseServices";
-
+import { createCustomer, log } from "../../firebase/firebaseServices";
+import { Toast } from "../../utils/toast/Toast";
 
 const Authpage = () => {
   const [page, setPage] = useState("login");
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handlePageChange = (page) => {
     setPage(page);
@@ -21,12 +29,32 @@ const Authpage = () => {
   // Handle social login (Google, Facebook, etc.)
   const handleSocialLogin = async (provider) => {
     try {
-      await signInWithPopup(auth, provider);
-      log("User logged in with social provider successfully"); // Log user login
-      navigate("/dashboard"); // Redirect to dashboard or desired page
+      const result = await signInWithPopup(auth, provider);
+      if (!result) {
+        throw new Error("Authentication failed. No result received.");
+      }
+      socialSignInSuccessWithAuthResult(result);
+      Toast("success", "Login successful");
+      navigate("/dashboard");
     } catch (error) {
-      log("Social login error", error.message); // Log any errors
-      alert("Social login failed. Please try again.");
+      console.error("Social login error:", error); // Additional logging for debugging
+      log("Social login error", error.message);
+      Toast("error", "Login failed: " + error.message);
+    }
+  };
+
+  const socialSignInSuccessWithAuthResult = async (authResult) => {
+    const user = authResult.user;
+    const userToken = await user.getIdToken();
+
+    try {
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("userId", user.uid);
+      localStorage.setItem("idToken", userToken);
+      await createCustomer(user.email, user.displayName, user.uid);
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Error during social login callback:", error);
     }
   };
   return (
@@ -38,35 +66,43 @@ const Authpage = () => {
       />
       <div className="auth-container">
         <div className="auth-logo">
-        <LogoSvg/>
+          <LogoSvg />
         </div>
         {page === "login" ? <LoginPage /> : <SignupPage />}
         <div className="switch-auth">
           {page === "login" ? (
             <p>
               Don't have an account?{" "}
-              <button onClick={() => handlePageChange("signup")} className="switch-auth-button">
+              <button
+                onClick={() => handlePageChange("signup")}
+                className="switch-auth-button"
+              >
                 Sign up
               </button>
             </p>
           ) : (
             <p>
               Already have an account?{" "}
-              <button onClick={() => handlePageChange("login")} className="switch-auth-button">
+              <button
+                onClick={() => handlePageChange("login")}
+                className="switch-auth-button"
+              >
                 Log in
               </button>
             </p>
           )}
         </div>
-         
+
         <p>Or sign in with</p>
         <div className="social-signin">
-        <GoogleLoginSvg onClick={() => handleSocialLogin(googleProvider)} />
-          <FacebookLoginSvg onClick={() => handleSocialLogin(facebookProvider)} />
-         
+          <GoogleLoginSvg onClick={() => handleSocialLogin(googleProvider)} />
+          <FacebookLoginSvg
+            onClick={() => handleSocialLogin(facebookProvider)}
+          />
         </div>
         <p className="terms-text">
-          By proceeding, you agree to our <a href="#">Terms and conditions</a> and our <a href="#">Privacy policy</a>
+          By proceeding, you agree to our <a href="#">Terms and conditions</a>{" "}
+          and our <a href="#">Privacy policy</a>
         </p>
       </div>
     </>

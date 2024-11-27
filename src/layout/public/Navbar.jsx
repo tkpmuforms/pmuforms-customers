@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./navbar.scss";
-import { LogoSvg } from "../assets/svgs/AuthSvg";
+import { LogoSvg } from "../../assets/svgs/AuthSvg";
 
 const Navbar = ({ CreatenewClick }) => {
   const navigate = useNavigate();
@@ -20,6 +20,9 @@ const Navbar = ({ CreatenewClick }) => {
       setMobileMenuVisible(false);
     }
   };
+
+  const videolink =
+    "https://pmuforms.crunch.help/en/pmuforms-functionality/how-to-use-pmu-forms";
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -46,7 +49,9 @@ const Navbar = ({ CreatenewClick }) => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/how-to">[Watch Video] “How to use PMU Forms”</Link>
+            <a href={videolink} target="_blank" rel="noopener noreferrer">
+              [Watch Video] “How to use PMU Forms”
+            </a>
           </li>
           <li>
             <Link to="/about">About</Link>
@@ -54,7 +59,15 @@ const Navbar = ({ CreatenewClick }) => {
         </ul>
       </div>
       <div className="buttons">
-        <button className="download">Download App</button>
+        <button className="download">
+          <a
+            href="https://apps.apple.com/us/app/pmu-forms/id1497270923"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Download App
+          </a>
+        </button>
         <button onClick={CreatenewClick} className="create-an-account">
           Create an Account
         </button>

@@ -4,16 +4,16 @@
   .dashboard-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 10px;
+    padding: 0 10px;
 
     .dashboard-header {
       text-align: left;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
 
       h3 {
         font-size: 24px;
         color: #333;
-        margin-bottom: 2px;
+        margin-bottom: 5px;
         font-weight: 700;
         font-family: RegularFont;
         span {
@@ -28,12 +28,13 @@
 
       .alert {
         background: #ffa21d1a;
-        padding: 1px 20px;
+        padding: 10px 20px;
         display: flex;
         align-items: center;
         gap: 10px;
         border-radius: 10px;
-        font-size: 13px;
+        margin-top: 5px;
+        font-size: 12px;
         color: #ff9500;
         p {
           color: var(--pmu-orange);
@@ -45,35 +46,48 @@
     .actions-section {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-
-      .action-card {
-        display: flex;
-        gap: 20px;
-        border-right: 1px solid #ddd;
-        width: 30%;
-        padding: 20px;
-        text-align: left;
-        align-items: center;
-
-        h5 {
-          font-size: 16px;
-          color: #000000;
-          line-height: 20px;
-          margin: 0;
-          padding: 0;
-          font-family: MediumFont;
-          font-weight: 500;
-        }
-
-        p {
-          font-size: 13px;
-          color: var(--pmu-grey-text);
-          padding: 0;
-          margin: 0;
-        }
-      }
+      align-items: stretch; /* Change to 'stretch' for equal height */
     }
+    
+    .action-card {
+      display: flex;
+      gap: 20px;
+      border-right: 1px solid #ddd;
+      width: 30%;
+      padding: 20px;
+      text-align: left;
+      align-items: center;
+      cursor: pointer;
+      flex: 1; /* Allow cards to grow equally */
+    }
+    
+    .action-card:last-child {
+      border-right: none; /* Remove border from the last card */
+    }
+    
+    .action-card svg {
+      width: 40px; /* Set a fixed width for SVGs */
+      height: 40px; /* Set a fixed height for SVGs */
+      flex-shrink: 0; /* Prevent SVG from shrinking */
+    }
+    
+    h5 {
+      font-size: 16px;
+      color: #000000;
+      line-height: 20px;
+      margin: 0;
+      padding: 0;
+      font-family: MediumFont;
+      font-weight: 500;
+    }
+    
+    p {
+      font-size: 13px;
+      color: var(--pmu-grey-text);
+      padding: 0;
+      margin: 0;
+    }
+    
 
     .appointments-section {
       margin-top: 10px;

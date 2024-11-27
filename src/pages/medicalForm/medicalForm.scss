@@ -5,7 +5,7 @@
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  
+
   .header {
     text-align: left;
     margin-bottom: 30px;
@@ -101,6 +101,130 @@
 
         &:hover {
           background: #6e006e;
+        }
+      }
+    }
+  }
+}
+
+/* Tablet View: Adjust for screens up to 768px */
+@media screen and (max-width: 768px) {
+  .medical-form-page {
+    max-width: 100%;
+    padding: 15px;
+
+    .header {
+      margin-bottom: 20px;
+
+      h2 {
+        font-size: 20px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+      }
+
+      .back-button {
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+    }
+
+    .form-section {
+      h3 {
+        font-size: 18px;
+      }
+
+      h4 {
+        font-size: 16px;
+        margin-top: 15px;
+      }
+
+      .description {
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+
+      .small-note {
+        font-size: 11px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+      }
+
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+
+        .back-button,
+        .submit-button {
+          width: 100%;
+          margin: 8px 0;
+        }
+      }
+    }
+  }
+}
+
+/* Mobile View: Adjust for screens up to 480px */
+@media screen and (max-width: 480px) {
+  .medical-form-page {
+    padding: 10px;
+
+    .header {
+      margin-bottom: 15px;
+
+      h2 {
+        font-size: 18px;
+      }
+
+      .subtitle {
+        font-size: 12px;
+        margin-top: 5px;
+      }
+
+      .back-button {
+        font-size: 12px;
+        margin-bottom: 5px;
+      }
+    }
+
+    .form-section {
+      h3 {
+        font-size: 16px;
+        margin-bottom: 8px;
+      }
+
+      h4 {
+        font-size: 14px;
+        margin-top: 12px;
+      }
+
+      .description {
+        font-size: 12px;
+        margin-bottom: 15px;
+      }
+
+      .small-note {
+        font-size: 11px;
+        margin-bottom: 10px;
+      }
+
+      .checkbox-group {
+        label {
+          font-size: 12px;
+        }
+      }
+
+      .button-group {
+        flex-direction: column;
+        gap: 10px;
+
+        .back-button,
+        .submit-button {
+          width: 100%;
+          margin-top: 5px;
+          padding: 10px;
+          font-size: 14px;
         }
       }
     }

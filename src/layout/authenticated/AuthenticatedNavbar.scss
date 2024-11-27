@@ -1,34 +1,34 @@
-.authenticatedNavbarContainer{
+.authenticatedNavbarContainer {
   display: flex;
-  justify-content: space-between; 
+  justify-content: space-between;
   align-items: center;
   padding: 10px 100px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
   z-index: 2000;
 
-  .authLogo{
+  .authLogo {
     display: flex;
     align-items: center;
     padding-left: 20px;
     cursor: pointer;
 
-    svg{
+    svg {
       /* Add custom styling for the logo SVG here if needed */
     }
   }
-  
-  .authlinks{
-    display: flex;
-    align-items: center; /* Aligns text properly */
-    margin-left: 40px; /* Adds spacing between logo and links */
 
-    ul{
+  .authlinks {
+    display: flex;
+    align-items: center;
+    margin-left: 40px;
+
+    ul {
       display: flex;
       align-items: center;
       gap: 20px;
 
-      li{
+      li {
         list-style: none;
         position: relative;
         cursor: pointer;
@@ -37,42 +37,38 @@
         font-weight: 600;
         line-height: 20px;
 
-        .dropdown{
-          cursor: pointer;
-
-          .arrow{
-            margin-left: 5px;
-            cursor: pointer;
-          }
-        }
-
-        a{
+        a {
           text-decoration: none;
           color: #101928;
           font-size: 14px;
           font-weight: 600;
           line-height: 20px;
 
-          &:hover{
+          &:hover {
             color: var(--color-blue-dark);
           }
+        }
+
+        .mobile-logout {
+          display: none; // Hide by default
         }
       }
     }
   }
-  
-  .avatar{
+
+  .avatar {
     display: flex;
     align-items: center;
     cursor: pointer;
-    img{
+
+    img {
       width: 30px;
       height: 30px;
       border-radius: 50%;
       margin-right: 10px;
     }
   }
-  
+
   .hamburger-menu {
     display: none;
     font-size: 24px;
@@ -80,10 +76,11 @@
   }
 }
 
-@media screen and (max-width: 768px){
-  .authenticatedNavbarContainer{
-    .authlinks{
+@media screen and (max-width: 768px) {
+  .authenticatedNavbarContainer {
+    .authlinks {
       display: none;
+
       &.visible {
         display: block;
         position: absolute;
@@ -103,21 +100,27 @@
             a {
               font-size: 16px;
             }
+          }
 
-            .dropdown-menu {
-              position: static;
-              width: 100%;
-              box-shadow: none;
+          .mobile-logout {
+            display: block; // Show logout on mobile
+            font-size: 16px;
+            color: red;
+            cursor: pointer;
 
-              a {
-                font-size: 14px;
-              }
+            &:hover {
+              color: darkred;
             }
           }
         }
       }
     }
-    .hamburger-menu{
+
+    .avatar {
+      display: none;
+    }
+
+    .hamburger-menu {
       display: block;
     }
   }
