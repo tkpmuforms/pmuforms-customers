@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
 import { EditFormSvg } from "../../assets/svgs/DashboardSvg";
 import "./appointmentsdetails.scss";
+import { getAllFilledFormsForAppointment } from "../../firebase/firebaseServices";
 
 const RenderAppointmentCard = ({
   title,
@@ -8,7 +11,6 @@ const RenderAppointmentCard = ({
   formsFilled,
   status,
   ViewClick,
-  DeleteClick,
 }) => {
   return (
     <div className="form-card">
@@ -28,42 +30,51 @@ const RenderAppointmentCard = ({
 };
 
 const AppointmentDetails = () => {
-  const forms = [
-    {
-      title: "Lash Extension",
-      date: "12th August, 2021",
-      formsFilled: 3,
-      status: "completed",
-    },
-    {
-      title: "Brow Shaping",
-      date: "15th August, 2021",
-      formsFilled: 2,
-      status: "not-completed",
-    },
-    {
-      title: "Facial Treatment",
-      date: "20th August, 2021",
-      formsFilled: 4,
-      status: "completed",
-    },
-  ];
+  const { id } = useParams();
+  const [forms, setForms] = useState([]);
+
+  useEffect(() => {
+    const fetchForms = async () => {
+      try {
+        const fetchedForms = await getAllFilledFormsForAppointment(id);
+        console.log("Fetched forms:", fetchedForms);
+        setForms(fetchedForms);
+      } catch (error) {
+        console.error("Error fetching forms for appointment:", error);
+      }
+    };
+
+    if (id) {
+      fetchForms();
+    }
+  }, [id]);
+
   return (
     <div>
       <div className="form">
-        Go back to dashboard
-        <h3>Appointent Date</h3>
+        <button onClick={() => window.history.back()}>
+          Go back to dashboard
+        </button>
+        <h3>Appointment Date</h3>
         <h3>Services Received</h3>
         <div className="form-list">
-          {forms?.map((appointment, index) => (
-            <RenderAppointmentCard
-              key={index}
-              title={appointment.title}
-              date={appointment.date}
-              formsFilled={appointment.formsFilled}
-              status={appointment.status}
-            />
-          ))}
+          {forms.length > 0 ? (
+            forms.map((form, index) => (
+              <RenderAppointmentCard
+                key={form.id}
+                title={form.title || `Form ${index + 1}`}
+                date={
+                  new Date(form.date?.seconds * 1000).toLocaleDateString() ||
+                  "N/A"
+                }
+                formsFilled={form.formsFilled || 0}
+                status={form.status || "incomplete"}
+                ViewClick={() => console.log(`View form with ID: ${form.id}`)}
+              />
+            ))
+          ) : (
+            <p>No forms found for this appointment.</p>
+          )}
         </div>
       </div>
     </div>

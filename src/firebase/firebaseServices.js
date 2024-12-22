@@ -10,8 +10,9 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { firestore, auth } from "../firebase/firebase";
 import axiosInstance from "../context/axiossetup";
+import { auth, firestore } from "../firebase/firebase";
+import { createCustomer } from "./services";
 
 const BASE_URL = "https://api.pmuforms.com";
 
@@ -40,27 +41,27 @@ export const log = async (message, error = "") => {
   }
 };
 
-/**
- * Create a new customer for an artist.
- */
-export const createCustomer = async (email, name, id) => {
-  try {
-    const customerRef = doc(firestore, "customers", id);
-    const customer = await getDoc(customerRef);
-    if (!customer.exists()) {
-      await setDoc(customerRef, {
-        email,
-        info: { client_name: name },
-        id,
-      });
-      log("User added to customers collection successfully");
-      return true;
-    }
-  } catch (err) {
-    log("Error creating customer", err);
-    throw err;
-  }
-};
+// /**
+//  * Create a new customer for an artist.
+//  */
+// export const createCustomer = async (email, name, id) => {
+//   try {
+//     const customerRef = doc(firestore, "customers", id);
+//     const customer = await getDoc(customerRef);
+//     if (!customer.exists()) {
+//       await setDoc(customerRef, {
+//         email,
+//         info: { client_name: name },
+//         id,
+//       });
+//       log("User added to customers collection successfully");
+//       return true;
+//     }
+//   } catch (err) {
+//     log("Error creating customer", err);
+//     throw err;
+//   }
+// };
 
 /**
  * Retrieves all services from Firestore.
@@ -443,3 +444,31 @@ export const getAllFormsForServices = (serviceIds, formTemplates) => {
 
   return appointmentFormTemplates;
 };
+
+// export const uploadImage = async (user, image) => {
+//   try {
+//     console.log(
+//       `Entering method uploadImage. Parameters: user=${user.uid}, image=${image}`
+//     );
+
+//     const storage = getStorage();
+//     // Create a reference to where the image will be stored
+//     const imageRef = ref(storage, `images/${user.uid}/${uuidv4()}`);
+
+//     // Convert the image to a Blob (if it's a data URL)
+//     const response = await fetch(image);
+//     const blob = await response.blob();
+
+//     const snapshot = await uploadBytes(imageRef, blob);
+//     console.log("Snapshot:", snapshot);
+
+//     // Get the download URL of the uploaded image
+//     const downloadUrl = await getDownloadURL(snapshot.ref);
+//     console.log("Image uploaded successfully. Download URL:", downloadUrl);
+
+//     return downloadUrl; // Return the download URL for further use
+//   } catch (error) {
+//     console.error("Error uploading image:", error);
+//     throw error; // Re-throw the error for the calling function to handle
+//   }
+// };

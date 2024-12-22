@@ -1,9 +1,8 @@
 import axios from "axios";
 import { getAuthToken } from "../firebase/firebaseServices";
 
-// Create an Axios instance
 const axiosInstance = axios.create({
-  baseURL: "https://api.pmuforms.com", // Replace with your base URL
+  baseURL: "https://admin.pmuforms.com",
 });
 
 // Interceptor to add idToken to the request headers

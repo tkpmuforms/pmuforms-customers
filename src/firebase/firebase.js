@@ -1,4 +1,3 @@
-// src/pages/firebase/firebase.js
 import { getApps, initializeApp } from "firebase/app";
 import {
   getAuth,
@@ -8,9 +7,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
-// import { environment } from "../../../environments/environment";
 
-// Firebase configuration object
 const firebaseConfig = {
   apiKey: "AIzaSyBi-mI94whRK_BsInEM-FNE_gttCiBKE6A",
   authDomain: "pmu-beauty-forms.firebaseapp.com",
@@ -22,13 +19,6 @@ const firebaseConfig = {
   measurementId: "G-JJMKD3JM75",
 };
 
-// // Initialize Firebase
-// const app = initializeApp(firebaseConfig);
-// console.log("Firebase initialized:", app.name);
-
-// // Initialize Firebase services
-// const auth = getAuth(app);
-// const firestore = getFirestore(app);
 let app;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);

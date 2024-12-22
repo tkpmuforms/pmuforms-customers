@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./dashboard.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   getAppointmentsForClient,
   getCustomer,
@@ -8,6 +8,7 @@ import {
   getServicesForArtistWithId,
   getAllFormsForServices,
   updateAppointment,
+  getArtist,
 } from "../../firebase/firebaseServices";
 import {
   BookAnAppointmentSvg,
@@ -51,6 +52,7 @@ const RenderAppointmentCard = ({
 
 // Main Dashboard component
 const Dashboard = () => {
+  const artistId = localStorage.getItem("artistId");
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -58,21 +60,35 @@ const Dashboard = () => {
   const [clientName, setClientName] = useState("");
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const userId = localStorage.getItem("userId");
-  const businesName = localStorage.getItem("businessName");
+  const [businessName, setBusinessName] = useState(
+    localStorage.getItem("businessName")
+  );
   const navigate = useNavigate();
-  // New state for services
   const [services, setServices] = useState([]);
 
   useEffect(() => {
+    if (!businessName) {
+      fetchAndStoreBusinessName(artistId);
+    }
     fetchAppointments(userId);
     fetchForms(userId);
     checkPersonalInformation(userId);
     fetchFormsForServices(services);
-    const artistId = localStorage.getItem("artistId");
     if (artistId) {
       fetchServices(artistId);
     }
-  }, [userId]);
+  }, [userId, artistId]);
+
+  const fetchAndStoreBusinessName = async (artistId) => {
+    try {
+      const artist = await getArtist(artistId);
+      console.log("business name", artist.businessName);
+      localStorage.setItem("businessName", artist.businessName);
+      setBusinessName(artist.businessName);
+    } catch (error) {
+      console.error("Error fetching business name:", error);
+    }
+  };
 
   const fetchAppointments = async (userId) => {
     try {
@@ -80,7 +96,9 @@ const Dashboard = () => {
       console.log("appointments", response);
       setAppointments(response);
       categorizeAppointments(response);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
   };
 
   const categorizeAppointments = (appointments) => {
@@ -101,7 +119,9 @@ const Dashboard = () => {
       const response = await getFilledFormsForCustomer(userId);
       console.log("forms", response);
       setForms(response);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error fetching forms:", error);
+    }
   };
 
   const fetchServices = async (artistId) => {
@@ -109,7 +129,9 @@ const Dashboard = () => {
       const response = await getServicesForArtistWithId(artistId);
       console.log("services", response);
       setServices(response);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
   };
 
   const checkPersonalInformation = async (userId) => {
@@ -120,16 +142,15 @@ const Dashboard = () => {
       setClientName(customer?.info?.client_name);
       if (customer && customer.info) {
         setShowPersonalInfo(false);
-        localStorage.setItem("clientName", customer.info.client_name);
-        localStorage.setItem("businessName", customer.info.businessName);
       } else {
         setShowPersonalInfo(true);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error checking personal information:", error);
+    }
   };
 
   const getServiceTitle = (serviceIds) => {
-    // Map service IDs to service names
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
@@ -161,7 +182,9 @@ const Dashboard = () => {
       const response = getAllFormsForServices(services);
       console.log("forms for services", response);
       setForms(response);
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error fetching forms for services:", error);
+    }
   };
 
   if (showPersonalInfo) {
@@ -177,7 +200,7 @@ const Dashboard = () => {
           <h3>
             Hello, <span>{clientName}</span> Welcome back.
           </h3>
-          <p>Welcome to {businesName}</p>
+          <p>Welcome to {businessName}</p>
           <div className="alert">
             <WarningSvg />
             <p>

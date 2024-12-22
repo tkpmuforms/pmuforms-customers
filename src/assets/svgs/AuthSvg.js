@@ -44,6 +44,7 @@ export const GoogleLoginSvg = ({ onClick }) => {
       viewBox="0 0 270 56"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      cursor={"pointer"}
     >
       <rect y="0.0078125" width="270" height="56" rx="16" fill="#E2E8F0" />
       <path
@@ -79,6 +80,7 @@ export const FacebookLoginSvg = ({ onClick }) => {
       viewBox="0 0 270 56"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      cursor={"pointer"}
     >
       <rect y="0.0078125" width="270" height="56" rx="16" fill="#1877F2" />
       <g clipPath="url(#clip0_81_5226)">

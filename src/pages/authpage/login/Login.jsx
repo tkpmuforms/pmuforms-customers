@@ -4,7 +4,7 @@ import "./login.scss";
 import ForgotPasswordForm from "./ForgotPasswordForm";
 import { useAuth } from "../../../context/AuthContext";
 import { Toast } from "../../../utils/toast/Toast";
-import { createCustomer } from "../../../firebase/firebaseServices";
+import { signInSuccessWithAuthResult } from "../authUtils";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -13,32 +13,14 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Handle user login with email and password
   const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Attempting to log in with email:", email);
     try {
       const result = await login(email, password);
-      signInSuccessWithAuthResult(result);
-      Toast("success", "Login successful");
-      navigate("/dashboard");
+      signInSuccessWithAuthResult(result, navigate, console.log);
     } catch (error) {
       console.error("Failed to log in:", error);
-      Toast("error", "Login failed: " + error.message);
-    }
-  };
-  const signInSuccessWithAuthResult = async (authResult) => {
-    const user = authResult.user;
-
-    try {
-      await createCustomer(user.email, user.displayName || "Guest", user.uid);
-      console.log("User signed in successfully:", user);
-      localStorage.setItem("userEmail", user.email);
-      localStorage.setItem("userId", user.uid);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Error during sign-in callback:", error);
-      Toast("error", "Sign-in failed: " + error.message);
+      Toast("error", `Login failed: ${error.message}`);
     }
   };
 

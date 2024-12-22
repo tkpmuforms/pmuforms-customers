@@ -17,14 +17,17 @@ import DynamicForms from "./pages/forms/DymamicForms";
 
 function AppWrapper() {
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const artistId = queryParams.get("artistId");
 
   useEffect(() => {
+    // Extract ID from the hash
+    const hash = location.hash; // Example: "#/jsb0kVT5ToNX5Q87H1tsglkDIh12"
+    const artistId = hash.startsWith("#/") ? hash.substring(2) : null;
+
     if (artistId) {
+      console.log("Extracted Artist ID:", artistId);
       localStorage.setItem("artistId", artistId);
     }
-  }, [artistId]);
+  }, [location.hash]);
   return (
     <div>
       <ToastContainer
@@ -51,7 +54,7 @@ function AppWrapper() {
         >
           {/* All routes below will share the DashboardLayout */}
           <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/book-appointments" element={<BookAppointment />} />
+          <Route path="/book-appointments/:id" element={<BookAppointment />} />
           <Route path="/medical-form" element={<MedicalForm />} />
           <Route path="/appointments" element={<AllAppointments />} />
           <Route path="/appointments/:id" element={<AppointmentDetails />} />

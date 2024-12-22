@@ -1,10 +1,10 @@
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import "./signup.scss";
-import { createCustomer, log } from "../../../firebase/firebaseServices";
-import { auth } from "../../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
+import { auth } from "../../../firebase/firebase";
+import { createCustomer } from "../../../firebase/services";
 import PersonalDetailsForm from "./PersonalDetailsForm";
 
 const SignupPage = () => {
@@ -29,18 +29,22 @@ const SignupPage = () => {
 
   const handleSignup = async (values, { setSubmitting }) => {
     const { email, password } = values;
-
     try {
       const userCredential = await auth.createUserWithEmailAndPassword(
         email,
         password
       );
       const user = userCredential.user;
-      await createCustomer(user.email, "New Customer", user.uid);
-      log(`User ${email} signed up successfully`);
+      const artistId = localStorage.getItem("artistId");
+      await createCustomer({
+        accessToken: await user.getIdToken(),
+        artistId: artistId,
+        email: user.email,
+        name: user.displayName,
+      });
+
       setSecondPage(true);
     } catch (error) {
-      log("Signup error", error.message);
       alert("Signup failed. Please try again.");
     }
     setSubmitting(false);

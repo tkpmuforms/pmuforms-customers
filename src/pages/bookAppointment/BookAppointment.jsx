@@ -9,13 +9,13 @@ import {
   getArtist,
   getServicesForArtistWithId,
 } from "../../firebase/firebaseServices";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { v4 as uuidv4 } from "uuid";
 import { Toast } from "../../utils/toast/Toast";
 
 const BookAppointment = () => {
-  const artistId = "jsb0kVT5ToNX5Q87H1tsglkDIh12";
+  const artistId = useParams();
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [services, setServices] = useState([]);
