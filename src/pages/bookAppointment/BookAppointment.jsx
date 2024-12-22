@@ -1,18 +1,14 @@
-import React, { useEffect, useState } from "react";
-import "./bookAppointment.scss";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers";
 import { Checkbox } from "@mui/material";
-import {
-  createAppointment,
-  getArtist,
-  getServicesForArtistWithId,
-} from "../../firebase/firebaseServices";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import { v4 as uuidv4 } from "uuid";
+import { useAuth } from "../../context/AuthContext";
+import { getArtist } from "../../firebase/firebaseServices";
+import { bookAppointment, getArtistServices } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
+import "./bookAppointment.scss";
 
 const BookAppointment = () => {
   const artistId = useParams();
@@ -29,7 +25,7 @@ const BookAppointment = () => {
     getArtist(artistId).then((artist) => {
       setCompanyName(artist.businessName);
     });
-    getServicesForArtistWithId(artistId).then((services) => {
+    getArtistServices(artistId).then((services) => {
       setServices(services);
     });
   }, [artistId]);
@@ -72,7 +68,7 @@ const BookAppointment = () => {
     try {
       // Save appointment to the backend
       console.log("Creating appointment:", appointment);
-      await createAppointment(appointment);
+      await bookAppointment(appointment);
       console.log("Appointment created:", appointment);
       Toast("success", "Appointment created successfully");
       // Navigate to the next screen

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./allappointments.scss";
+import { useNavigate } from "react-router-dom";
 import {
   BookAnAppointmentButtonSvg,
   DeleteAppointmentButtonSvg,
@@ -7,12 +7,9 @@ import {
   NoAppointmentsSvg,
   ViewFormButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
-import { useNavigate } from "react-router-dom";
-import {
-  getAppointmentsForClient,
-  updateAppointment,
-} from "../../firebase/firebaseServices";
+import { deleteAppointment, getAllAppointments } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
+import "./allappointments.scss";
 
 const RenderAppointmentCard = ({
   title,
@@ -52,9 +49,9 @@ const AllAppointments = () => {
     }
   }, [userId]);
 
-  const fetchAppointments = async (userId) => {
+  const fetchAppointments = async () => {
     try {
-      const response = await getAppointmentsForClient(userId);
+      const response = await getAllAppointments();
       console.log("Fetched appointments:", response);
       setAppointments(response);
     } catch (error) {
@@ -62,9 +59,10 @@ const AllAppointments = () => {
     }
   };
 
-  const deleteAppointment = async (appointmentId) => {
+  const removeAppointment = async (appointmentId) => {
     try {
-      await updateAppointment(appointmentId, { deleted: true });
+      await deleteAppointment(appointmentId);
+      console.log("Appointment deleted successfully");
       Toast("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
@@ -92,7 +90,7 @@ const AllAppointments = () => {
               formsFilled={appointment.formsFilled || 0}
               status={appointment.status || "pending"}
               ViewClick={() => navigate(`/appointments/${appointment.id}`)}
-              DeleteClick={() => deleteAppointment(appointment.id)}
+              DeleteClick={() => removeAppointment(appointment.id)}
             />
           ))
         ) : (

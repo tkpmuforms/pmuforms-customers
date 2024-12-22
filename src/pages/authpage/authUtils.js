@@ -1,5 +1,5 @@
 import { auth } from "../../firebase/firebase";
-import { createCustomer } from "../../firebase/services";
+import { createCustomer } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
 
 export const handleSocialLogin = async (provider, navigate, log) => {
@@ -23,6 +23,7 @@ export const handleSocialLogin = async (provider, navigate, log) => {
       name: user.displayName,
     });
 
+    console.log("Social login successful:", user);
     Toast("success", "Login successful");
     navigate("/dashboard");
   } catch (error) {

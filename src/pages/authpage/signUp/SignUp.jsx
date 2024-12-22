@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import "./signup.scss";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase/firebase";
-import { createCustomer } from "../../../firebase/services";
+import { createCustomer } from "../../../services/services";
 import PersonalDetailsForm from "./PersonalDetailsForm";
 
 const SignupPage = () => {

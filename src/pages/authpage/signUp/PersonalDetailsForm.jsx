@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import * as Yup from "yup";
 import { LogoSvg } from "../../../assets/svgs/AuthSvg";
 import { useAuth } from "../../../context/AuthContext";
-import {
-  getCustomer,
-  updateCustomerInfo,
-} from "../../../firebase/firebaseServices";
+import { updateCustomerInfo } from "../../../firebase/firebaseServices";
+import { getAuthenticatedUser } from "../../../services/services";
 import "./personalDetailsForm.scss"; // Import the CSS file for styling
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
@@ -51,7 +49,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   const fetchInfo = async () => {
     try {
-      const customer = await getCustomer(userId);
+      const customer = await getAuthenticatedUser();
 
       if (customer && customer.info) {
         setInitialValues({

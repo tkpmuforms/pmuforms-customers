@@ -1,27 +1,29 @@
 import React, { useEffect, useState } from "react";
-import "./dashboard.scss";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
-  getAppointmentsForClient,
-  getCustomer,
-  getFilledFormsForCustomer,
-  getServicesForArtistWithId,
-  getAllFormsForServices,
-  updateAppointment,
-  getArtist,
-} from "../../firebase/firebaseServices";
-import {
+  BookAnAppointmentButtonSvg,
   BookAnAppointmentSvg,
   DeleteAppointmentButtonSvg,
   EditPersonalInformationSvg,
+  NoAppointmentsSvg,
   ViewFormButtonSvg,
   ViewPastAppointmentsSvg,
   WarningSvg,
-  NoAppointmentsSvg,
-  BookAnAppointmentButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
-import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
+import {
+  getAllFormsForServices,
+  getArtist,
+  getFilledFormsForCustomer,
+} from "../../firebase/firebaseServices";
+import {
+  deleteAppointment,
+  getAllAppointments,
+  getArtistServices,
+  getAuthenticatedUser,
+} from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
+import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
+import "./dashboard.scss";
 
 const RenderAppointmentCard = ({
   title,
@@ -50,7 +52,6 @@ const RenderAppointmentCard = ({
   );
 };
 
-// Main Dashboard component
 const Dashboard = () => {
   const artistId = localStorage.getItem("artistId");
   const [appointments, setAppointments] = useState([]);
@@ -90,9 +91,9 @@ const Dashboard = () => {
     }
   };
 
-  const fetchAppointments = async (userId) => {
+  const fetchAppointments = async () => {
     try {
-      const response = await getAppointmentsForClient(userId);
+      const response = await getAllAppointments();
       console.log("appointments", response);
       setAppointments(response);
       categorizeAppointments(response);
@@ -126,7 +127,7 @@ const Dashboard = () => {
 
   const fetchServices = async (artistId) => {
     try {
-      const response = await getServicesForArtistWithId(artistId);
+      const response = await getArtistServices(artistId);
       console.log("services", response);
       setServices(response);
     } catch (error) {
@@ -134,9 +135,9 @@ const Dashboard = () => {
     }
   };
 
-  const checkPersonalInformation = async (userId) => {
+  const checkPersonalInformation = async () => {
     try {
-      const customer = await getCustomer(userId);
+      const customer = await getAuthenticatedUser();
       console.log("customer", customer);
 
       setClientName(customer?.info?.client_name);
@@ -168,7 +169,7 @@ const Dashboard = () => {
     setPastAppointments(newPastAppointments);
     setUpcomingAppointments(newUpcomingAppointments);
 
-    updateAppointment(appointmentId, { deleted: true })
+    deleteAppointment(appointmentId)
       .then(() => {
         Toast("success", "Appointment deleted successfully");
       })
