@@ -1,62 +1,68 @@
-import { auth } from "../../firebase/firebase";
+import { auth, signInWithPopup } from "../../firebase/firebase";
 import { createCustomer } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
 
-export const handleSocialLogin = async (provider, navigate, log) => {
+export const handleSocialLogin = async (provider, navigate) => {
+  if (!provider) {
+    console.error("Authentication provider is undefined");
+    Toast("error", "Authentication provider is not configured");
+    return;
+  }
   try {
-    const result = await auth.signInWithPopup(provider);
+    const result = await signInWithPopup(auth, provider);
     if (!result) {
       throw new Error("Authentication failed. No result received.");
     }
     const user = result.user;
-    const userToken = await user.getIdToken();
+    console.log("User:", user);
+    const userToken = user?.accessToken;
     const artistId = localStorage.getItem("artistId");
 
     localStorage.setItem("userEmail", user.email);
     localStorage.setItem("userId", user.uid);
-    localStorage.setItem("idToken", userToken);
+    // localStorage.setItem("idToken", userToken);
 
     await createCustomer({
       accessToken: userToken,
       artistId: artistId,
-      email: user.email,
-      name: user.displayName,
+    }).then((res) => {
+      console.log(res);
     });
-
     console.log("Social login successful:", user);
     Toast("success", "Login successful");
     navigate("/dashboard");
   } catch (error) {
     console.error("Social login error:", error);
-    log("Social login error", error.message);
+
     Toast("error", `Login failed: ${error.message}`);
   }
 };
 
-export const signInSuccessWithAuthResult = async (
-  authResult,
-  navigate,
-  log
-) => {
+export const signInSuccessWithAuthResult = async (authResult, navigate) => {
   const user = authResult.user;
   const userToken = await user.getIdToken();
   const artistId = localStorage.getItem("artistId");
   try {
     localStorage.setItem("userEmail", user.email);
     localStorage.setItem("userId", user.uid);
-    localStorage.setItem("idToken", userToken);
+    // localStorage.setItem("idToken", userToken);
     await createCustomer({
       accessToken: userToken,
       artistId: artistId,
       email: user.email,
       name: user.displayName,
+    }).then((res) => {
+      console.log(res);
+      console.log("Social login successful:", user);
+      Toast("success", "Login successful");
+      navigate("/dashboard");
     });
 
     Toast("success", "Login successful");
     navigate("/dashboard");
   } catch (error) {
     console.error("Error during login callback:", error);
-    log("Login callback error", error.message);
+
     Toast("error", `Login failed: ${error.message}`);
   }
 };

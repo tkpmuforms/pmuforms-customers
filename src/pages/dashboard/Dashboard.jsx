@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   BookAnAppointmentButtonSvg,
   BookAnAppointmentSvg,
@@ -53,7 +53,8 @@ const RenderAppointmentCard = ({
 };
 
 const Dashboard = () => {
-  const artistId = localStorage.getItem("artistId");
+  const params = useParams();
+  const artistId = params.artistId || localStorage.getItem("artistId");
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -213,7 +214,7 @@ const Dashboard = () => {
         <div className="actions-section">
           <div
             className="action-card"
-            onClick={() => navigate("/book-appointments")}
+            onClick={() => navigate(`/book-appointments/${artistId}`)}
           >
             <BookAnAppointmentSvg />
             <div>
@@ -271,7 +272,7 @@ const Dashboard = () => {
                 <NoAppointmentsSvg />
                 <p>You have no upcoming appointments</p>
                 <BookAnAppointmentButtonSvg
-                  onClick={() => navigate("/book-appointments")}
+                  onClick={() => navigate(`/book-appointments/${artistId}`)}
                   style={{ cursor: "pointer", marginTop: "1rem" }}
                 />
               </div>

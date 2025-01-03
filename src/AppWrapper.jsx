@@ -54,6 +54,7 @@ function AppWrapper() {
         >
           {/* All routes below will share the DashboardLayout */}
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/dashboard/:artistId" element={<Dashboard />} />
           <Route path="/book-appointments/:id" element={<BookAppointment />} />
           <Route path="/medical-form" element={<MedicalForm />} />
           <Route path="/appointments" element={<AllAppointments />} />

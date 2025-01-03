@@ -5,18 +5,21 @@ import {
   GoogleLoginSvg,
   LogoSvg,
 } from "../../assets/svgs/AuthSvg";
-import { facebookProvider, googleProvider } from "../../firebase/firebase";
+
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
 import LoginPage from "./login/Login";
 import SignupPage from "./signUp/SignUp";
 import { handleSocialLogin } from "./authUtils";
+import { facebookProvider, googleProvider } from "../../firebase/firebase";
 
 const AuthPage = () => {
   const [page, setPage] = useState("login");
   const navigate = useNavigate();
 
   const handlePageChange = (page) => setPage(page);
+  console.log("Google Provider:", googleProvider);
+  console.log("Facebook Provider:", facebookProvider);
 
   return (
     <>

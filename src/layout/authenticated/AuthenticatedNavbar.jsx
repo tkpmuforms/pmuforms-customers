@@ -75,9 +75,16 @@ const AuthenticatedNavbar = () => {
       </div>
 
       {/* Right Aligned Content */}
+
       <div style={{ display: "flex", alignItems: "center" }}>
         <div className="avatar" onClick={handleAvatarClick}>
-          <Avatar />
+          <Avatar
+            children={
+              currentUser?.displayName
+                ? currentUser.displayName.slice(0, 2).toUpperCase()
+                : ""
+            }
+          />
         </div>
         <Menu
           anchorEl={anchorEl}
@@ -89,7 +96,7 @@ const AuthenticatedNavbar = () => {
             },
           }}
         >
-          <MenuItem disabled>
+          <MenuItem>
             <Typography>{currentUser?.displayName || "User"}</Typography>
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>

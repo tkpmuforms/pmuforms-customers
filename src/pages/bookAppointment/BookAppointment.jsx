@@ -11,7 +11,10 @@ import { Toast } from "../../utils/toast/Toast";
 import "./bookAppointment.scss";
 
 const BookAppointment = () => {
-  const artistId = useParams();
+  const param = useParams();
+  const artistId = param.artistId || localStorage.getItem("artistId");
+  console.log(artistId);
+
   const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [services, setServices] = useState([]);

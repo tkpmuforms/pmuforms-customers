@@ -42,6 +42,7 @@ const AllAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
+  const artistId = localStorage.getItem("artistId");
 
   useEffect(() => {
     if (userId) {
@@ -74,10 +75,20 @@ const AllAppointments = () => {
 
   return (
     <div className="appointments">
-      <p>
-        <GoBackSvg onClick={() => navigate("/dashboard")} />
-        Go back to dashboard
-      </p>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          cursor: "pointer",
+          marginBottom: "20px",
+          padding: "10px",
+        }}
+        onClick={() => navigate("/dashboard")}
+      >
+        <GoBackSvg />
+        <p>Go back to dashboard</p>
+      </div>
 
       <h3>All Appointments</h3>
       <div className="appointments-list">
@@ -98,7 +109,7 @@ const AllAppointments = () => {
             <NoAppointmentsSvg />
             <p>You have no upcoming appointments</p>
             <BookAnAppointmentButtonSvg
-              onClick={() => navigate("/book-appointments")}
+              onClick={() => navigate(`/book-appointments/${artistId}`)}
             />
           </div>
         )}
