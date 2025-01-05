@@ -5,6 +5,7 @@ import {
   FacebookAuthProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
@@ -44,4 +45,5 @@ export {
   facebookProvider,
   signInWithEmailAndPassword,
   signInWithPopup,
+  createUserWithEmailAndPassword,
 };

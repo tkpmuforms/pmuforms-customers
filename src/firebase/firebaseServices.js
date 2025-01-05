@@ -6,13 +6,11 @@ import {
   getDocs,
   query,
   setDoc,
-  Timestamp,
   updateDoc,
   where,
 } from "firebase/firestore";
 import axiosInstance from "../context/axiossetup";
-import { auth, firestore } from "../firebase/firebase";
-import { createCustomer } from "../services/services";
+import { firestore } from "../firebase/firebase";
 
 const BASE_URL = "https://api.pmuforms.com";
 
@@ -405,10 +403,6 @@ const filterFormsByServiceId = (forms, serviceIds) => {
   return forms.filter((form) =>
     form.services.some((serviceId) => serviceIds.includes(serviceId))
   );
-};
-
-export const getAuthToken = () => {
-  return localStorage.getItem("idToken");
 };
 
 /**

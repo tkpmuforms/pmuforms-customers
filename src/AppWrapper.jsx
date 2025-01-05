@@ -19,15 +19,34 @@ function AppWrapper() {
   const location = useLocation();
 
   useEffect(() => {
-    // Extract ID from the hash
-    const hash = location.hash; // Example: "#/jsb0kVT5ToNX5Q87H1tsglkDIh12"
-    const artistId = hash.startsWith("#/") ? hash.substring(2) : null;
+    // Extract artistId from hash, pathname, or query params
+    const { hash, pathname, search } = location;
 
+    let artistId = null;
+
+    // Check if ID is in the hash (e.g., "#/artistId")
+    if (hash.startsWith("#/")) {
+      artistId = hash.substring(2); // Remove "#/"
+    }
+
+    // // Check if ID is in the last segment of the pathname
+    // if (!artistId) {
+    //   const pathSegments = pathname.split("/").filter(Boolean); // Remove empty segments
+    //   artistId = pathSegments[pathSegments.length - 1]; // Get the last segment
+    // }
+
+    // // Check if ID is in query params (e.g., "?artistId=value")
+    // if (!artistId) {
+    //   const params = new URLSearchParams(search);
+    //   artistId = params.get("artistId");
+    // }
+
+    // Store artistId in localStorage if found
     if (artistId) {
       console.log("Extracted Artist ID:", artistId);
       localStorage.setItem("artistId", artistId);
     }
-  }, [location.hash]);
+  }, [location]);
   return (
     <div>
       <ToastContainer

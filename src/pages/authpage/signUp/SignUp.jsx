@@ -3,9 +3,13 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 import "./signup.scss";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../../../firebase/firebase";
 import { createCustomer } from "../../../services/services";
 import PersonalDetailsForm from "./PersonalDetailsForm";
+import { Toast } from "../../../utils/toast/Toast";
+import {
+  createUserWithEmailAndPassword,
+  auth,
+} from "../../../firebase/firebase";
 
 const SignupPage = () => {
   const [secondPage, setSecondPage] = useState(false);
@@ -29,23 +33,36 @@ const SignupPage = () => {
 
   const handleSignup = async (values, { setSubmitting }) => {
     const { email, password } = values;
+    const artistId = localStorage.getItem("artistId");
+    if (!artistId) {
+      console.error("Artist ID is missing");
+      Toast("error", "Artist ID is missing");
+      return;
+    }
+
+    console.log("Form values:", values);
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(
+      console.log("Creating user...");
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
         email,
         password
       );
+      console.log("User created:", userCredential);
       const user = userCredential.user;
-      const artistId = localStorage.getItem("artistId");
+
       await createCustomer({
         accessToken: await user.getIdToken(),
         artistId: artistId,
-        email: user.email,
-        name: user.displayName,
+      }).then((res) => {
+        console.log(res.data);
+        localStorage.setItem("userId", res.data?.customer?.id);
+        localStorage.setItem("accessToken", res.data?.access_token);
       });
-
       setSecondPage(true);
     } catch (error) {
-      alert("Signup failed. Please try again.");
+      console.error("Error creating user:", error);
+      Toast("error", error.message);
     }
     setSubmitting(false);
   };

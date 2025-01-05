@@ -18,8 +18,6 @@ const AuthPage = () => {
   const navigate = useNavigate();
 
   const handlePageChange = (page) => setPage(page);
-  console.log("Google Provider:", googleProvider);
-  console.log("Facebook Provider:", facebookProvider);
 
   return (
     <>

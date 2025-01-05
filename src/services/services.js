@@ -5,7 +5,7 @@ export const createCustomer = (data) =>
 
 export const getAllAppointments = async () => {
   try {
-    const response = await axiosInstance.get("/appointments/customer");
+    const response = await axiosInstance.get("/api/appointments/customer");
     return response.data; // Return the response data
   } catch (error) {
     console.error("Error fetching appointments:", error);
@@ -16,7 +16,7 @@ export const getAllAppointments = async () => {
 export const deleteAppointment = async (appointmentId) => {
   try {
     const response = await axiosInstance.delete(
-      `/appointments/${appointmentId}`
+      `/api/appointments/${appointmentId}`
     );
     return response.data; // Return the response data
   } catch (error) {
@@ -31,7 +31,7 @@ export const deleteAppointment = async (appointmentId) => {
 export const bookAppointment = async (data) => {
   try {
     const response = await axiosInstance.post(
-      "/appointments/book-appointment",
+      "/api/appointments/book-appointment",
       data
     );
     return response.data; // Return the response data
@@ -43,7 +43,9 @@ export const bookAppointment = async (data) => {
 
 export const getAppointmentById = async (appointmentId) => {
   try {
-    const response = await axiosInstance.get(`/appointments/${appointmentId}`);
+    const response = await axiosInstance.get(
+      `/api/appointments/${appointmentId}`
+    );
     return response.data;
   } catch (error) {
     console.error(
@@ -56,7 +58,7 @@ export const getAppointmentById = async (appointmentId) => {
 
 export const getAuthenticatedUser = async () => {
   try {
-    const response = await axiosInstance.get("/auth/me");
+    const response = await axiosInstance.get("/api/auth/me");
     return response.data;
   } catch (error) {
     console.error("Error fetching authenticated user details:", error);
@@ -67,7 +69,7 @@ export const getAuthenticatedUser = async () => {
 export const getArtistServices = async (artistId) => {
   try {
     const response = await axiosInstance.get(
-      `/services/artist-services/${artistId}`
+      `/api/services/artist-services/${artistId}`
     );
     return response.data;
   } catch (error) {
@@ -82,7 +84,7 @@ export const getArtistServices = async (artistId) => {
 // Get details of a specific service
 export const getServiceById = async (serviceId) => {
   try {
-    const response = await axiosInstance.get(`/services/${serviceId}`);
+    const response = await axiosInstance.get(`/api/services/${serviceId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching service with ID ${serviceId}:`, error);

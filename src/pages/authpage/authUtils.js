@@ -15,22 +15,21 @@ export const handleSocialLogin = async (provider, navigate) => {
     }
     const user = result.user;
     console.log("User:", user);
-    const userToken = user?.accessToken;
+    const userToken = await user.getIdToken();
     const artistId = localStorage.getItem("artistId");
-
     localStorage.setItem("userEmail", user.email);
-    localStorage.setItem("userId", user.uid);
-    // localStorage.setItem("idToken", userToken);
 
     await createCustomer({
       accessToken: userToken,
       artistId: artistId,
     }).then((res) => {
-      console.log(res);
+      console.log(res.data);
+      localStorage.setItem("userId", res.data?.customer?.id);
+      localStorage.setItem("accessToken", res.data?.access_token);
+      console.log("Social login successful:", user);
+      Toast("success", "Login successful");
+      navigate("/dashboard");
     });
-    console.log("Social login successful:", user);
-    Toast("success", "Login successful");
-    navigate("/dashboard");
   } catch (error) {
     console.error("Social login error:", error);
 
@@ -44,15 +43,13 @@ export const signInSuccessWithAuthResult = async (authResult, navigate) => {
   const artistId = localStorage.getItem("artistId");
   try {
     localStorage.setItem("userEmail", user.email);
-    localStorage.setItem("userId", user.uid);
-    // localStorage.setItem("idToken", userToken);
     await createCustomer({
       accessToken: userToken,
       artistId: artistId,
-      email: user.email,
-      name: user.displayName,
     }).then((res) => {
       console.log(res);
+      localStorage.setItem("userId", res.data?.customer?.id);
+      localStorage.setItem("accessToken", res.data?.access_token);
       console.log("Social login successful:", user);
       Toast("success", "Login successful");
       navigate("/dashboard");
