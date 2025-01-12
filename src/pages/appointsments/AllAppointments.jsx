@@ -19,7 +19,11 @@ const RenderAppointmentCard = ({
   ViewClick,
   DeleteClick,
 }) => {
-  const formattedDate = new Date(date.seconds * 1000).toLocaleDateString();
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
   return (
     <div className="appointment-card">
       <div className="appointment-info">
@@ -54,7 +58,7 @@ const AllAppointments = () => {
     try {
       const response = await getAllAppointments();
       console.log("Fetched appointments:", response);
-      setAppointments(response);
+      setAppointments(response?.appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }

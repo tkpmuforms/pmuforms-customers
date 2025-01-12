@@ -12,12 +12,12 @@ import {
 } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFormsForServices,
-  getArtist,
   getFilledFormsForCustomer,
 } from "../../firebase/firebaseServices";
 import {
   deleteAppointment,
   getAllAppointments,
+  getArtistById,
   getArtistServices,
   getAuthenticatedUser,
 } from "../../services/services";
@@ -33,7 +33,13 @@ const RenderAppointmentCard = ({
   ViewClick,
   DeleteClick,
 }) => {
-  const formattedDate = new Date(date.seconds * 1000).toLocaleDateString();
+  // Correctly parse the ISO date string
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  console.log(status);
   return (
     <div className="appointment-card">
       <div className="appointment-info">
@@ -41,7 +47,7 @@ const RenderAppointmentCard = ({
         <p>Date of Appointment: {formattedDate}</p>
         <p>Forms filled: {formsFilled}</p>
         <span className={`status ${status}`}>
-          {status === "completed" ? "Forms Completed" : "Forms Not Completed"}
+          {status === "true" ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="appointment-actions">
@@ -83,7 +89,7 @@ const Dashboard = () => {
 
   const fetchAndStoreBusinessName = async (artistId) => {
     try {
-      const artist = await getArtist(artistId);
+      const artist = await getArtistById(artistId);
       console.log("business name", artist.businessName);
       localStorage.setItem("businessName", artist.businessName);
       setBusinessName(artist.businessName);
@@ -96,7 +102,7 @@ const Dashboard = () => {
     try {
       const response = await getAllAppointments();
       console.log("appointments", response);
-      setAppointments(response);
+      setAppointments(response?.appointments);
       categorizeAppointments(response);
     } catch (error) {
       console.error("Error fetching appointments:", error);
@@ -130,7 +136,7 @@ const Dashboard = () => {
     try {
       const response = await getArtistServices(artistId);
       console.log("services", response);
-      setServices(response);
+      setServices(response?.services);
     } catch (error) {
       console.error("Error fetching services:", error);
     }
@@ -140,9 +146,11 @@ const Dashboard = () => {
     try {
       const customer = await getAuthenticatedUser();
       console.log("customer", customer);
+      console.log("customer info", customer?.info);
+      console.log("user", customer?.user);
 
-      setClientName(customer?.info?.client_name);
-      if (customer && customer.info) {
+      setClientName(customer?.user?.info?.client_name);
+      if (customer && customer?.user?.info) {
         setShowPersonalInfo(false);
       } else {
         setShowPersonalInfo(true);
@@ -262,7 +270,7 @@ const Dashboard = () => {
                 title={getServiceTitle(appointment?.services)}
                 date={appointment?.date}
                 formsFilled={appointment?.formsFilled || 0}
-                status={appointment?.status}
+                status={appointment?.allFormsCompleted}
                 ViewClick={() => navigate(`/appointments/${appointment.id}`)}
                 DeleteClick={() => deleteAppointments(appointment.id)}
               />

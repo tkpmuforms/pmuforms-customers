@@ -31,7 +31,7 @@ export const deleteAppointment = async (appointmentId) => {
 export const bookAppointment = async (data) => {
   try {
     const response = await axiosInstance.post(
-      "/api/appointments/book-appointment",
+      "api/appointments/customer/book-appointment",
       data
     );
     return response.data; // Return the response data
@@ -88,6 +88,44 @@ export const getServiceById = async (serviceId) => {
     return response.data;
   } catch (error) {
     console.error(`Error fetching service with ID ${serviceId}:`, error);
+    throw error;
+  }
+};
+
+export const SavePersonalInformation = async (data) => {
+  try {
+    const response = await axiosInstance.patch(
+      "/api/customers/personal-details",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error saving personal information:", error);
+    throw error;
+  }
+};
+
+export const getArtistById = async (artistId) => {
+  try {
+    const response = await axiosInstance.get(`/api/artists/${artistId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error fetching artist with ID ${artistId}:`, error);
+    throw error;
+  }
+};
+
+export const getFormsForAppointMentById = async (appointmentId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/forms/appointment/${appointmentId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching forms for appointment with ID ${appointmentId}:`,
+      error
+    );
     throw error;
   }
 };
