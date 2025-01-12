@@ -11,10 +11,6 @@ import {
   WarningSvg,
 } from "../../assets/svgs/DashboardSvg";
 import {
-  getAllFormsForServices,
-  getFilledFormsForCustomer,
-} from "../../firebase/firebaseServices";
-import {
   deleteAppointment,
   getAllAppointments,
   getArtistById,
@@ -64,7 +60,6 @@ const Dashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  const [forms, setForms] = useState([]);
   const [clientName, setClientName] = useState("");
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const userId = localStorage.getItem("userId");
@@ -79,9 +74,7 @@ const Dashboard = () => {
       fetchAndStoreBusinessName(artistId);
     }
     fetchAppointments(userId);
-    fetchForms(userId);
     checkPersonalInformation(userId);
-    fetchFormsForServices(services);
     if (artistId) {
       fetchServices(artistId);
     }
@@ -120,16 +113,6 @@ const Dashboard = () => {
 
     setPastAppointments(past);
     setUpcomingAppointments(upcoming);
-  };
-
-  const fetchForms = async (userId) => {
-    try {
-      const response = await getFilledFormsForCustomer(userId);
-      console.log("forms", response);
-      setForms(response);
-    } catch (error) {
-      console.error("Error fetching forms:", error);
-    }
   };
 
   const fetchServices = async (artistId) => {
@@ -185,16 +168,6 @@ const Dashboard = () => {
       .catch((error) => {
         Toast("error", "Error deleting appointment");
       });
-  };
-
-  const fetchFormsForServices = (services) => {
-    try {
-      const response = getAllFormsForServices(services);
-      console.log("forms for services", response);
-      setForms(response);
-    } catch (error) {
-      console.error("Error fetching forms for services:", error);
-    }
   };
 
   if (showPersonalInfo) {

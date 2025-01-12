@@ -129,3 +129,32 @@ export const getFormsForAppointMentById = async (appointmentId) => {
     throw error;
   }
 };
+
+export const getAllFilledFormsForAppointment = async (appointmentId) => {
+  try {
+    const response = await axiosInstance.get(
+      `/api/filled-forms/appointment/${appointmentId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      `Error fetching filled forms for appointment with ID ${appointmentId}:`,
+      error
+    );
+    throw error;
+  }
+};
+
+export const createFilledForm = async (data) => {
+  try {
+    const response = await axiosInstance.post("/api/filled-forms/submit", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating filled form:", error);
+    throw error;
+  }
+};
+
+export const getRootTemplateForm = () => {
+  return axiosInstance.get("/api/forms/root-templates");
+};

@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 import { useAuth } from "../../context/AuthContext";
+import { updateAppointment } from "../../firebase/firebaseServices";
 import {
-  createFilledForm,
   getAllFilledFormsForAppointment,
-  getAllFormsForServicesFromFirebase,
-  getArtist,
-  updateAppointment,
-} from "../../firebase/firebaseServices";
-import { getArtistById } from "../../services/services";
+  getArtistById,
+  getRootTemplateForm,
+  createFilledForm,
+} from "../../services/services";
 
 const DynamicForms = () => {
   const { serviceIds, artistId, appointmentId } = useParams();
@@ -44,12 +43,9 @@ const DynamicForms = () => {
     getAllFilledFormsForAppointment(appointmentId);
   }, [artistId, serviceIds, appointmentId]);
 
-  const fetchForms = async (serviceIds) => {
+  const fetchForms = async () => {
     try {
-      const fetchedForms = await getAllFormsForServicesFromFirebase(
-        serviceIds,
-        artistId
-      );
+      const fetchedForms = await getRootTemplateForm();
       setForms(fetchedForms);
       const linkedList = createFormsLinkedList(fetchedForms);
       setFormTemplateNodes(linkedList);

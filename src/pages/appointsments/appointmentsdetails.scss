@@ -51,13 +51,13 @@
           border-radius: 5px;
           margin-top: 5px;
 
-          &.completed {
+          &.true {
             background: #34c7591a;
             color: #34c759;
             border-radius: 8px;
           }
 
-          &.not-completed {
+          &.false {
             background: #ffa21d1a;
             color: var(--pmu-orange);
             border-radius: 8px;

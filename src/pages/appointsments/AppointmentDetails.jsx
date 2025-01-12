@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
-import { getFormsForAppointMentById } from "../../services/services";
+import { getAppointmentById } from "../../services/services";
 import "./appointmentsdetails.scss";
 
 const RenderAppointmentCard = ({
   title,
-  type,
   date,
-  formsFilled,
+
   status,
   ViewClick,
 }) => {
@@ -18,14 +17,15 @@ const RenderAppointmentCard = ({
     month: "long",
     day: "numeric",
   });
+
   return (
     <div className="form-card">
       <div className="form-info">
         <h4>{title}</h4>
         <p>Date of Appointment: {formattedDate}</p>
-        <p>Forms filled: {formsFilled}</p>
-        <span className={`status ${false}`}>
-          {status === "completed" ? "Forms Completed" : "Forms Not Completed"}
+
+        <span className={`status ${status}`}>
+          {status === true ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="form-actions">
@@ -38,21 +38,22 @@ const RenderAppointmentCard = ({
 const AppointmentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [forms, setForms] = useState([]);
+  const [appointment, setAppointment] = useState(null);
+  const businessName = localStorage.getItem("businessName");
 
   useEffect(() => {
-    const fetchForms = async () => {
+    const fetchAppointment = async () => {
       try {
-        const res = await getFormsForAppointMentById(id);
-        console.log("Fetched forms:", res);
-        setForms(res?.forms);
+        const res = await getAppointmentById(id);
+        console.log("Fetched appointment:", res);
+        setAppointment(res?.appointment || null);
       } catch (error) {
-        console.error("Error fetching forms for appointment:", error);
+        console.error("Error fetching appointment:", error);
       }
     };
 
     if (id) {
-      fetchForms();
+      fetchAppointment();
     }
   }, [id]);
 
@@ -73,23 +74,20 @@ const AppointmentDetails = () => {
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>
-        <h3>Appointment Date</h3>
-        <h3>Services Received</h3>
+        <h3>Appointment Details</h3>
         <div className="form-list">
-          {forms.length > 0 ? (
-            forms.map((form, index) => (
-              <RenderAppointmentCard
-                key={form.id}
-                title={form.title || "Untitled Form"}
-                createdAt={form.createdAt || "N/A"}
-                type={form.type || "Unknown"}
-                formsFilled={form.formsFilled || 0}
-                status={form.status || "incomplete"}
-                ViewClick={() => console.log(`View form with ID: ${form.id}`)}
-              />
-            ))
+          {appointment ? (
+            <RenderAppointmentCard
+              title={`Appointment with Artist ${businessName}`}
+              date={appointment.date}
+              status={appointment.allFormsCompleted}
+              ViewClick={() =>
+                // Navigate to the form details page
+                console.log(`View appointment ID: ${appointment.id}`)
+              }
+            />
           ) : (
-            <p>No forms found for this appointment.</p>
+            <p>No appointment details available.</p>
           )}
         </div>
       </div>
