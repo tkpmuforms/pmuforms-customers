@@ -82,10 +82,10 @@ const Dashboard = () => {
 
   const fetchAndStoreBusinessName = async (artistId) => {
     try {
-      const artist = await getArtistById(artistId);
-      console.log("business name", artist.businessName);
-      localStorage.setItem("businessName", artist.businessName);
-      setBusinessName(artist.businessName);
+      const res = await getArtistById(artistId);
+      console.log("business name", res);
+      localStorage.setItem("businessName", res?.artist?.businessName);
+      setBusinessName(res?.artist?.businessName);
     } catch (error) {
       console.error("Error fetching business name:", error);
     }

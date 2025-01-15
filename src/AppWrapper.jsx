@@ -2,44 +2,43 @@ import { useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import NotFound from "./components/not-found/NotFound";
 import "./index.css";
-import AuthenticatedLayout from "./layout/authenticated/AuthenticatedLayout";
-import AllAppointments from "./pages/appointsments/AllAppointments";
-import AppointmentDetails from "./pages/appointsments/AppointmentDetails";
-import AuthPage from "./pages/authpage/AuthPage";
-import BookAppointment from "./pages/bookAppointment/BookAppointment";
-import Dashboard from "./pages/dashboard/Dashboard";
-import MedicalForm from "./pages/medicalForm/MedicalForm";
-import RequireAuth from "./routes/RouteGuard";
 import "./utils/toast/toast.css";
-import DynamicForms from "./pages/forms/DymamicForms";
+
+import { Suspense, lazy } from "react";
+
+// Lazy load components
+const NotFound = lazy(() => import("./components/not-found/NotFound"));
+const AuthenticatedLayout = lazy(() =>
+  import("./layout/authenticated/AuthenticatedLayout")
+);
+const AllAppointments = lazy(() =>
+  import("./pages/appointsments/AllAppointments")
+);
+const AppointmentDetails = lazy(() =>
+  import("./pages/appointsments/AppointmentDetails")
+);
+const AuthPage = lazy(() => import("./pages/authpage/AuthPage"));
+const BookAppointment = lazy(() =>
+  import("./pages/bookAppointment/BookAppointment")
+);
+const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
+const MedicalForm = lazy(() => import("./pages/medicalForm/MedicalForm"));
+const RequireAuth = lazy(() => import("./routes/RouteGuard"));
+const DynamicForms = lazy(() => import("./pages/forms/DymamicForms"));
 
 function AppWrapper() {
   const location = useLocation();
 
   useEffect(() => {
-    // Extract artistId from hash, pathname, or query params
-    const { hash, pathname, search } = location;
+    const { hash } = location;
 
     let artistId = null;
 
-    // Check if ID is in the hash (e.g., "#/artistId")
+    // Extract artistId from hash (e.g., "#/artistId")
     if (hash.startsWith("#/")) {
       artistId = hash.substring(2); // Remove "#/"
     }
-
-    // // Check if ID is in the last segment of the pathname
-    // if (!artistId) {
-    //   const pathSegments = pathname.split("/").filter(Boolean); // Remove empty segments
-    //   artistId = pathSegments[pathSegments.length - 1]; // Get the last segment
-    // }
-
-    // // Check if ID is in query params (e.g., "?artistId=value")
-    // if (!artistId) {
-    //   const params = new URLSearchParams(search);
-    //   artistId = params.get("artistId");
-    // }
 
     // Store artistId in localStorage if found
     if (artistId) {
@@ -47,6 +46,7 @@ function AppWrapper() {
       localStorage.setItem("artistId", artistId);
     }
   }, [location]);
+
   return (
     <div>
       <ToastContainer
@@ -61,29 +61,34 @@ function AppWrapper() {
         pauseOnHover
       />
 
-      <Routes>
-        <Route path="/" element={<AuthPage />} />
-        <Route path="*" element={<NotFound />} />
-        <Route
-          element={
-            <RequireAuth>
-              <AuthenticatedLayout />
-            </RequireAuth>
-          }
-        >
-          {/* All routes below will share the DashboardLayout */}
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/dashboard/:artistId" element={<Dashboard />} />
-          <Route path="/book-appointments/:id" element={<BookAppointment />} />
-          <Route path="/medical-form" element={<MedicalForm />} />
-          <Route path="/appointments" element={<AllAppointments />} />
-          <Route path="/appointments/:id" element={<AppointmentDetails />} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<AuthPage />} />
+          <Route path="*" element={<NotFound />} />
           <Route
-            path="/forms/services/:serviceIds/artist/:artistId/appointment/:appointmentId"
-            element={<DynamicForms />}
-          />
-        </Route>
-      </Routes>
+            element={
+              <RequireAuth>
+                <AuthenticatedLayout />
+              </RequireAuth>
+            }
+          >
+            {/* All routes below will share the DashboardLayout */}
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/dashboard/:artistId" element={<Dashboard />} />
+            <Route
+              path="/book-appointments/:id"
+              element={<BookAppointment />}
+            />
+            <Route path="/medical-form" element={<MedicalForm />} />
+            <Route path="/appointments" element={<AllAppointments />} />
+            <Route path="/appointments/:id" element={<AppointmentDetails />} />
+            <Route
+              path="/forms/services/:serviceIds/artist/:artistId/appointment/:appointmentId"
+              element={<DynamicForms />}
+            />
+          </Route>
+        </Routes>
+      </Suspense>
     </div>
   );
 }
