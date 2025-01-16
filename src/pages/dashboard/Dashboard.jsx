@@ -35,7 +35,7 @@ const RenderAppointmentCard = ({
     month: "long",
     day: "numeric",
   });
-  console.log(status);
+
   return (
     <div className="appointment-card">
       <div className="appointment-info">
@@ -60,7 +60,9 @@ const Dashboard = () => {
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  const [clientName, setClientName] = useState("");
+  const [clientName, setClientName] = useState(
+    localStorage.getItem("userName")
+  );
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const userId = localStorage.getItem("userId");
   const [businessName, setBusinessName] = useState(
@@ -83,7 +85,6 @@ const Dashboard = () => {
   const fetchAndStoreBusinessName = async (artistId) => {
     try {
       const res = await getArtistById(artistId);
-      console.log("business name", res);
       localStorage.setItem("businessName", res?.artist?.businessName);
       setBusinessName(res?.artist?.businessName);
     } catch (error) {
@@ -94,7 +95,7 @@ const Dashboard = () => {
   const fetchAppointments = async () => {
     try {
       const response = await getAllAppointments();
-      console.log("appointments", response);
+
       setAppointments(response?.appointments);
       categorizeAppointments(response);
     } catch (error) {
@@ -128,10 +129,6 @@ const Dashboard = () => {
   const checkPersonalInformation = async () => {
     try {
       const customer = await getAuthenticatedUser();
-      console.log("customer", customer);
-      console.log("customer info", customer?.info);
-      console.log("user", customer?.user);
-
       setClientName(customer?.user?.info?.client_name);
       if (customer && customer?.user?.info) {
         setShowPersonalInfo(false);
@@ -234,7 +231,9 @@ const Dashboard = () => {
         <section className="appointments-section">
           <h3>Upcoming Appointments</h3>
           <div className="see-all-appointments">
-            <a href="/appointments">See All Appointments</a>
+            <p onClick={() => navigate("/appointments")}>
+              See All Appointments
+            </p>
           </div>
           <div className="appointments-list">
             {appointments?.map((appointment, index) => (

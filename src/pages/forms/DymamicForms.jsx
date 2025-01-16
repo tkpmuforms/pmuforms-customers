@@ -33,6 +33,7 @@ const DynamicForms = () => {
   const [submitted, setSubmitted] = useState(false);
   const [saving, setSaving] = useState(false);
   const [imageAsDataUrl, setImageAsDataUrl] = useState(null);
+  const [me, setMe] = useState(null);
 
   useEffect(() => {
     getArtistById(artistId).then((artist) => {

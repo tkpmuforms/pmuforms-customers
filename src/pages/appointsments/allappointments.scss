@@ -1,7 +1,7 @@
 .appointments {
   margin-top: 10px;
   padding: 20px;
-  p{
+  p {
     font-size: 14px;
     color: #666;
     font-family: RegularFont;
@@ -11,9 +11,7 @@
     padding: 0 0 0 10px;
     margin: 0;
   }
-  
-  
-   
+
   h3 {
     font-size: 20px;
     color: #000000;
@@ -63,13 +61,13 @@
           border-radius: 5px;
           margin-top: 5px;
 
-          &.completed {
+          &.true {
             background: #34c7591a;
             color: #34c759;
             border-radius: 8px;
           }
 
-          &.not-completed {
+          &.false {
             background: #ffa21d1a;
             color: var(--pmu-orange);
             border-radius: 8px;
@@ -89,6 +87,22 @@
     padding: 20px;
     font-size: 16px;
     color: #666;
+  }
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+
+    span {
+      font-size: 16px;
+      margin: 0 10px;
+    }
+
+    svg {
+      font-size: 24px;
+      cursor: pointer;
+    }
   }
 }
 

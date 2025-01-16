@@ -18,6 +18,7 @@ export const handleSocialLogin = async (provider, navigate) => {
     const userToken = await user.getIdToken();
     const artistId = localStorage.getItem("artistId");
     localStorage.setItem("userEmail", user.email);
+    localStorage.setItem("userName", user.displayName);
 
     await createCustomer({
       accessToken: userToken,
@@ -43,6 +44,7 @@ export const signInSuccessWithAuthResult = async (authResult, navigate) => {
   const artistId = localStorage.getItem("artistId");
   try {
     localStorage.setItem("userEmail", user.email);
+    localStorage.setItem("userName", user.displayName);
     await createCustomer({
       accessToken: userToken,
       artistId: artistId,
