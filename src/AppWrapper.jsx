@@ -26,6 +26,7 @@ const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"));
 const MedicalForm = lazy(() => import("./pages/medicalForm/MedicalForm"));
 const RequireAuth = lazy(() => import("./routes/RouteGuard"));
 const DynamicForms = lazy(() => import("./pages/forms/DymamicForms"));
+const ContactSupport = lazy(() => import("./pages/contact-us/ContactUs"));
 
 function AppWrapper() {
   const location = useLocation();
@@ -79,6 +80,7 @@ function AppWrapper() {
               path="/book-appointments/:id"
               element={<BookAppointment />}
             />
+            <Route path="/support" element={<ContactSupport />} />
             <Route path="/medical-form" element={<MedicalForm />} />
             <Route path="/appointments" element={<AllAppointments />} />
             <Route path="/appointments/:id" element={<AppointmentDetails />} />

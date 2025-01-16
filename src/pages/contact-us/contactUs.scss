@@ -1,0 +1,68 @@
+.contact-us {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  border-radius: 8px;
+  form {
+    display: flex;
+    flex-direction: column;
+
+    .form-group {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 5px;
+        color: #555;
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+
+        &:focus {
+          border-color: var(--pmu-primary);
+          outline: none;
+        }
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+    }
+
+    button {
+      padding: 10px 0px;
+      font-size: 16px;
+      color: #fff;
+      background: var(--pmu-primary);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      width: 100%;
+      transition: background 0.3s ease;
+
+      &:hover {
+        background: var(--pmu-primary-dark);
+      }
+
+      &:disabled {
+        background: #ddd;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .response-message {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #007bff;
+    text-align: center;
+  }
+}
