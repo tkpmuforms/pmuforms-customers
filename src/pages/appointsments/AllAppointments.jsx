@@ -49,8 +49,10 @@ const RenderAppointmentCard = ({
 
 const AllAppointments = () => {
   const [appointments, setAppointments] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
   const [services, setServices] = useState([]);
   const [metadata, setMetadata] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
   const artistId = localStorage.getItem("artistId");
@@ -64,6 +66,10 @@ const AllAppointments = () => {
   useEffect(() => {
     fetchServices(artistId);
   }, [artistId]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery, appointments]);
 
   const fetchServices = async (artistId) => {
     try {
@@ -112,6 +118,20 @@ const AllAppointments = () => {
     }
   };
 
+  const handleSearch = () => {
+    const query = searchQuery.toLowerCase();
+    const filtered = appointments.filter((appointment) => {
+      const title = getServiceTitle(appointment?.services).toLowerCase();
+      const date = new Date(appointment.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      return title.includes(query) || date.includes(query);
+    });
+    setFilteredAppointments(filtered);
+  };
+
   return (
     <div className="appointments">
       <div
@@ -129,10 +149,20 @@ const AllAppointments = () => {
         <p>Go back to dashboard</p>
       </div>
 
-      <h3>All Appointments ({metadata?.total})</h3>
+      <div className="header-container">
+        <h3>All Appointments ({metadata?.total})</h3>
+        <div className="search-bar">
+          <input
+            type="text"
+            placeholder="Search by title or date"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
       <div className="appointments-list">
-        {appointments.length > 0 ? (
-          appointments.map((appointment, index) => (
+        {filteredAppointments.length > 0 ? (
+          filteredAppointments.map((appointment, index) => (
             <RenderAppointmentCard
               key={index}
               title={getServiceTitle(appointment?.services)}
