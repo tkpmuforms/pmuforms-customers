@@ -15,9 +15,11 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import "./allappointments.scss";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { Tooltip } from "@mui/material";
 
 const RenderAppointmentCard = ({
   title,
+  fullTitle,
   date,
   formsFilled,
   status,
@@ -29,10 +31,13 @@ const RenderAppointmentCard = ({
     month: "long",
     day: "numeric",
   });
+
   return (
     <div className="appointment-card">
       <div className="appointment-info">
-        <h4>{title}</h4>
+        <Tooltip title={fullTitle} placement="top">
+          <h4 className="truncate-title">{title}</h4>
+        </Tooltip>
         <p>Date of Appointment: {formattedDate}</p>
         <p>Forms filled: {formsFilled}</p>
         <span className={`status ${status}`}>
@@ -54,7 +59,6 @@ const AllAppointments = () => {
   const [metadata, setMetadata] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
   const artistId = localStorage.getItem("artistId");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
@@ -85,7 +89,15 @@ const AllAppointments = () => {
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
-    return serviceNames.join(", ") || "Appointment";
+
+    const fullTitle = serviceNames.join(", ");
+    let truncatedTitle = fullTitle;
+
+    if (serviceNames.length > 3) {
+      truncatedTitle = `${serviceNames.slice(0, 3).join(", ")}...`;
+    }
+
+    return { truncatedTitle, fullTitle };
   };
 
   const fetchAppointments = async (page) => {
@@ -121,7 +133,9 @@ const AllAppointments = () => {
   const handleSearch = () => {
     const query = searchQuery.toLowerCase();
     const filtered = appointments.filter((appointment) => {
-      const title = getServiceTitle(appointment?.services).toLowerCase();
+      const title = getServiceTitle(
+        appointment?.services
+      ).fullTitle?.toLowerCase();
       const date = new Date(appointment.date).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -165,7 +179,8 @@ const AllAppointments = () => {
           filteredAppointments.map((appointment, index) => (
             <RenderAppointmentCard
               key={index}
-              title={getServiceTitle(appointment?.services)}
+              title={getServiceTitle(appointment?.services).truncatedTitle}
+              fullTitle={getServiceTitle(appointment?.services).fullTitle}
               date={appointment.date}
               formsFilled={appointment.formsFilled || 0}
               status={appointment.allFormsCompleted}

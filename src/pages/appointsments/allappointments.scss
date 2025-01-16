@@ -54,6 +54,13 @@
 
       .appointment-info {
         text-align: left;
+        .truncate-title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: inline-block;
+          vertical-align: top;
+        }
 
         h4 {
           font-size: 16px;
