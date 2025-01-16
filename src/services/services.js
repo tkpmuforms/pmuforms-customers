@@ -3,9 +3,14 @@ import axiosInstance from "../context/axiossetup";
 export const createCustomer = (data) =>
   axiosInstance.post(`/api/auth/customer/create`, data);
 
-export const getAllAppointments = async () => {
+export const getAllAppointments = async (page, itemsPerPage) => {
   try {
-    const response = await axiosInstance.get("/api/appointments/customer");
+    const response = await axiosInstance.get("/api/appointments/customer", {
+      params: {
+        page, // Current page number
+        perPage: itemsPerPage, // Number of items per page
+      },
+    });
     return response.data; // Return the response data
   } catch (error) {
     console.error("Error fetching appointments:", error);

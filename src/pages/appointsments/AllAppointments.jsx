@@ -58,13 +58,12 @@ const AllAppointments = () => {
   const itemsPerPage = 10;
 
   useEffect(() => {
-    if (userId) {
-      fetchAppointments(userId);
-    }
-    if (artistId) {
-      fetchServices(artistId);
-    }
-  }, [userId]);
+    fetchAppointments(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchServices(artistId);
+  }, [artistId]);
 
   const fetchServices = async (artistId) => {
     try {
@@ -83,9 +82,9 @@ const AllAppointments = () => {
     return serviceNames.join(", ") || "Appointment";
   };
 
-  const fetchAppointments = async () => {
+  const fetchAppointments = async (page) => {
     try {
-      const response = await getAllAppointments();
+      const response = await getAllAppointments(page, itemsPerPage);
       console.log("Fetched appointments:", response);
       setAppointments(response?.appointments);
       setMetadata(response?.metadata);

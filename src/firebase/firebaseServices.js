@@ -424,30 +424,35 @@ export const updateAppointment = async (appointmentId, update) => {
 //   return appointmentFormTemplates;
 // };
 
-// export const uploadImage = async (user, image) => {
-//   try {
-//     console.log(
-//       `Entering method uploadImage. Parameters: user=${user.uid}, image=${image}`
-//     );
+export const uploadImage = async (user, image) => {
+  try {
+    console.log(
+      `Entering method uploadImage. Parameters: user=${user.uid}, image=${image}`
+    );
+    return "https://via.placeholder.com/150";
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    throw error;
+  }
+};
 
-//     const storage = getStorage();
-//     // Create a reference to where the image will be stored
-//     const imageRef = ref(storage, `images/${user.uid}/${uuidv4()}`);
+//   const storage = getStorage();
+//   // Create a reference to where the image will be stored
+//   const imageRef = ref(storage, `images/${user.uid}/${uuidv4()}`);
 
-//     // Convert the image to a Blob (if it's a data URL)
-//     const response = await fetch(image);
-//     const blob = await response.blob();
+//   // Convert the image to a Blob (if it's a data URL)
+//   const response = await fetch(image);
+//   const blob = await response.blob();
 
-//     const snapshot = await uploadBytes(imageRef, blob);
-//     console.log("Snapshot:", snapshot);
+//   const snapshot = await uploadBytes(imageRef, blob);
+//   console.log("Snapshot:", snapshot);
 
-//     // Get the download URL of the uploaded image
-//     const downloadUrl = await getDownloadURL(snapshot.ref);
-//     console.log("Image uploaded successfully. Download URL:", downloadUrl);
+//   // Get the download URL of the uploaded image
+//   const downloadUrl = await getDownloadURL(snapshot.ref);
+//   console.log("Image uploaded successfully. Download URL:", downloadUrl);
 
-//     return downloadUrl; // Return the download URL for further use
-//   } catch (error) {
-//     console.error("Error uploading image:", error);
-//     throw error; // Re-throw the error for the calling function to handle
-//   }
-// };
+//   return downloadUrl; // Return the download URL for further use
+// } catch (error) {
+//   console.error("Error uploading image:", error);
+//   throw error; // Re-throw the error for the calling function to handle
+// }

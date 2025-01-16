@@ -97,7 +97,7 @@ const Dashboard = () => {
       const response = await getAllAppointments();
 
       setAppointments(response?.appointments);
-      categorizeAppointments(response);
+      categorizeAppointments(response?.appointments);
     } catch (error) {
       console.error("Error fetching appointments:", error);
     }
@@ -236,7 +236,7 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="appointments-list">
-            {appointments?.map((appointment, index) => (
+            {appointments?.slice(0, 3).map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
                 title={getServiceTitle(appointment?.services)}

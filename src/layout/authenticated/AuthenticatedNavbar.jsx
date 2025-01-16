@@ -49,7 +49,7 @@ const AuthenticatedNavbar = () => {
   return (
     <div className="authenticatedNavbarContainer">
       <div style={{ display: "flex", alignItems: "center" }}>
-        <div className="authLogo" onClick={() => navigate("/")}>
+        <div className="authLogo" onClick={() => navigate("/dashboard")}>
           <LogoSvg />
         </div>
         <div
