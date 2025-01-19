@@ -87,12 +87,12 @@ const DynamicForms = () => {
       const currentForm = forms[currentTab];
       if (currentForm) {
         const filledForm = filledForms.find(
-          (f) => f.formTemplateId === currentForm.id
+          (f) => f?.formTemplateId === currentForm.id
         );
 
         if (filledForm) {
           // Populate form with saved data
-          setFormResponse(filledForm.data);
+          setFormResponse(filledForm?.data);
         } else {
           // Autofill fields using user info for a new form
           const autofillResponse = {};
@@ -143,7 +143,7 @@ const DynamicForms = () => {
     );
 
     const missingFields = requiredFields.some(
-      (field) => !formResponse[field.id]
+      (field) => !formResponse[field?.id]
     );
 
     if (missingFields) {
@@ -158,8 +158,8 @@ const DynamicForms = () => {
         formTemplateId: currentForm.id,
         data: formResponse,
       });
-
       setFormResponse({});
+      setSaving(false);
       Toast("success", "Form submitted successfully");
       if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1); // Move to the next form tab
@@ -176,7 +176,7 @@ const DynamicForms = () => {
 
   const renderFormFields = (fields) =>
     fields.map((field) => {
-      const fieldValue = formResponse[field.id] || "";
+      const fieldValue = formResponse[field?.id] || "";
 
       if (!field.type) {
         return (
