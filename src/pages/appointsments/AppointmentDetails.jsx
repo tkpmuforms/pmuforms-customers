@@ -11,12 +11,13 @@ import {
 import "./appointmentsdetails.scss";
 
 const RenderFormsCard = ({ title, status, ViewClick }) => {
+  console.log("status", status);
   return (
     <div className="form-card">
       <div className="form-info">
         <h4>{title}</h4>
         <span className={`status ${status}`}>
-          {status === true ? "Forms Completed" : "Forms Not Completed"}
+          {status === "incomplete" ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="form-actions">
@@ -39,8 +40,7 @@ const AppointmentDetails = () => {
     const fetchAllFilledFormsForAppointment = async () => {
       try {
         const res = await getAllFilledFormsForAppointment(id);
-        console.log("Fetched filled appointment:", res);
-        setFilledForms(res?.appointment || []);
+        setFilledForms(res?.filledForms || []);
       } catch (error) {
         console.error("Error fetching filled appointment:", error);
       }
@@ -49,7 +49,6 @@ const AppointmentDetails = () => {
     const fetchAllFormsForAppointment = async () => {
       try {
         const res = await getFormsForAppointMentById(id);
-        console.log("Fetched appointment forms:", res);
         setForms(res?.forms || []);
       } catch (error) {
         console.error("Error fetching forms:", error);
@@ -59,7 +58,6 @@ const AppointmentDetails = () => {
     const fetchServices = async (artistId) => {
       try {
         const response = await getArtistServices(artistId);
-        console.log("Fetched services:", response);
         setServices(response?.services || []);
       } catch (error) {
         console.error("Error fetching services:", error);
@@ -69,7 +67,6 @@ const AppointmentDetails = () => {
     const fetchAppointment = async () => {
       try {
         const res = await getAppointmentById(id);
-        console.log("Fetched appointment:", res);
         setAppointMent(res?.appointment || {});
       } catch (error) {
         console.error("Error fetching appointment:", error);
@@ -90,6 +87,13 @@ const AppointmentDetails = () => {
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
     return serviceNames.join(", ") || "Appointment";
+  };
+
+  const getFormStatus = (formId) => {
+    const filledForm = filledForms.find(
+      (filledForm) => filledForm.formTemplateId === formId
+    );
+    return filledForm?.status || "form-not-completed";
   };
 
   return (
@@ -128,7 +132,7 @@ const AppointmentDetails = () => {
               <RenderFormsCard
                 key={form.id}
                 title={form.title || "Untitled Form"}
-                status={form.allFormsCompleted || false}
+                status={getFormStatus(form.id)}
                 ViewClick={() =>
                   navigate(`/forms/appointment/${appointMent?.id}`)
                 }
