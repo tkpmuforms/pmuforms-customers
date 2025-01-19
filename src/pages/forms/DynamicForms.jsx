@@ -162,7 +162,9 @@ const DynamicForms = () => {
       setFormResponse({});
       Toast("success", "Form submitted successfully");
       if (currentTab < forms.length - 1) {
-        setCurrentTab(currentTab + 1);
+        setCurrentTab(currentTab + 1); // Move to the next form tab
+      } else {
+        navigate(`/appointments/${appointmentId}`);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
@@ -312,15 +314,6 @@ const DynamicForms = () => {
               Go Back
             </button>
 
-            {/* {currentTab < forms.length - 1 && (
-              <button
-                onClick={() => setCurrentTab(currentTab + 1)}
-                disabled={saving}
-              >
-                Next
-              </button>
-            )} */}
-            {/* check if the form is filled render next not submit*/}
             <button
               onClick={
                 filledForms.some(
