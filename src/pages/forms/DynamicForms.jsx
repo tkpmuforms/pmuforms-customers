@@ -92,7 +92,7 @@ const DynamicForms = () => {
 
         if (filledForm) {
           // Populate form with saved data
-          setFormResponse(filledForm?.data);
+          setFormResponse(filledForm?.data || {});
         } else {
           // Autofill fields using user info for a new form
           const autofillResponse = {};
@@ -176,6 +176,7 @@ const DynamicForms = () => {
 
   const renderFormFields = (fields) =>
     fields.map((field) => {
+      if (!field || !field.id) return null;
       const fieldValue = formResponse[field?.id] || "";
 
       if (!field.type) {
