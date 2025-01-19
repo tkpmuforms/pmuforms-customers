@@ -294,25 +294,48 @@ const DynamicForms = () => {
               {renderFormFields(section.data || [])}
             </div>
           ))}
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            {currentTab > 0 && (
-              <button
-                onClick={() => setCurrentTab(currentTab - 1)}
-                disabled={saving}
-              >
-                Go Back
-              </button>
-            )}
-            {currentTab < forms.length - 1 && (
+          <div
+            style={{
+              display: "flex",
+              gap: "10px",
+              width: "100%",
+            }}
+          >
+            <button
+              onClick={() => setCurrentTab(currentTab - 1)}
+              disabled={saving || currentTab === 0}
+              style={{
+                backgroundColor: "#F4EAF4",
+                color: "#8E2D8E",
+              }}
+            >
+              Go Back
+            </button>
+
+            {/* {currentTab < forms.length - 1 && (
               <button
                 onClick={() => setCurrentTab(currentTab + 1)}
                 disabled={saving}
               >
                 Next
               </button>
-            )}
-            <button onClick={handleSubmit} disabled={saving}>
-              {saving ? "Saving..." : "Submit Form"}
+            )} */}
+            {/* check if the form is filled render next not submit*/}
+            <button
+              onClick={
+                filledForms.some(
+                  (f) => f.formTemplateId === forms[currentTab]?.id
+                )
+                  ? () => setCurrentTab(currentTab + 1)
+                  : handleSubmit
+              }
+              disabled={saving}
+            >
+              {filledForms.some(
+                (f) => f.formTemplateId === forms[currentTab]?.id
+              )
+                ? "Next"
+                : "Submit Form"}
             </button>
           </div>
         </div>
