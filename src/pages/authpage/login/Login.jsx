@@ -2,22 +2,22 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import { useAuth } from "../../../context/AuthContext";
 import { Toast } from "../../../utils/toast/Toast";
-import { signInSuccessWithAuthResult } from "../authUtils";
+import { SignInSuccessWithAuthResult } from "../authUtils";
+import useAuth from "../../../context/useAuth";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { handleAuthSuccess } = useAuth();
   const [forgetpassword, setForgotPassword] = useState(false);
-  const { login } = useAuth();
+
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const result = await login(email, password);
-      signInSuccessWithAuthResult(result, navigate, console.log);
+      // SignInSuccessWithAuthResult(result, navigate, handleAuthSuccess);
     } catch (error) {
       console.error("Failed to log in:", error);
       Toast("error", `Login failed: ${error.message}`);

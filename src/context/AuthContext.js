@@ -1,45 +1,63 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { auth, signInWithEmailAndPassword } from "../firebase/firebase";
+import React, { createContext, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { setAuthenticated, setLoading, setUser } from "../redux/auth";
+import axiosInstance, { getAccessToken, isValidToken } from "./axiossetup";
 
-const AuthContext = createContext();
-
-export const useAuth = () => useContext(AuthContext);
+export const setAuthHeader = (token) => {
+  if (token) {
+    axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+  } else {
+    delete axiosInstance.defaults.headers.common["Authorization"];
+  }
+};
+const AuthContext = createContext({
+  method: "JWT",
+});
 
 export const AuthProvider = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      setCurrentUser(user);
-      setLoading(false);
-    });
-    return unsubscribe;
-  }, []);
-
-  const login = (email, password) => {
-    const userCredential = signInWithEmailAndPassword(auth, email, password);
-    return userCredential;
+  const handleAuthSuccess = (user, token) => {
+    dispatch(setLoading(false));
+    dispatch(setUser(user));
+    dispatch(setAuthenticated(true));
+    setAuthHeader(token);
+    navigate("/dashboard");
   };
 
+  const handleAuthFail = () => {
+    dispatch(setLoading(false));
+    dispatch(setAuthenticated(false));
+    dispatch(setUser(null));
+  };
+
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token && isValidToken(token)) {
+      setAuthHeader(token);
+    } else {
+      dispatch(setLoading(false));
+      dispatch(setAuthenticated(false));
+    }
+  }, []);
+
   const logout = () => {
-    auth.signOut();
     localStorage.clear();
   };
 
-  const signup = (email, password) =>
-    auth.createUserWithEmailAndPassword(email, password);
-
   const value = {
-    currentUser,
-    login,
+    method: "JWT",
     logout,
-    signup,
+    handleAuthSuccess,
+    handleAuthFail,
+    user,
+    isAuthenticated,
+    loading,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {!loading && children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+export default AuthContext;

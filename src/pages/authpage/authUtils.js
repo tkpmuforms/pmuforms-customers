@@ -1,8 +1,13 @@
+import useAuth from "../../context/useAuth";
 import { auth, signInWithPopup } from "../../firebase/firebase";
 import { createCustomer } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
 
-export const handleSocialLogin = async (provider, navigate) => {
+export const HandleSocialLogin = async (
+  provider,
+  navigate,
+  handleAuthSuccess
+) => {
   if (!provider) {
     console.error("Authentication provider is undefined");
     Toast("error", "Authentication provider is not configured");
@@ -27,6 +32,7 @@ export const handleSocialLogin = async (provider, navigate) => {
       console.log(res.data);
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
+      handleAuthSuccess(res?.data?.customer, res.data?.access_token);
       console.log("Social login successful:", user);
       Toast("success", "Login successful");
       navigate("/dashboard");
@@ -38,7 +44,11 @@ export const handleSocialLogin = async (provider, navigate) => {
   }
 };
 
-export const signInSuccessWithAuthResult = async (authResult, navigate) => {
+export const SignInSuccessWithAuthResult = async (
+  authResult,
+  navigate,
+  handleAuthSuccess
+) => {
   const user = authResult.user;
   const userToken = await user.getIdToken();
   const artistId = localStorage.getItem("artistId");
@@ -52,6 +62,7 @@ export const signInSuccessWithAuthResult = async (authResult, navigate) => {
       console.log(res);
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
+      handleAuthSuccess(res?.data?.customer, res.data?.access_token);
       console.log("Social login successful:", user);
       Toast("success", "Login successful");
       navigate("/dashboard");

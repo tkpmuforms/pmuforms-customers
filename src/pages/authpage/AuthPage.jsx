@@ -10,12 +10,14 @@ import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
 import LoginPage from "./login/Login";
 import SignupPage from "./signUp/SignUp";
-import { handleSocialLogin } from "./authUtils";
+import { HandleSocialLogin } from "./authUtils";
 import { facebookProvider, googleProvider } from "../../firebase/firebase";
+import useAuth from "../../context/useAuth";
 
 const AuthPage = () => {
   const [page, setPage] = useState("login");
   const navigate = useNavigate();
+  const { handleAuthSuccess } = useAuth();
 
   const handlePageChange = (page) => setPage(page);
 
@@ -53,10 +55,14 @@ const AuthPage = () => {
         <p>Or sign in with</p>
         <div className="social-signin">
           <GoogleLoginSvg
-            onClick={() => handleSocialLogin(googleProvider, navigate)}
+            onClick={() =>
+              HandleSocialLogin(googleProvider, navigate, handleAuthSuccess)
+            }
           />
           <FacebookLoginSvg
-            onClick={() => handleSocialLogin(facebookProvider, navigate)}
+            onClick={() =>
+              HandleSocialLogin(facebookProvider, navigate, handleAuthSuccess)
+            }
           />
         </div>
         <p className="terms-text">

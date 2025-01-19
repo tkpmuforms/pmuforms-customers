@@ -3,7 +3,7 @@ import { LogoSvg } from "../../assets/svgs/AuthSvg";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import "./AuthenticatedNavbar.scss";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();

@@ -13,11 +13,11 @@ const axiosInstance = axios.create({
   },
 });
 
-const getAccessToken = () => {
+export const getAccessToken = () => {
   return localStorage.getItem("accessToken");
 };
 
-const isValidToken = (accessToken) => {
+export const isValidToken = (accessToken) => {
   if (!accessToken) {
     return false;
   }

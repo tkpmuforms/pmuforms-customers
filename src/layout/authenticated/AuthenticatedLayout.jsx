@@ -2,11 +2,11 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import AuthenticatedNavbar from "./AuthenticatedNavbar";
 
-const AuthenticatedLayout = () => {
+const AuthenticatedLayout = ({ children, breadcrumb }) => {
   return (
     <div>
       <AuthenticatedNavbar />
-      <Outlet />
+      {children}
     </div>
   );
 };

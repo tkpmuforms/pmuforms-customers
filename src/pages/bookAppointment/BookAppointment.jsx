@@ -3,7 +3,6 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
 import {
   bookAppointment,
   getArtistById,
@@ -66,11 +65,7 @@ const BookAppointment = () => {
       await bookAppointment(appointment).then((res) => {
         console.log("Appointment created:", res);
         Toast("success", "Appointment created successfully");
-        navigate(
-          `/forms/services/${selectedServices.map(
-            (s) => s.id
-          )}/artist/${artistId}/appointment/${res?.appointment?.id}`
-        );
+        navigate(`/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
       Toast("error", "Error creating the appointment");

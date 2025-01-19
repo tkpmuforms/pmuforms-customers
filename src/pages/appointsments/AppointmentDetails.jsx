@@ -10,7 +10,7 @@ import {
 } from "../../services/services";
 import "./appointmentsdetails.scss";
 
-const RenderFormsCard = ({ title, date, status, ViewClick }) => {
+const RenderFormsCard = ({ title, status, ViewClick }) => {
   return (
     <div className="form-card">
       <div className="form-info">
@@ -129,7 +129,9 @@ const AppointmentDetails = () => {
                 key={form.id}
                 title={form.title || "Untitled Form"}
                 status={form.allFormsCompleted || false}
-                ViewClick={() => console.log(`View form ID: ${form.id}`)}
+                ViewClick={() =>
+                  navigate(`/forms/appointment/${appointMent?.id}`)
+                }
               />
             ))
           ) : (
