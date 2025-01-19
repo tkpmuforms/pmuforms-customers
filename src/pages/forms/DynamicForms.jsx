@@ -18,7 +18,7 @@ const FormInputTypes = {
   TEXTFIELD: "textfield",
   NUMBER: "number",
 };
-
+//calcualte age from date of birth
 const fieldToUserInfoMapping = {
   client_name: ["client_name"],
   signature: ["client_name"],

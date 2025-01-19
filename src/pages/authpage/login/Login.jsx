@@ -5,6 +5,7 @@ import ForgotPasswordForm from "./ForgotPasswordForm";
 import { Toast } from "../../../utils/toast/Toast";
 import { SignInSuccessWithAuthResult } from "../authUtils";
 import useAuth from "../../../context/useAuth";
+import { signInWithEmailAndPassword, auth } from "../../../firebase/firebase";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -17,7 +18,8 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // SignInSuccessWithAuthResult(result, navigate, handleAuthSuccess);
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      SignInSuccessWithAuthResult(result, navigate, handleAuthSuccess);
     } catch (error) {
       console.error("Failed to log in:", error);
       Toast("error", `Login failed: ${error.message}`);

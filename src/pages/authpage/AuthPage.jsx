@@ -5,7 +5,6 @@ import {
   GoogleLoginSvg,
   LogoSvg,
 } from "../../assets/svgs/AuthSvg";
-
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
 import LoginPage from "./login/Login";
