@@ -2,10 +2,13 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   createFilledForm,
+  getAllFilledFormsForAppointment,
   getFormsForAppointMentById,
 } from "../../services/services";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import "./dynamicForms.scss";
+import { Toast } from "../../utils/toast/Toast";
+import useAuth from "../../context/useAuth";
 
 const FormInputTypes = {
   TEXT: "text",
@@ -16,27 +19,102 @@ const FormInputTypes = {
   NUMBER: "number",
 };
 
+const fieldToUserInfoMapping = {
+  client_name: ["client_name"],
+  signature: ["client_name"],
+  date_of_birth: ["date_of_birth"],
+  home_address: ["home_address"],
+  emergency_contact_name: ["emergency_contact_name"],
+  emergency_contact_phone: ["emergency_contact_phone"],
+};
+
 const DynamicForms = () => {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth();
+  console.log("user>>>>", user?.info);
+  const businessName = localStorage.getItem("businessName");
+
   const [forms, setForms] = useState([]);
+  const [filledForms, setFilledForms] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [formResponse, setFormResponse] = useState({});
-  const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
-        setForms(fetchedForms?.forms || []);
+        console.log("fetchedForms>>>>", fetchedForms);
+        // Replace {{user.businessName}} dynamically in form titles and fields
+        const updatedForms = fetchedForms?.forms?.map((form) => ({
+          ...form,
+          sections: form?.sections.map((section) => ({
+            ...section,
+            data: section?.data.map((field) => ({
+              ...field,
+              title: field?.title?.replace(
+                "{{user.businessName}}",
+                businessName
+              ),
+            })),
+          })),
+          title: form?.title?.replace("{{user.businessName}}", businessName),
+        }));
+        setForms(updatedForms || []);
       } catch (error) {
         console.error("Error fetching forms:", error);
       }
     };
 
+    const fetchFilledForms = async () => {
+      try {
+        const fetchedFilledForms = await getAllFilledFormsForAppointment(
+          appointmentId
+        );
+        setFilledForms(fetchedFilledForms?.filledForms || []);
+      } catch (error) {
+        console.error("Error fetching filled forms:", error);
+      }
+    };
+
     fetchForms();
+    fetchFilledForms();
   }, [appointmentId]);
+
+  useEffect(() => {
+    if (forms.length && filledForms.length) {
+      const currentForm = forms[currentTab];
+      if (currentForm) {
+        const filledForm = filledForms.find(
+          (f) => f.formTemplateId === currentForm.id
+        );
+
+        if (filledForm) {
+          // Populate form with saved data
+          setFormResponse(filledForm.data);
+        } else {
+          // Autofill fields using user info for a new form
+          const autofillResponse = {};
+          currentForm.sections.forEach((section) => {
+            section.data.forEach((field) => {
+              // Check if the field ID exists in the mapping
+              const userInfoKeys = fieldToUserInfoMapping[field.id];
+              if (userInfoKeys) {
+                // For each userInfoKey, populate the response
+                userInfoKeys.forEach((key) => {
+                  if (user?.info?.[key]) {
+                    autofillResponse[field.id] = user.info[key];
+                  }
+                });
+              }
+            });
+          });
+          setFormResponse(autofillResponse);
+        }
+      }
+    }
+  }, [forms, filledForms, currentTab, user]);
 
   const handleInputChange = (fieldId, value) => {
     setFormResponse((prev) => ({
@@ -46,12 +124,11 @@ const DynamicForms = () => {
   };
 
   const handleImageChange = (fieldId, file) => {
-    // Optionally upload to a server or preview the image locally
     const reader = new FileReader();
     reader.onload = (e) => {
       setFormResponse((prev) => ({
         ...prev,
-        [fieldId]: e.target.result, // Save base64-encoded image string or file URL
+        [fieldId]: e.target.result,
       }));
     };
     if (file) reader.readAsDataURL(file);
@@ -70,7 +147,7 @@ const DynamicForms = () => {
     );
 
     if (missingFields) {
-      setFormError("Please fill in all required fields.");
+      Toast("error", "Please fill in all required fields");
       return;
     }
 
@@ -82,18 +159,15 @@ const DynamicForms = () => {
         data: formResponse,
       });
 
-      setFormError("");
       setFormResponse({});
-
+      Toast("success", "Form submitted successfully");
       if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      setFormError(
-        "An error occurred while submitting the form. Please try again."
-      );
-    } finally {
+
+      Toast("error", error?.message || "An error occurred");
       setSaving(false);
     }
   };
@@ -102,6 +176,14 @@ const DynamicForms = () => {
     fields.map((field) => {
       const fieldValue = formResponse[field.id] || "";
 
+      if (!field.type) {
+        return (
+          <div key={field.id} className="read-only-field">
+            <label>{field.title}</label>
+          </div>
+        );
+      }
+
       switch (field.type) {
         case FormInputTypes.CHECKBOX:
           return (
@@ -109,7 +191,7 @@ const DynamicForms = () => {
               <label>
                 <input
                   type="checkbox"
-                  checked={fieldValue}
+                  checked={!!fieldValue}
                   onChange={(e) =>
                     handleInputChange(field.id, e.target.checked)
                   }
@@ -188,19 +270,21 @@ const DynamicForms = () => {
         <GoBackSvg />
         <p>Go back to dashboard</p>
       </div>
-      {formError && <div className="error-message">{formError}</div>}
-      <div className="tabs">
-        {forms?.map((form, index) => (
-          <button
-            key={form.id}
-            className={index === currentTab ? "active" : ""}
-            onClick={() => setCurrentTab(index)}
-            disabled={saving}
-          >
-            {form.title}
-          </button>
-        ))}
+      <div className="progress-container">
+        <p className="progress-text">
+          Form {currentTab + 1} of {forms.length}
+        </p>
+        <p>Carefully read and complete the form below, then click "Submit"</p>
+        <div className="progress-bar">
+          <div
+            className="progress-fill"
+            style={{
+              width: `${((currentTab + 1) / forms.length) * 100}%`,
+            }}
+          ></div>
+        </div>
       </div>
+
       {forms[currentTab] && (
         <div className="form-content">
           <h2>{forms[currentTab]?.title}</h2>
@@ -217,6 +301,14 @@ const DynamicForms = () => {
                 disabled={saving}
               >
                 Go Back
+              </button>
+            )}
+            {currentTab < forms.length - 1 && (
+              <button
+                onClick={() => setCurrentTab(currentTab + 1)}
+                disabled={saving}
+              >
+                Next
               </button>
             )}
             <button onClick={handleSubmit} disabled={saving}>
