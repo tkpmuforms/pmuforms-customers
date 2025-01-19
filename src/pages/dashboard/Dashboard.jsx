@@ -1,26 +1,25 @@
 import React, { useEffect, useState } from "react";
-import "./dashboard.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  getAppointmentsForClient,
-  getCustomer,
-  getFilledFormsForCustomer,
-  getServicesForArtistWithId,
-  getAllFormsForServices,
-  updateAppointment,
-} from "../../firebase/firebaseServices";
-import {
+  BookAnAppointmentButtonSvg,
   BookAnAppointmentSvg,
   DeleteAppointmentButtonSvg,
   EditPersonalInformationSvg,
+  NoAppointmentsSvg,
   ViewFormButtonSvg,
   ViewPastAppointmentsSvg,
   WarningSvg,
-  NoAppointmentsSvg,
-  BookAnAppointmentButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
-import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
+import {
+  deleteAppointment,
+  getAllAppointments,
+  getArtistById,
+  getArtistServices,
+  getAuthenticatedUser,
+} from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
+import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
+import "./dashboard.scss";
 
 const RenderAppointmentCard = ({
   title,
@@ -30,7 +29,13 @@ const RenderAppointmentCard = ({
   ViewClick,
   DeleteClick,
 }) => {
-  const formattedDate = new Date(date.seconds * 1000).toLocaleDateString();
+  // Correctly parse the ISO date string
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div className="appointment-card">
       <div className="appointment-info">
@@ -38,7 +43,7 @@ const RenderAppointmentCard = ({
         <p>Date of Appointment: {formattedDate}</p>
         <p>Forms filled: {formsFilled}</p>
         <span className={`status ${status}`}>
-          {status === "completed" ? "Forms Completed" : "Forms Not Completed"}
+          {status === "true" ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="appointment-actions">
@@ -49,38 +54,53 @@ const RenderAppointmentCard = ({
   );
 };
 
-// Main Dashboard component
 const Dashboard = () => {
+  const params = useParams();
+  const artistId = params.artistId || localStorage.getItem("artistId");
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  const [forms, setForms] = useState([]);
-  const [clientName, setClientName] = useState("");
+  const [clientName, setClientName] = useState(
+    localStorage.getItem("userName")
+  );
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const userId = localStorage.getItem("userId");
-  const businesName = localStorage.getItem("businessName");
+  const [businessName, setBusinessName] = useState(
+    localStorage.getItem("businessName")
+  );
   const navigate = useNavigate();
-  // New state for services
   const [services, setServices] = useState([]);
 
   useEffect(() => {
+    if (!businessName) {
+      fetchAndStoreBusinessName(artistId);
+    }
     fetchAppointments(userId);
-    fetchForms(userId);
     checkPersonalInformation(userId);
-    fetchFormsForServices(services);
-    const artistId = localStorage.getItem("artistId");
     if (artistId) {
       fetchServices(artistId);
     }
-  }, [userId]);
+  }, [userId, artistId]);
 
-  const fetchAppointments = async (userId) => {
+  const fetchAndStoreBusinessName = async (artistId) => {
     try {
-      const response = await getAppointmentsForClient(userId);
-      console.log("appointments", response);
-      setAppointments(response);
-      categorizeAppointments(response);
-    } catch (error) {}
+      const res = await getArtistById(artistId);
+      localStorage.setItem("businessName", res?.artist?.businessName);
+      setBusinessName(res?.artist?.businessName);
+    } catch (error) {
+      console.error("Error fetching business name:", error);
+    }
+  };
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await getAllAppointments();
+
+      setAppointments(response?.appointments);
+      categorizeAppointments(response?.appointments);
+    } catch (error) {
+      console.error("Error fetching appointments:", error);
+    }
   };
 
   const categorizeAppointments = (appointments) => {
@@ -96,40 +116,31 @@ const Dashboard = () => {
     setUpcomingAppointments(upcoming);
   };
 
-  const fetchForms = async (userId) => {
-    try {
-      const response = await getFilledFormsForCustomer(userId);
-      console.log("forms", response);
-      setForms(response);
-    } catch (error) {}
-  };
-
   const fetchServices = async (artistId) => {
     try {
-      const response = await getServicesForArtistWithId(artistId);
+      const response = await getArtistServices(artistId);
       console.log("services", response);
-      setServices(response);
-    } catch (error) {}
+      setServices(response?.services);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+    }
   };
 
-  const checkPersonalInformation = async (userId) => {
+  const checkPersonalInformation = async () => {
     try {
-      const customer = await getCustomer(userId);
-      console.log("customer", customer);
-
-      setClientName(customer?.info?.client_name);
-      if (customer && customer.info) {
+      const customer = await getAuthenticatedUser();
+      setClientName(customer?.user?.info?.client_name);
+      if (customer && customer?.user?.info) {
         setShowPersonalInfo(false);
-        localStorage.setItem("clientName", customer.info.client_name);
-        localStorage.setItem("businessName", customer.info.businessName);
       } else {
         setShowPersonalInfo(true);
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error checking personal information:", error);
+    }
   };
 
   const getServiceTitle = (serviceIds) => {
-    // Map service IDs to service names
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
@@ -147,21 +158,13 @@ const Dashboard = () => {
     setPastAppointments(newPastAppointments);
     setUpcomingAppointments(newUpcomingAppointments);
 
-    updateAppointment(appointmentId, { deleted: true })
+    deleteAppointment(appointmentId)
       .then(() => {
         Toast("success", "Appointment deleted successfully");
       })
       .catch((error) => {
         Toast("error", "Error deleting appointment");
       });
-  };
-
-  const fetchFormsForServices = (services) => {
-    try {
-      const response = getAllFormsForServices(services);
-      console.log("forms for services", response);
-      setForms(response);
-    } catch (error) {}
   };
 
   if (showPersonalInfo) {
@@ -177,7 +180,7 @@ const Dashboard = () => {
           <h3>
             Hello, <span>{clientName}</span> Welcome back.
           </h3>
-          <p>Welcome to {businesName}</p>
+          <p>Welcome to {businessName}</p>
           <div className="alert">
             <WarningSvg />
             <p>
@@ -189,7 +192,7 @@ const Dashboard = () => {
         <div className="actions-section">
           <div
             className="action-card"
-            onClick={() => navigate("/book-appointments")}
+            onClick={() => navigate(`/book-appointments/${artistId}`)}
           >
             <BookAnAppointmentSvg />
             <div>
@@ -228,16 +231,18 @@ const Dashboard = () => {
         <section className="appointments-section">
           <h3>Upcoming Appointments</h3>
           <div className="see-all-appointments">
-            <a href="/appointments">See All Appointments</a>
+            <p onClick={() => navigate("/appointments")}>
+              See All Appointments
+            </p>
           </div>
           <div className="appointments-list">
-            {appointments?.map((appointment, index) => (
+            {appointments?.slice(0, 3).map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
                 title={getServiceTitle(appointment?.services)}
                 date={appointment?.date}
                 formsFilled={appointment?.formsFilled || 0}
-                status={appointment?.status}
+                status={appointment?.allFormsCompleted}
                 ViewClick={() => navigate(`/appointments/${appointment.id}`)}
                 DeleteClick={() => deleteAppointments(appointment.id)}
               />
@@ -247,7 +252,7 @@ const Dashboard = () => {
                 <NoAppointmentsSvg />
                 <p>You have no upcoming appointments</p>
                 <BookAnAppointmentButtonSvg
-                  onClick={() => navigate("/book-appointments")}
+                  onClick={() => navigate(`/book-appointments/${artistId}`)}
                   style={{ cursor: "pointer", marginTop: "1rem" }}
                 />
               </div>

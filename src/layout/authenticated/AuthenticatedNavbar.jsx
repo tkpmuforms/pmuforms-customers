@@ -3,7 +3,7 @@ import { LogoSvg } from "../../assets/svgs/AuthSvg";
 import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import "./AuthenticatedNavbar.scss";
-import { useAuth } from "../../context/AuthContext";
+import useAuth from "../../context/useAuth";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
@@ -49,7 +49,7 @@ const AuthenticatedNavbar = () => {
   return (
     <div className="authenticatedNavbarContainer">
       <div style={{ display: "flex", alignItems: "center" }}>
-        <div className="authLogo" onClick={() => navigate("/")}>
+        <div className="authLogo" onClick={() => navigate("/dashboard")}>
           <LogoSvg />
         </div>
         <div
@@ -75,9 +75,16 @@ const AuthenticatedNavbar = () => {
       </div>
 
       {/* Right Aligned Content */}
+
       <div style={{ display: "flex", alignItems: "center" }}>
         <div className="avatar" onClick={handleAvatarClick}>
-          <Avatar />
+          <Avatar
+            children={
+              currentUser?.displayName
+                ? currentUser.displayName.slice(0, 2).toUpperCase()
+                : ""
+            }
+          />
         </div>
         <Menu
           anchorEl={anchorEl}
@@ -89,7 +96,7 @@ const AuthenticatedNavbar = () => {
             },
           }}
         >
-          <MenuItem disabled>
+          <MenuItem>
             <Typography>{currentUser?.displayName || "User"}</Typography>
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>

@@ -1,16 +1,38 @@
 .form {
-  margin-top: 10px;
-  padding: 20px;
+  margin-top: 5px;
+  padding: 0 40px;
+  p {
+    font-size: 14px;
+    color: #666;
+  }
+  .appointment-info {
+    padding: 0 20px;
 
-  h3 {
-    font-size: 20px;
-    color: #000000;
-    font-family: BoldFont;
-    font-weight: 500;
-    line-height: 28px;
-    text-align: left;
-    padding: 0 0 0 20px;
-    margin: 0;
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-title {
+        font-size: 18px;
+        color: #8e2d8e;
+        font-weight: 500;
+        line-height: 24px;
+        margin-right: 10px;
+        font-family: BoldFont;
+      }
+
+      .info-value {
+        font-size: 14px;
+        color: #000000;
+        font-weight: 600;
+      }
+    }
   }
 
   .form-list {
@@ -51,13 +73,13 @@
           border-radius: 5px;
           margin-top: 5px;
 
-          &.completed {
+          &.incomplete {
             background: #34c7591a;
             color: #34c759;
             border-radius: 8px;
           }
 
-          &.not-completed {
+          &.form-not-completed {
             background: #ffa21d1a;
             color: var(--pmu-orange);
             border-radius: 8px;
@@ -78,9 +100,19 @@
   .form {
     padding: 15px;
 
-    h3 {
-      font-size: 18px;
-      padding: 0 0 0 15px;
+    .appointment-info {
+      padding: 15px;
+      margin-bottom: 15px;
+
+      .info-item {
+        .info-title {
+          font-size: 14px;
+        }
+
+        .info-value {
+          font-size: 16px;
+        }
+      }
     }
 
     .form-list {
@@ -120,11 +152,20 @@
   .form {
     padding: 10px;
 
-    h3 {
-      font-size: 16px;
-      padding: 0 0 0 10px;
-    }
+    .appointment-info {
+      padding: 15px;
+      margin-bottom: 15px;
 
+      .info-item {
+        .info-title {
+          font-size: 12px;
+        }
+
+        .info-value {
+          font-size: 14px;
+        }
+      }
+    }
     .form-list {
       .form-card {
         padding: 12px;

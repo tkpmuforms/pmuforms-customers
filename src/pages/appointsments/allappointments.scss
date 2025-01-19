@@ -1,28 +1,46 @@
 .appointments {
   margin-top: 10px;
   padding: 20px;
-  p{
+  p {
     font-size: 14px;
     color: #666;
     font-family: RegularFont;
     font-weight: 400;
     line-height: 20px;
     text-align: left;
-    padding: 0 0 0 20px;
+    padding: 0 0 0 10px;
     margin: 0;
   }
-  
-  
-   
-  h3 {
-    font-size: 20px;
-    color: #000000;
-    font-family: BoldFont;
-    font-weight: 500;
-    line-height: 28px;
-    text-align: left;
-    padding: 0 0 0 20px;
-    margin: 0;
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
+
+    h3 {
+      margin: 0;
+      font-size: 20px;
+      color: #000000;
+      font-family: BoldFont;
+      font-weight: 500;
+      line-height: 28px;
+    }
+
+    .search-bar {
+      input {
+        padding: 10px;
+        width: 250px; /* Adjust width as needed */
+        border: 1px solid var(--pmu-primary);
+        border-radius: 5px;
+        font-size: 14px;
+      }
+      :focus {
+        outline: none;
+        border: 1px solid var(--pmu-primary);
+      }
+    }
   }
 
   .appointments-list {
@@ -36,6 +54,13 @@
 
       .appointment-info {
         text-align: left;
+        .truncate-title {
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          display: inline-block;
+          vertical-align: top;
+        }
 
         h4 {
           font-size: 16px;
@@ -63,13 +88,13 @@
           border-radius: 5px;
           margin-top: 5px;
 
-          &.completed {
+          &.true {
             background: #34c7591a;
             color: #34c759;
             border-radius: 8px;
           }
 
-          &.not-completed {
+          &.false {
             background: #ffa21d1a;
             color: var(--pmu-orange);
             border-radius: 8px;
@@ -89,6 +114,22 @@
     padding: 20px;
     font-size: 16px;
     color: #666;
+  }
+  .pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+
+    span {
+      font-size: 16px;
+      margin: 0 10px;
+    }
+
+    svg {
+      font-size: 24px;
+      cursor: pointer;
+    }
   }
 }
 

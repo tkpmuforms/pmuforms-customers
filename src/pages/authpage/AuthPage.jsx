@@ -1,69 +1,28 @@
 import React, { useState } from "react";
-import Navbar from "../../layout/public/Navbar";
-import LoginPage from "./login/Login";
-import SignupPage from "./signUp/SignUp";
-import "./authpage.scss";
-import { signInWithPopup } from "firebase/auth";
-import {
-  auth,
-  googleProvider,
-  facebookProvider,
-} from "../../firebase/firebase";
+import { useNavigate } from "react-router-dom";
 import {
   FacebookLoginSvg,
   GoogleLoginSvg,
   LogoSvg,
 } from "../../assets/svgs/AuthSvg";
-import { useNavigate } from "react-router-dom";
-import { createCustomer, log } from "../../firebase/firebaseServices";
-import { Toast } from "../../utils/toast/Toast";
+import Navbar from "../../layout/public/Navbar";
+import "./authpage.scss";
+import LoginPage from "./login/Login";
+import SignupPage from "./signUp/SignUp";
+import { HandleSocialLogin } from "./authUtils";
+import { facebookProvider, googleProvider } from "../../firebase/firebase";
+import useAuth from "../../context/useAuth";
 
-const Authpage = () => {
+const AuthPage = () => {
   const [page, setPage] = useState("login");
   const navigate = useNavigate();
+  const { handleAuthSuccess } = useAuth();
 
-  const handlePageChange = (page) => {
-    setPage(page);
-  };
+  const handlePageChange = (page) => setPage(page);
 
-  // Handle social login (Google, Facebook, etc.)
-  const handleSocialLogin = async (provider) => {
-    try {
-      const result = await signInWithPopup(auth, provider);
-      if (!result) {
-        throw new Error("Authentication failed. No result received.");
-      }
-      socialSignInSuccessWithAuthResult(result);
-      Toast("success", "Login successful");
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Social login error:", error); // Additional logging for debugging
-      log("Social login error", error.message);
-      Toast("error", "Login failed: " + error.message);
-    }
-  };
-
-  const socialSignInSuccessWithAuthResult = async (authResult) => {
-    const user = authResult.user;
-    const userToken = await user.getIdToken();
-
-    try {
-      localStorage.setItem("userEmail", user.email);
-      localStorage.setItem("userId", user.uid);
-      localStorage.setItem("idToken", userToken);
-      await createCustomer(user.email, user.displayName, user.uid);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Error during social login callback:", error);
-    }
-  };
   return (
     <>
-      <Navbar
-        CreatenewClick={() => {
-          handlePageChange("signup");
-        }}
-      />
+      <Navbar CreatenewClick={() => handlePageChange("signup")} />
       <div className="auth-container">
         <div className="auth-logo">
           <LogoSvg />
@@ -92,12 +51,17 @@ const Authpage = () => {
             </p>
           )}
         </div>
-
         <p>Or sign in with</p>
         <div className="social-signin">
-          <GoogleLoginSvg onClick={() => handleSocialLogin(googleProvider)} />
+          <GoogleLoginSvg
+            onClick={() =>
+              HandleSocialLogin(googleProvider, navigate, handleAuthSuccess)
+            }
+          />
           <FacebookLoginSvg
-            onClick={() => handleSocialLogin(facebookProvider)}
+            onClick={() =>
+              HandleSocialLogin(facebookProvider, navigate, handleAuthSuccess)
+            }
           />
         </div>
         <p className="terms-text">
@@ -109,4 +73,4 @@ const Authpage = () => {
   );
 };
 
-export default Authpage;
+export default AuthPage;

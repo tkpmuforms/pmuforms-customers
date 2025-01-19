@@ -1,0 +1,130 @@
+.dynamic-forms {
+  width: 80%;
+  margin: 0 auto;
+  .progress-container {
+    margin-bottom: 20px;
+
+    .progress-bar {
+      height: 10px;
+      background-color: #f5f5f5;
+      border-radius: 5px;
+      overflow: hidden;
+      position: relative;
+
+      .progress-fill {
+        height: 100%;
+        background-color: var(--pmu-primary);
+        width: 0;
+        transition: width 0.3s ease;
+      }
+    }
+
+    .progress-text {
+      margin-top: 10px;
+      margin-bottom: 0;
+      padding: 0;
+      font-size: 14px;
+      color: #444;
+      text-align: left;
+    }
+  }
+  .form-content {
+    padding: 20px;
+    border-radius: 10px;
+
+    h2 {
+      margin-bottom: 15px;
+      font-size: 24px;
+      color: var(--pmu-primary);
+    }
+
+    .error-message {
+      color: red;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+
+    h3 {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #444;
+      border-bottom: 2px solid #eee;
+      padding-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 16px;
+      color: #333;
+      margin-bottom: 10px;
+
+      input {
+        margin-top: 5px;
+        width: 100%;
+        padding: 8px 12px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+
+        &:focus {
+          outline: none;
+          border-color: #6a0dad;
+        }
+      }
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+
+      label {
+        display: inline-flex;
+        align-items: center;
+
+        input {
+          margin-right: 10px;
+          width: auto;
+        }
+      }
+    }
+
+    button {
+      background-color: #6a0dad;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+
+      &:hover {
+        background-color: var(--pmu-primary);
+      }
+
+      &:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .go-back {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+
+    svg {
+      margin-right: 10px;
+      fill: var(--pmu-primary);
+    }
+
+    p {
+      font-size: 16px;
+      color: var(--pmu-primary);
+    }
+  }
+}

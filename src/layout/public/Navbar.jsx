@@ -53,13 +53,10 @@ const Navbar = ({ CreatenewClick }) => {
               [Watch Video] “How to use PMU Forms”
             </a>
           </li>
-          <li>
-            <Link to="/about">About</Link>
-          </li>
         </ul>
       </div>
       <div className="buttons">
-        <button className="download">
+        {/* <button className="download">
           <a
             href="https://apps.apple.com/us/app/pmu-forms/id1497270923"
             target="_blank"
@@ -67,7 +64,7 @@ const Navbar = ({ CreatenewClick }) => {
           >
             Download App
           </a>
-        </button>
+        </button> */}
         <button onClick={CreatenewClick} className="create-an-account">
           Create an Account
         </button>

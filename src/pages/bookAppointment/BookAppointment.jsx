@@ -1,36 +1,34 @@
-import React, { useEffect, useState } from "react";
-import "./bookAppointment.scss";
-import { LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DatePicker } from "@mui/x-date-pickers";
 import { Checkbox } from "@mui/material";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
-  createAppointment,
-  getArtist,
-  getServicesForArtistWithId,
-} from "../../firebase/firebaseServices";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
-import { v4 as uuidv4 } from "uuid";
+  bookAppointment,
+  getArtistById,
+  getArtistServices,
+} from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
+import "./bookAppointment.scss";
 
 const BookAppointment = () => {
-  const artistId = "jsb0kVT5ToNX5Q87H1tsglkDIh12";
+  const param = useParams();
+  const artistId = param.artistId || localStorage.getItem("artistId");
+
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [appointmentDate, setAppointmentDate] = useState(null);
-  const [formError, setFormError] = useState("");
   const [companyName, setCompanyName] = useState("");
 
   useEffect(() => {
     // Fetch artist and services
-    getArtist(artistId).then((artist) => {
+    getArtistById(artistId).then((artist) => {
       setCompanyName(artist.businessName);
     });
-    getServicesForArtistWithId(artistId).then((services) => {
-      setServices(services);
+    getArtistServices(artistId).then((res) => {
+      console.log("Services:", services);
+      setServices(res?.services);
     });
   }, [artistId]);
 
@@ -47,49 +45,34 @@ const BookAppointment = () => {
   const handleContinue = async () => {
     // Validate input
     if (!appointmentDate) {
-      setFormError("Please select an appointment date.");
+      Toast("error", "Please select an appointment date.");
       return;
     }
     if (selectedServices.length === 0) {
-      setFormError(
-        "You didn't select any services. Please select at least one service."
-      );
+      Toast("error", "Please select at least one service.");
       return;
     }
 
-    // Create a new appointment
-    const appointmentId = uuidv4();
     const appointment = {
-      date: new Date(appointmentDate),
-      id: appointmentId,
+      appointmentDate: new Date(appointmentDate),
       artistId: artistId,
-      customer_id: currentUser.uid,
       services: selectedServices.map((service) => service.id),
-      createdAt:
-        new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString(),
     };
 
     try {
       // Save appointment to the backend
       console.log("Creating appointment:", appointment);
-      await createAppointment(appointment);
-      console.log("Appointment created:", appointment);
-      Toast("success", "Appointment created successfully");
-      // Navigate to the next screen
-      navigate(
-        `/forms/services/${selectedServices.map(
-          (s) => s.id
-        )}/artist/${artistId}/appointment/${appointmentId}`
-      );
+      await bookAppointment(appointment).then((res) => {
+        console.log("Appointment created:", res);
+        Toast("success", "Appointment created successfully");
+        navigate(`/forms/appointment/${res?.appointment?.id}`);
+      });
     } catch (error) {
       Toast("error", "Error creating the appointment");
       console.error("Error creating the appointment:", error);
     }
   };
 
-  useEffect(() => {
-    localStorage.setItem("artistId", artistId);
-  }, []);
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div className="book-appointment-page">

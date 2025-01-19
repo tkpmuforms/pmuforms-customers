@@ -1,11 +1,14 @@
+import { ErrorMessage, Field, Form, Formik } from "formik";
 import React, { useState } from "react";
-import { Formik, Field, Form, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import "./signup.scss";
-import { createCustomer, log } from "../../../firebase/firebaseServices";
-import { auth } from "../../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
-import PersonalDetailsForm from "./PersonalDetailsForm";
+import * as Yup from "yup";
+import {
+  auth,
+  createUserWithEmailAndPassword,
+} from "../../../firebase/firebase";
+import { createCustomer } from "../../../services/services";
+import { Toast } from "../../../utils/toast/Toast";
+import "./signup.scss";
 
 const SignupPage = () => {
   const [secondPage, setSecondPage] = useState(false);
@@ -29,19 +32,36 @@ const SignupPage = () => {
 
   const handleSignup = async (values, { setSubmitting }) => {
     const { email, password } = values;
+    const artistId = localStorage.getItem("artistId");
+    if (!artistId) {
+      console.error("Artist ID is missing");
+      Toast("error", "Artist ID is missing");
+      return;
+    }
 
+    console.log("Form values:", values);
     try {
-      const userCredential = await auth.createUserWithEmailAndPassword(
+      console.log("Creating user...");
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
         email,
         password
       );
+      console.log("User created:", userCredential);
       const user = userCredential.user;
-      await createCustomer(user.email, "New Customer", user.uid);
-      log(`User ${email} signed up successfully`);
-      setSecondPage(true);
+
+      await createCustomer({
+        accessToken: await user.getIdToken(),
+        artistId: artistId,
+      }).then((res) => {
+        console.log(res.data);
+        localStorage.setItem("userId", res.data?.customer?.id);
+        localStorage.setItem("accessToken", res.data?.access_token);
+        navigate("/dashboard");
+      });
     } catch (error) {
-      log("Signup error", error.message);
-      alert("Signup failed. Please try again.");
+      console.error("Error creating user:", error);
+      Toast("error", error.message);
     }
     setSubmitting(false);
   };
@@ -56,73 +76,64 @@ const SignupPage = () => {
           Important: Don't wait until the day of your appointment. Some of this
           information must be filled out a few days in advance.
         </p>
+        <Formik
+          initialValues={initialValues}
+          validationSchema={validationSchema}
+          onSubmit={handleSignup}
+        >
+          {({ isSubmitting }) => (
+            <Form className="signup-form">
+              <div className="form-group">
+                <label htmlFor="email">Email Address</label>
+                <Field
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email address"
+                />
+                <ErrorMessage name="email" component="div" className="error" />
+              </div>
 
-        {!secondPage ? (
-          <Formik
-            initialValues={initialValues}
-            validationSchema={validationSchema}
-            onSubmit={handleSignup}
-          >
-            {({ isSubmitting }) => (
-              <Form className="signup-form">
-                <div className="form-group">
-                  <label htmlFor="email">Email Address</label>
-                  <Field
-                    type="email"
-                    id="email"
-                    name="email"
-                    placeholder="Enter your email address"
-                  />
-                  <ErrorMessage
-                    name="email"
-                    component="div"
-                    className="error"
-                  />
-                </div>
+              <div className="form-group">
+                <label htmlFor="password">Create Password</label>
+                <Field
+                  type="password"
+                  id="password"
+                  name="password"
+                  placeholder="Enter Password"
+                />
+                <ErrorMessage
+                  name="password"
+                  component="div"
+                  className="error"
+                />
+              </div>
 
-                <div className="form-group">
-                  <label htmlFor="password">Create Password</label>
-                  <Field
-                    type="password"
-                    id="password"
-                    name="password"
-                    placeholder="Enter Password"
-                  />
-                  <ErrorMessage
-                    name="password"
-                    component="div"
-                    className="error"
-                  />
-                </div>
+              <div className="form-group">
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <Field
+                  type="password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  placeholder="Re-enter Password"
+                />
+                <ErrorMessage
+                  name="confirmPassword"
+                  component="div"
+                  className="error"
+                />
+              </div>
 
-                <div className="form-group">
-                  <label htmlFor="confirmPassword">Confirm Password</label>
-                  <Field
-                    type="password"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    placeholder="Re-enter Password"
-                  />
-                  <ErrorMessage
-                    name="confirmPassword"
-                    component="div"
-                    className="error"
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  className="signup-button"
-                  disabled={isSubmitting}
-                >
-                  Create Account
-                </button>
-              </Form>
-            )}
-          </Formik>
-        ) : (
-          <PersonalDetailsForm onSubmitClick={() => navigate("/dashboard")} />
-        )}
+              <button
+                type="submit"
+                className="signup-button"
+                disabled={isSubmitting}
+              >
+                Create Account
+              </button>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

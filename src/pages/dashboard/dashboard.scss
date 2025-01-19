@@ -48,7 +48,7 @@
       justify-content: space-between;
       align-items: stretch; /* Change to 'stretch' for equal height */
     }
-    
+
     .action-card {
       display: flex;
       gap: 20px;
@@ -60,17 +60,17 @@
       cursor: pointer;
       flex: 1; /* Allow cards to grow equally */
     }
-    
+
     .action-card:last-child {
       border-right: none; /* Remove border from the last card */
     }
-    
+
     .action-card svg {
       width: 40px; /* Set a fixed width for SVGs */
       height: 40px; /* Set a fixed height for SVGs */
       flex-shrink: 0; /* Prevent SVG from shrinking */
     }
-    
+
     h5 {
       font-size: 16px;
       color: #000000;
@@ -80,14 +80,13 @@
       font-family: MediumFont;
       font-weight: 500;
     }
-    
+
     p {
       font-size: 13px;
       color: var(--pmu-grey-text);
       padding: 0;
       margin: 0;
     }
-    
 
     .appointments-section {
       margin-top: 10px;
@@ -104,7 +103,7 @@
       .see-all-appointments {
         text-align: right;
 
-        a {
+        p {
           text-align: right;
           color: #800080;
           text-decoration: none;
@@ -154,13 +153,13 @@
               border-radius: 5px;
               margin-top: 5px;
 
-              &.completed {
+              &.true {
                 background: #34c7591a;
                 color: #34c759;
                 border-radius: 8px;
               }
 
-              &.not-completed {
+              &.false {
                 background: #ffa21d1a;
                 color: var(--pmu-orange);
                 border-radius: 8px;
@@ -254,7 +253,7 @@
 // @media screen and (max-width: 768px) {
 //   .dashboard-page {
 //     padding: 10px; /* Adjust padding for mobile */
-    
+
 //     .dashboard-container {
 //       padding: 0;
 //       margin: 0;
@@ -264,7 +263,7 @@
 //           font-size: 20px; /* Adjust heading size */
 //           line-height: 1.2;
 //         }
-        
+
 //         p {
 //           font-size: 14px; /* Adjust welcome message size */
 //           margin-bottom: 10px; /* Add spacing */
@@ -317,7 +316,7 @@
 
 //       .appointments-section {
 //         margin-top: 20px;
-        
+
 //         h3 {
 //           font-size: 18px; /* Smaller font size */
 //           margin-bottom: 10px;
@@ -420,8 +419,6 @@
 // }
 @media screen and (max-width: 768px) {
   .dashboard-page {
-
-
     .dashboard-container {
       padding: 10px;
 
@@ -546,12 +543,12 @@
                 padding: 5px 10px;
                 border-radius: 5px;
 
-                &.completed {
+                &.true {
                   background: #e8f5e9;
                   color: #34c759;
                 }
 
-                &.not-completed {
+                &.false {
                   background: #fff4e6;
                   color: #ff9500;
                 }
@@ -622,4 +619,3 @@
     }
   }
 }
-

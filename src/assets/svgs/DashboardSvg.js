@@ -383,6 +383,8 @@ export const GoBackSvg = ({ onClick, ...props }) => {
       viewBox="0 0 48 48"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
+      onClick={onClick}
+      {...props}
     >
       <circle opacity="0.1" cx="24" cy="24" r="24" fill="#8E2D8E" />
       <path
