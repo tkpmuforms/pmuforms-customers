@@ -85,6 +85,9 @@
         input {
           margin-right: 10px;
           width: auto;
+          &:checked {
+            accent-color: var(--pmu-primary);
+          }
         }
       }
     }

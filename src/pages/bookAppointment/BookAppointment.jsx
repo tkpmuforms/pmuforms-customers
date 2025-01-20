@@ -3,11 +3,7 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  bookAppointment,
-  getArtistById,
-  getArtistServices,
-} from "../../services/services";
+import { bookAppointment, getArtistServices } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
 import "./bookAppointment.scss";
 
@@ -19,13 +15,9 @@ const BookAppointment = () => {
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [appointmentDate, setAppointmentDate] = useState(null);
-  const [companyName, setCompanyName] = useState("");
-
   useEffect(() => {
     // Fetch artist and services
-    getArtistById(artistId).then((artist) => {
-      setCompanyName(artist.businessName);
-    });
+
     getArtistServices(artistId).then((res) => {
       console.log("Services:", services);
       setServices(res?.services);
@@ -89,6 +81,7 @@ const BookAppointment = () => {
           <div className="date-picker">
             <DatePicker
               value={appointmentDate}
+              shouldDisableDate={(date) => date < new Date()}
               onChange={(newValue) => setAppointmentDate(newValue)}
               slotProps={{
                 openPickerIcon: { fontSize: "small" },
