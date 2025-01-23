@@ -269,9 +269,9 @@ const DynamicForms = () => {
 
   return (
     <div className="dynamic-forms">
-      <div className="go-back" onClick={() => navigate("/dashboard")}>
+      <div className="go-back" onClick={() => navigate(-1)}>
         <GoBackSvg />
-        <p>Go back to dashboard</p>
+        <p>Go back </p>
       </div>
       <div className="progress-container">
         <p className="progress-text">
