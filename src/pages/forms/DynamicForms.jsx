@@ -46,34 +46,29 @@ const DynamicForms = () => {
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
 
-  useEffect(() => {
-    const replacePlaceholders = (data, placeholder, replacement) => {
-      if (Array.isArray(data)) {
-        return data.map((item) =>
-          replacePlaceholders(item, placeholder, replacement)
-        );
-      }
-      if (typeof data === "object" && data !== null) {
-        return Object.keys(data).reduce((acc, key) => {
-          acc[key] = replacePlaceholders(data[key], placeholder, replacement);
-          return acc;
-        }, {});
-      }
-      if (typeof data === "string") {
-        return data.replaceAll(placeholder, replacement);
-      }
-      return data;
-    };
+  const fetchFilledForms = async () => {
+    try {
+      const fetchedFilledForms = await getAllFilledFormsForAppointment(
+        appointmentId
+      );
+      setFilledForms(fetchedFilledForms?.filledForms || []);
+    } catch (error) {
+      console.error("Error fetching filled forms:", error);
+    }
+  };
 
+  useEffect(() => {
     const fetchForms = async () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
-        console.log("fetchedForms>>>>", fetchedForms);
 
-        const updatedForms = replacePlaceholders(
-          fetchedForms?.forms || [],
-          "{{user.businessName}}",
-          businessName
+        const updatedForms = fetchedForms?.forms?.map((form) =>
+          JSON.parse(
+            JSON.stringify(form).replace(
+              /{{user\.businessName}}/g,
+              businessName
+            )
+          )
         );
 
         setForms(updatedForms || []);
@@ -82,21 +77,9 @@ const DynamicForms = () => {
       }
     };
 
-    const fetchFilledForms = async () => {
-      try {
-        const fetchedFilledForms = await getAllFilledFormsForAppointment(
-          appointmentId
-        );
-        setFilledForms(fetchedFilledForms?.filledForms || []);
-      } catch (error) {
-        console.error("Error fetching filled forms:", error);
-      }
-    };
-
     fetchForms();
     fetchFilledForms();
   }, [appointmentId, businessName]);
-
   useEffect(() => {
     if (!forms.length) return;
 
