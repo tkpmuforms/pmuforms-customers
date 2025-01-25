@@ -133,7 +133,9 @@ const AppointmentDetails = () => {
                 title={form.title || "Untitled Form"}
                 status={getFormStatus(form.id)}
                 ViewClick={() =>
-                  navigate(`/forms/appointment/${appointMent?.id}`)
+                  navigate(
+                    `/forms/appointment/${appointMent?.id}?formId=${form.id}`
+                  )
                 }
               />
             ))

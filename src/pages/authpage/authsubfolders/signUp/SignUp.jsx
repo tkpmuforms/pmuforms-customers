@@ -1,5 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import {
@@ -11,7 +11,6 @@ import { Toast } from "../../../../utils/toast/Toast";
 import "./signup.scss";
 
 const SignupPage = () => {
-  const [secondPage, setSecondPage] = useState(false);
   const navigate = useNavigate();
 
   const initialValues = {

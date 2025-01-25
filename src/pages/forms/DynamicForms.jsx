@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   createFilledForm,
   getAllFilledFormsForAppointment,
@@ -9,6 +9,9 @@ import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import "./dynamicForms.scss";
 import { Toast } from "../../utils/toast/Toast";
 import useAuth from "../../context/useAuth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import imageCompression from "browser-image-compression";
+import { storage } from "../../firebase/firebase";
 
 const FormInputTypes = {
   TEXT: "text",
@@ -26,10 +29,12 @@ const fieldToUserInfoMapping = {
   home_address: ["home_address"],
   emergency_contact_name: ["emergency_contact_name"],
   emergency_contact_phone: ["emergency_contact_phone"],
+  home_phone: ["cell_phone"],
 };
 
 const DynamicForms = () => {
   const { appointmentId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const businessName = localStorage.getItem("businessName");
@@ -140,15 +145,30 @@ const DynamicForms = () => {
     }));
   };
 
-  const handleImageChange = (fieldId, file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
+  const handleImageChange = async (fieldId, file) => {
+    if (!file) return;
+
+    const options = {
+      maxSizeMB: 0.4, // 400KB
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    };
+    const compressedFile = await imageCompression(file, options);
+
+    try {
+      const storageRef = ref(storage, `images/${user.uid}/${file.name}`);
+      const snapshot = await uploadBytes(storageRef, compressedFile);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
       setFormResponse((prev) => ({
         ...prev,
-        [fieldId]: e.target.result,
+        [fieldId]: downloadUrl,
       }));
-    };
-    if (file) reader.readAsDataURL(file);
+
+      Toast("success", "Image uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      Toast("error", "Failed to upload image.");
+    }
   };
 
   const renderFormFields = (fields) =>
@@ -203,7 +223,6 @@ const DynamicForms = () => {
                   {isRequired && <span className="required-star">*</span>}
                   <input
                     type="date"
-                    value={fieldValue || today} // Default to today's date
                     min={today}
                     max={today}
                     onChange={(e) =>
@@ -239,7 +258,16 @@ const DynamicForms = () => {
               </label>
               {fieldValue && (
                 <div className="image-preview">
-                  <img src={fieldValue} alt="Preview" />
+                  <img
+                    src={fieldValue}
+                    alt="Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      objectFit: "contain",
+                      marginTop: "10px",
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -318,6 +346,19 @@ const DynamicForms = () => {
     }
   };
 
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const formId = queryParams.get("formId");
+
+    if (!forms.length) return;
+
+    const startTab = formId ? forms.findIndex((form) => form.id === formId) : 0;
+
+    if (startTab !== -1) {
+      setCurrentTab(startTab);
+    }
+  }, [forms, location.search]);
+
   return (
     <div className="dynamic-forms">
       <div className="go-back" onClick={() => navigate(-1)}>
@@ -373,7 +414,7 @@ const DynamicForms = () => {
                 )
                   ? // ? () => setCurrentTab(currentTab + 1)
                     handleSubmit
-                  : () => setCurrentTab(currentTab + 1)
+                  : handleSubmit
               }
               disabled={saving}
             >

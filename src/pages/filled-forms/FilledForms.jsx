@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
+import { EditFormSvg } from "../../assets/svgs/DashboardSvg";
 import { FIlledFormsSvg } from "../../assets/svgs/filledFormsSvg";
 import { getAllFilledFormsForAppointment } from "../../services/services";
 import "./filledForms.scss";
@@ -38,47 +38,33 @@ const FilledForms = () => {
     fetchAllFilledFormsForAppointment();
   }, [id]);
 
-  const getFormStatus = (formId) => {
-    const filledForm = filledForms.find(
-      (filledForm) => filledForm.formTemplateId === formId
-    );
-    return filledForm?.status || "form-not-completed";
+  const handleCompleteForm = () => {
+    navigate(`/appointments`);
   };
 
   return (
-    <div>
-      <div className="form">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            cursor: "pointer",
-            padding: "0 20px",
-            marginBottom: "20px",
-          }}
-          onClick={() => navigate("/dashboard")}
-        >
-          <GoBackSvg />
-          <p>Go back to dashboard</p>
-        </div>
+    <div className="filled-form">
+      <div className="svg">
         <FIlledFormsSvg />
-
-        <div className="form-list">
-          {filledForms.length > 0 ? (
-            filledForms.map((form) => (
-              <RenderFormsCard
-                key={form.id}
-                title={form.title || "Untitled Form"}
-                status={getFormStatus(form.id)}
-                ViewClick={() => console.log("ViewClick", form.id)}
-              />
-            ))
-          ) : (
-            <p>No appointment details available.</p>
-          )}
-        </div>
       </div>
+
+      <div className="form-list">
+        {filledForms.length > 0 ? (
+          filledForms.map((form) => (
+            <RenderFormsCard
+              key={form.id}
+              title={form.title || "Untitled Form"}
+              status={form.status}
+              ViewClick={() => console.log("ViewClick", form.id)}
+            />
+          ))
+        ) : (
+          <p>No appointment details available.</p>
+        )}
+      </div>
+      <button className="complete-button" onClick={handleCompleteForm}>
+        Complete Form
+      </button>
     </div>
   );
 };

@@ -41,7 +41,7 @@ const RenderAppointmentCard = ({
         <p>Date of Appointment: {formattedDate}</p>
         <p>Forms filled: {formsFilled}</p>
         <span className={`status ${status}`}>
-          {status === "true" ? "Forms Completed" : "Forms Not Completed"}
+          {status === true ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="appointment-actions">
@@ -78,7 +78,7 @@ const AllAppointments = () => {
   const fetchServices = async (artistId) => {
     try {
       const response = await getArtistServices(artistId);
-      
+
       setServices(response?.services);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -106,14 +106,14 @@ const AllAppointments = () => {
       setAppointments(response?.appointments);
       setMetadata(response?.metadata);
     } catch (error) {
-      Toast("error",  error.message || "Error fetching appointments");
+      Toast("error", error.message || "Error fetching appointments");
     }
   };
 
   const removeAppointment = async (appointmentId) => {
     try {
       await deleteAppointment(appointmentId);
-    
+
       Toast("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
@@ -174,8 +174,8 @@ const AllAppointments = () => {
         </div>
       </div>
       <div className="appointments-list">
-        {filteredAppointments.length > 0 ? (
-          filteredAppointments.map((appointment, index) => (
+        {filteredAppointments?.length > 0 ? (
+          filteredAppointments?.map((appointment, index) => (
             <RenderAppointmentCard
               key={index}
               title={getServiceTitle(appointment?.services).truncatedTitle}
