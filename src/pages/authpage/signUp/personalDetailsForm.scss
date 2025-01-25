@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 10px;
+  padding: 0 5px;
 
   .personal-details-container {
     width: 600px;
@@ -10,6 +10,16 @@
     padding: 20px;
     border-radius: 10px;
 
+    .avatar-section{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    input[type="file"] {
+      display: none;
+
+    }
+  }
     h2 {
     font-size: 24px;
     font-weight: 700;
@@ -18,7 +28,7 @@
     font-family: RegularFont;
      color: black;
     }
-[po]
+
     .subtext {
       font-weight: 500px;
       font-size: 16px;
@@ -74,4 +84,11 @@
       }
     }
   }
+}
+
+.error{
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: left;
 }

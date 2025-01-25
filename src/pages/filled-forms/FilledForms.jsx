@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFilledFormsForAppointment,
   getAppointmentById,
-  getArtistServices,
-  getFormsForAppointMentById,
+  getArtistServices
 } from "../../services/services";
 import "./appointmentsdetails.scss";
 
@@ -27,10 +25,9 @@ const RenderFormsCard = ({ title, status, ViewClick }) => {
   );
 };
 
-const AppointmentDetails = () => {
+const FilledForms = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [forms, setForms] = useState([]);
   const [services, setServices] = useState([]);
   const [appointMent, setAppointMent] = useState({});
   const [filledForms, setFilledForms] = useState([]);
@@ -46,14 +43,7 @@ const AppointmentDetails = () => {
       }
     };
 
-    const fetchAllFormsForAppointment = async () => {
-      try {
-        const res = await getFormsForAppointMentById(id);
-        setForms(res?.forms || []);
-      } catch (error) {
-        console.error("Error fetching forms:", error);
-      }
-    };
+ 
 
     const fetchServices = async (artistId) => {
       try {
@@ -75,7 +65,7 @@ const AppointmentDetails = () => {
 
     if (id) {
       fetchAllFilledFormsForAppointment();
-      fetchAllFormsForAppointment();
+
       fetchServices(artisId);
       fetchAppointment();
     }
@@ -127,14 +117,14 @@ const AppointmentDetails = () => {
           </div>
         </div>
         <div className="form-list">
-          {forms.length > 0 ? (
-            forms.map((form) => (
+          {filledForms.length > 0 ? (
+            filledForms.map((form) => (
               <RenderFormsCard
                 key={form.id}
                 title={form.title || "Untitled Form"}
                 status={getFormStatus(form.id)}
                 ViewClick={() =>
-                  navigate(`/forms/appointment/${appointMent?.id}`)
+                 console.log("ViewClick", form.id)
                 }
               />
             ))
@@ -147,4 +137,4 @@ const AppointmentDetails = () => {
   );
 };
 
-export default AppointmentDetails;
+export default FilledForms;

@@ -8,6 +8,7 @@ import {
   createUserWithEmailAndPassword,
 } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_API_KEY,
@@ -31,6 +32,7 @@ if (!getApps().length) {
 
 const auth = getAuth(app);
 const firestore = getFirestore(app);
+const storage = getStorage(app);
 
 // Providers
 const googleProvider = new GoogleAuthProvider();
@@ -40,6 +42,7 @@ const facebookProvider = new FacebookAuthProvider();
 export {
   app,
   auth,
+  storage,
   firestore,
   googleProvider,
   facebookProvider,

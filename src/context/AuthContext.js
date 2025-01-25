@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setAuthenticated, setLoading, setUser } from "../redux/auth";
 import axiosInstance, { getAccessToken, isValidToken } from "./axiossetup";
+import { hideLoader, showLoader } from "../utils/loader/loader";
 
 export const setAuthHeader = (token) => {
   if (token) {
@@ -39,14 +40,33 @@ export const AuthProvider = ({ children }) => {
     if (token && isValidToken(token)) {
       setAuthHeader(token);
     } else {
+      const artistId = localStorage.getItem("artistId");
       dispatch(setLoading(false));
       dispatch(setAuthenticated(false));
+      dispatch(setUser(null));
+      navigate(`/#/${artistId}`);
     }
   }, []);
 
   const logout = () => {
+    setAuthHeader(null);
+    dispatch(setLoading(false));
+    dispatch(setAuthenticated(false));
+    dispatch(setUser(null));
+    const artistId = localStorage.getItem("artistId");
     localStorage.clear();
+    navigate(`/#/${artistId}`);
   };
+
+  useEffect(() => {
+    switch (loading) {
+      case true:
+        showLoader();
+        break;
+      default:
+        hideLoader();
+    }
+  }, [loading]);
 
   const value = {
     method: "JWT",

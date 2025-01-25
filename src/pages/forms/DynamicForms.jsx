@@ -312,7 +312,7 @@ const DynamicForms = () => {
                 color: "#8E2D8E",
               }}
             >
-              Go Back
+              Previous Form
             </button>
 
             <button
@@ -320,7 +320,8 @@ const DynamicForms = () => {
                 filledForms.some(
                   (f) => f.formTemplateId === forms[currentTab]?.id
                 )
-                  ? () => setCurrentTab(currentTab + 1)
+                  ? // ? () => setCurrentTab(currentTab + 1)
+                    handleSubmit
                   : handleSubmit
               }
               disabled={saving}

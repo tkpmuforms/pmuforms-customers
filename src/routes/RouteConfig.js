@@ -22,6 +22,11 @@ export const nonAuthRoutes = [
     breadcrumbs: [],
   },
   {
+    path: "/#/:artistId",
+    element: <AuthPage />,
+    breadcrumbs: [],
+  },
+  {
     path: "*",
     element: <NotFound />,
     breadcrumbs: [],
