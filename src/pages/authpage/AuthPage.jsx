@@ -7,11 +7,12 @@ import {
 } from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
-import LoginPage from "./login/Login";
-import SignupPage from "./signUp/SignUp";
+
 import { HandleSocialLogin } from "./authUtils";
 import { facebookProvider, googleProvider } from "../../firebase/firebase";
 import useAuth from "../../context/useAuth";
+import LoginPage from "./authsubfolders/login/Login";
+import SignupPage from "./authsubfolders/signUp/SignUp";
 
 const AuthPage = () => {
   const [page, setPage] = useState("login");

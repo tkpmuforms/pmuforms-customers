@@ -1,0 +1,111 @@
+.signup-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%; /* Full width for mobile */
+  padding: 20px;
+
+  .signup-container {
+    text-align: center;
+    width: 100%; /* Full width for mobile */
+
+    h2 {
+      font-size: 16px; /* Smaller font size for mobile */
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .subtext {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .signup-form {
+      .form-group {
+        margin-bottom: 20px;
+        text-align: left;
+
+        label {
+          display: block;
+          margin-bottom: 8px;
+          font-size: 14px;
+          color: #333;
+          font-family: BoldFont;
+        }
+
+        input {
+          width: 100%; /* Full width for mobile */
+          padding: 12px;
+          border: 1px solid #ddd;
+          background-color: #bcbbc133;
+          border-radius: 10px;
+          font-size: 14px;
+          box-sizing: border-box;
+        }
+      }
+
+      .signup-button {
+        width: 100%; /* Aligns with input fields */
+        padding: 12px;
+        background-color: var(--pmu-primary);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #6e1d6e; /* Darker shade of primary color */
+        }
+
+        &:disabled {
+          background: #ddd;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+/* Tablet and larger screens */
+@media (min-width: 768px) {
+  .signup-page {
+    width: 550px; /* Limit width for larger screens */
+    margin: 40px auto;
+  }
+
+  .signup-container {
+    h2 {
+      font-size: 18px;
+    }
+
+    .subtext {
+      font-size: 16px;
+    }
+
+    .signup-form {
+      .form-group {
+        input {
+          font-size: 16px;
+          padding: 14px;
+        }
+      }
+
+      .signup-button {
+        font-size: 18px;
+        padding: 14px;
+      }
+    }
+  }
+}
+
+/* Desktop and larger screens */
+@media (min-width: 1024px) {
+  .signup-page {
+    width: 600px;
+    margin: 50px auto;
+  }
+}

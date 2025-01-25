@@ -5,9 +5,9 @@ import * as Yup from "yup";
 import {
   auth,
   createUserWithEmailAndPassword,
-} from "../../../firebase/firebase";
-import { createCustomer } from "../../../services/services";
-import { Toast } from "../../../utils/toast/Toast";
+} from "../../../../firebase/firebase";
+import { createCustomer } from "../../../../services/services";
+import { Toast } from "../../../../utils/toast/Toast";
 import "./signup.scss";
 
 const SignupPage = () => {
@@ -44,14 +44,13 @@ const SignupPage = () => {
         email,
         password
       );
-    
+
       const user = userCredential.user;
 
       await createCustomer({
         accessToken: await user.getIdToken(),
         artistId: artistId,
       }).then((res) => {
-
         localStorage.setItem("userId", res.data?.customer?.id);
         localStorage.setItem("accessToken", res.data?.access_token);
         navigate("/dashboard");

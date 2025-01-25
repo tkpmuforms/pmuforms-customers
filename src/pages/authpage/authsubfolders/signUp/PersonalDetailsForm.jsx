@@ -4,12 +4,12 @@ import imageCompression from "browser-image-compression";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { storage } from "../../../firebase/firebase";
+import { storage } from "../../../../firebase/firebase";
 import {
   getAuthenticatedUser,
   SavePersonalInformation,
-} from "../../../services/services";
-import useAuth from "../../../context/useAuth";
+} from "../../../../services/services";
+import useAuth from "../../../../context/useAuth";
 import "./personalDetailsForm.scss";
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
@@ -66,7 +66,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             avatarUrl: avatar_url || "", // Set avatar URL if available
           });
 
-          setAvatarUrl(avatar_url || ""); 
+          setAvatarUrl(avatar_url || "");
         }
       } catch (error) {
         console.error("Error fetching customer info:", error);
@@ -129,28 +129,27 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   return (
     <div className="personal-details-page">
-      
       <div className="personal-details-container">
-      <div className="avatar-section">
-  <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
-    <Avatar
-      src={avatarUrl || ""}
-      alt="Profile Avatar"
-      sx={{ width: 100, height: 100 }}
-    >
-      {user?.displayName
-        ? user.displayName.slice(0, 2).toUpperCase()
-        : ""}
-    </Avatar>
-  </label>
-  <input
-    type="file"
-    id="avatar-upload"
-    accept="image/*"
-    onChange={handleAvatarChange}
-    style={{ display: "none" }}
-  />
-</div>
+        <div className="avatar-section">
+          <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
+            <Avatar
+              src={avatarUrl || ""}
+              alt="Profile Avatar"
+              sx={{ width: 100, height: 100 }}
+            >
+              {user?.displayName
+                ? user.displayName.slice(0, 2).toUpperCase()
+                : ""}
+            </Avatar>
+          </label>
+          <input
+            type="file"
+            id="avatar-upload"
+            accept="image/*"
+            onChange={handleAvatarChange}
+            style={{ display: "none" }}
+          />
+        </div>
         <h2>We would like to know a little about you</h2>
         <p className="subtext">
           Important: Fill out this information a few days before your

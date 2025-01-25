@@ -1,0 +1,143 @@
+.personal-details-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 10px;
+
+  .personal-details-container {
+    width: 100%; /* Full width for mobile */
+    max-width: 400px; /* Limit the max width */
+    text-align: center;
+    padding: 20px;
+    border-radius: 10px;
+
+    .avatar-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+
+      input[type="file"] {
+        display: none;
+      }
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 28px;
+      text-align: center;
+      font-family: RegularFont;
+      color: black;
+    }
+
+    .subtext {
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 20px;
+      text-align: center;
+      color: #707070;
+    }
+
+    .personal-details-form {
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+
+        label {
+          display: block;
+          margin-bottom: 6px;
+          font-size: 13px;
+          color: #333;
+        }
+
+        input {
+          width: 100%;
+          padding: 10px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 13px;
+          box-sizing: border-box;
+          background: #bcbcc133;
+        }
+      }
+
+      .grid-container {
+        display: block; /* Stack fields vertically on mobile */
+
+        .form-group {
+          margin-bottom: 10px;
+        }
+      }
+
+      .submit-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #800080;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #5a005a;
+        }
+      }
+    }
+  }
+}
+
+.error {
+  color: red;
+  font-size: 12px; /* Smaller error text on mobile */
+  margin-top: 5px;
+  text-align: left;
+}
+
+/* Responsive styles for larger screens */
+@media (min-width: 768px) {
+  .personal-details-page {
+    padding: 0 20px;
+
+    .personal-details-container {
+      max-width: 600px;
+
+      h2 {
+        font-size: 24px;
+        line-height: 32px;
+      }
+
+      .subtext {
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .personal-details-form {
+        .grid-container {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+        }
+
+        .submit-button {
+          font-size: 16px;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .personal-details-container {
+    padding: 30px;
+  }
+
+  .personal-details-form {
+    .submit-button {
+      padding: 14px;
+      font-size: 18px;
+    }
+  }
+}

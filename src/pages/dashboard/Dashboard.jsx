@@ -18,7 +18,7 @@ import {
   getAuthenticatedUser,
 } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";
-import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
+import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
 import { CircularProgress } from "@mui/material";
 import useAuth from "../../context/useAuth";
