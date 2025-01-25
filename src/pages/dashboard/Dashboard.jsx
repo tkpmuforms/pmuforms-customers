@@ -20,6 +20,8 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import PersonalDetailsForm from "../authpage/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
+import { CircularProgress } from "@mui/material";
+import useAuth from "../../context/useAuth";
 
 const RenderAppointmentCard = ({
   title,
@@ -57,51 +59,56 @@ const RenderAppointmentCard = ({
 const Dashboard = () => {
   const params = useParams();
   const artistId = params.artistId || localStorage.getItem("artistId");
+  const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
-  const [clientName, setClientName] = useState(
-    localStorage.getItem("userName")
-  );
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
-  const userId = localStorage.getItem("userId");
   const [businessName, setBusinessName] = useState(
     localStorage.getItem("businessName")
   );
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!businessName) {
-      fetchAndStoreBusinessName(artistId);
-    }
-    fetchAppointments(userId);
-    checkPersonalInformation(userId);
-    if (artistId) {
-      fetchServices(artistId);
-    }
-  }, [userId, artistId]);
+    const fetchData = async () => {
+      setLoading(true); // Start loader
+      try {
+        const [businessRes, appointmentsRes, customerRes, servicesRes] =
+          await Promise.all([
+            artistId ? getArtistById(artistId) : Promise.resolve(null),
+            getAllAppointments(),
+            getAuthenticatedUser(),
+            artistId ? getArtistServices(artistId) : Promise.resolve(null),
+          ]);
 
-  const fetchAndStoreBusinessName = async (artistId) => {
-    try {
-      const res = await getArtistById(artistId);
-      localStorage.setItem("businessName", res?.artist?.businessName);
-      setBusinessName(res?.artist?.businessName);
-    } catch (error) {
-      console.error("Error fetching business name:", error);
-    }
-  };
+        // Update business name
+        if (businessRes?.artist?.businessName) {
+          localStorage.setItem("businessName", businessRes.artist.businessName);
+          setBusinessName(businessRes.artist.businessName);
+        }
 
-  const fetchAppointments = async () => {
-    try {
-      const response = await getAllAppointments();
+        // Update appointments
+        const appointments = appointmentsRes?.appointments || [];
+        setAppointments(appointments);
+        categorizeAppointments(appointments);
 
-      setAppointments(response?.appointments);
-      categorizeAppointments(response?.appointments);
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-    }
-  };
+        // Update personal info visibility
+        const customerInfo = customerRes?.user?.info;
+        setShowPersonalInfo(!customerInfo);
+
+        // Update services
+        setServices(servicesRes?.services || []);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false); // Stop loader
+      }
+    };
+
+    fetchData();
+  }, [artistId]);
 
   const categorizeAppointments = (appointments) => {
     const now = new Date();
@@ -111,33 +118,8 @@ const Dashboard = () => {
     const upcoming = appointments.filter(
       (appointment) => new Date(appointment.date) >= now && !appointment.deleted
     );
-
     setPastAppointments(past);
     setUpcomingAppointments(upcoming);
-  };
-
-  const fetchServices = async (artistId) => {
-    try {
-      const response = await getArtistServices(artistId);
-      console.log("services", response);
-      setServices(response?.services);
-    } catch (error) {
-      console.error("Error fetching services:", error);
-    }
-  };
-
-  const checkPersonalInformation = async () => {
-    try {
-      const customer = await getAuthenticatedUser();
-      setClientName(customer?.user?.info?.client_name);
-      if (customer && customer?.user?.info) {
-        setShowPersonalInfo(false);
-      } else {
-        setShowPersonalInfo(true);
-      }
-    } catch (error) {
-      console.error("Error checking personal information:", error);
-    }
   };
 
   const getServiceTitle = (serviceIds) => {
@@ -178,7 +160,8 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <h3>
-            Hello, <span>{clientName}</span> Welcome back.
+            Hello, <span>{user?.name ?? user?.info?.client_name}</span> Welcome
+            back.
           </h3>
           <p>Welcome to {businessName}</p>
           <div className="alert">
@@ -236,18 +219,33 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="appointments-list">
-            {appointments?.slice(0, 3).map((appointment, index) => (
-              <RenderAppointmentCard
-                key={index}
-                title={getServiceTitle(appointment?.services)}
-                date={appointment?.date}
-                formsFilled={appointment?.formsFilled || 0}
-                status={appointment?.allFormsCompleted}
-                ViewClick={() => navigate(`/appointments/${appointment.id}`)}
-                DeleteClick={() => deleteAppointments(appointment.id)}
-              />
-            ))}
-            {appointments.length === 0 && (
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <CircularProgress size={100} color="#8e2d8e" />
+              </div>
+            ) : appointments?.length > 0 ? (
+              appointments
+                .slice(0, 3)
+                .map((appointment, index) => (
+                  <RenderAppointmentCard
+                    key={index}
+                    title={getServiceTitle(appointment?.services)}
+                    date={appointment?.date}
+                    formsFilled={appointment?.formsFilled || 0}
+                    status={appointment?.allFormsCompleted}
+                    ViewClick={() =>
+                      navigate(`/appointments/${appointment.id}`)
+                    }
+                    DeleteClick={() => deleteAppointments(appointment.id)}
+                  />
+                ))
+            ) : (
               <div className="no-appointments">
                 <NoAppointmentsSvg />
                 <p>You have no upcoming appointments</p>

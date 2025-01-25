@@ -19,7 +19,7 @@ const BookAppointment = () => {
     // Fetch artist and services
 
     getArtistServices(artistId).then((res) => {
-      console.log("Services:", services);
+
       setServices(res?.services);
     });
   }, [artistId]);
@@ -53,9 +53,9 @@ const BookAppointment = () => {
 
     try {
       // Save appointment to the backend
-      console.log("Creating appointment:", appointment);
+
       await bookAppointment(appointment).then((res) => {
-        console.log("Appointment created:", res);
+        
         Toast("success", "Appointment created successfully");
         navigate(`/forms/appointment/${res?.appointment?.id}`);
       });

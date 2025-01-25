@@ -78,7 +78,7 @@ const AllAppointments = () => {
   const fetchServices = async (artistId) => {
     try {
       const response = await getArtistServices(artistId);
-      console.log("services", response);
+      
       setServices(response?.services);
     } catch (error) {
       console.error("Error fetching services:", error);
@@ -103,18 +103,17 @@ const AllAppointments = () => {
   const fetchAppointments = async (page) => {
     try {
       const response = await getAllAppointments(page, itemsPerPage);
-      console.log("Fetched appointments:", response);
       setAppointments(response?.appointments);
       setMetadata(response?.metadata);
     } catch (error) {
-      console.error("Error fetching appointments:", error);
+      Toast("error",  error.message || "Error fetching appointments");
     }
   };
 
   const removeAppointment = async (appointmentId) => {
     try {
       await deleteAppointment(appointmentId);
-      console.log("Appointment deleted successfully");
+    
       Toast("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)

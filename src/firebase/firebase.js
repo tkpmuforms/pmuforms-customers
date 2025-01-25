@@ -24,10 +24,8 @@ const firebaseConfig = {
 let app;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
-  console.log("Firebase App Initialized Successfully");
 } else {
   app = getApps()[0];
-  console.log("Firebase App Already Initialized");
 }
 
 const auth = getAuth(app);

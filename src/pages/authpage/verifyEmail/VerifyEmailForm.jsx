@@ -21,14 +21,14 @@ const VerifyEmailForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle verification logic here
-    console.log("Verification code entered: ", code.join(""));
+  
   };
 
   // Handle resend code logic
   const handleResendCode = () => {
     setTimeLeft(12); // Reset timer
     // Handle code resend logic here
-    console.log("Resend verification code");
+   
   };
 
   // Timer for Resend Code button

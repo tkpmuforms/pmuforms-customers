@@ -15,7 +15,6 @@ import "./personalDetailsForm.scss";
 const PersonalDetailsForm = ({ onSubmitClick }) => {
   const { user } = useAuth();
   const [avatarUrl, setAvatarUrl] = useState("");
-
   const [initialValues, setInitialValues] = useState({
     firstName: "",
     lastName: "",
@@ -130,6 +129,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   return (
     <div className="personal-details-page">
+      
       <div className="personal-details-container">
       <div className="avatar-section">
   <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>

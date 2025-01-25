@@ -32,7 +32,6 @@ const DynamicForms = () => {
   const { appointmentId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log("user>>>>", user?.info);
   const businessName = localStorage.getItem("businessName");
 
   const [forms, setForms] = useState([]);

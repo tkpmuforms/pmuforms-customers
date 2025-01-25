@@ -9,7 +9,7 @@ import {
 import "./appointmentsdetails.scss";
 
 const RenderFormsCard = ({ title, status, ViewClick }) => {
-  console.log("status", status);
+
   return (
     <div className="form-card">
       <div className="form-info">
