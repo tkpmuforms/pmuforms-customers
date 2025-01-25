@@ -1,6 +1,7 @@
 import { lazy } from "react";
 import AuthPage from "../pages/authpage/AuthPage";
 import NotFound from "../components/not-found/NotFound";
+import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")
@@ -31,6 +32,10 @@ export const nonAuthRoutes = [
     path: "*",
     element: <NotFound />,
     breadcrumbs: [],
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
   },
 ];
 

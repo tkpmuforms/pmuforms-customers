@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FacebookLoginSvg,
   GoogleLoginSvg,
@@ -67,7 +67,7 @@ const AuthPage = () => {
         </div>
         <p className="terms-text">
           By proceeding, you agree to our <a href="#">Terms and conditions</a>{" "}
-          and our <a href="#">Privacy policy</a>
+          and our <Link to="/privacy-policy">Privacy policy</Link>
         </p>
       </div>
     </>
