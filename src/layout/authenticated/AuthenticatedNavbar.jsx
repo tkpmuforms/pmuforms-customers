@@ -79,7 +79,7 @@ const AuthenticatedNavbar = () => {
       <div style={{ display: "flex", alignItems: "center" }}>
         <div className="avatar" onClick={handleAvatarClick}>
           <Avatar
-            src={user?.avatarUrl ?? ""}
+            src={user?.info?.avatar_url ?? ""}
             alt={user?.name ?? user?.info?.client_name ?? ""}
             sx={{ width: 40, height: 40 }}
           />

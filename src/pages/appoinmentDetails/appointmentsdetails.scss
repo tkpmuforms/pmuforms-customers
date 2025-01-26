@@ -79,7 +79,7 @@
             border-radius: 8px;
           }
 
-          &.form-not-completed {
+          &.incomplete {
             background: #ffa21d1a;
             color: var(--pmu-orange);
             border-radius: 8px;
@@ -199,5 +199,21 @@
         }
       }
     }
+  }
+}
+
+.view-form-button {
+  background: #8e2d8e;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #6e1f6e;
   }
 }
