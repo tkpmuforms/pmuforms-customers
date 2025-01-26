@@ -102,7 +102,7 @@ const AppointmentDetails = () => {
     const filledForm = filledForms.find(
       (filledForm) => filledForm.formTemplateId === formId
     );
-    return filledForm?.status || "form-not-completed";
+    return filledForm?.status || "incomplete";
   };
 
   const handleViewForm = (form) => {
