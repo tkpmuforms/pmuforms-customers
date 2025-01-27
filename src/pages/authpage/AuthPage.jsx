@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   FacebookLoginSvg,
   GoogleLoginSvg,
@@ -7,11 +7,12 @@ import {
 } from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
-import LoginPage from "./login/Login";
-import SignupPage from "./signUp/SignUp";
+
 import { HandleSocialLogin } from "./authUtils";
 import { facebookProvider, googleProvider } from "../../firebase/firebase";
 import useAuth from "../../context/useAuth";
+import LoginPage from "./authsubfolders/login/Login";
+import SignupPage from "./authsubfolders/signUp/SignUp";
 
 const AuthPage = () => {
   const [page, setPage] = useState("login");
@@ -66,7 +67,7 @@ const AuthPage = () => {
         </div>
         <p className="terms-text">
           By proceeding, you agree to our <a href="#">Terms and conditions</a>{" "}
-          and our <a href="#">Privacy policy</a>
+          and our <Link to="/privacy-policy">Privacy policy</Link>
         </p>
       </div>
     </>

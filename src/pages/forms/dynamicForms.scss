@@ -132,3 +132,13 @@
     }
   }
 }
+
+.invalid-field {
+  border: 1px solid red;
+  background-color: #fff0f0;
+}
+
+.required-star {
+  color: red;
+  margin-left: 4px;
+}

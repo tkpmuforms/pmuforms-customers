@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./login.scss";
 import ForgotPasswordForm from "./ForgotPasswordForm";
-import { Toast } from "../../../utils/toast/Toast";
-import { SignInSuccessWithAuthResult } from "../authUtils";
-import useAuth from "../../../context/useAuth";
-import { signInWithEmailAndPassword, auth } from "../../../firebase/firebase";
+import { Toast } from "../../../../utils/toast/Toast";
+import { SignInSuccessWithAuthResult } from "../../authUtils";
+import useAuth from "../../../../context/useAuth";
+import {
+  signInWithEmailAndPassword,
+  auth,
+} from "../../../../firebase/firebase";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");

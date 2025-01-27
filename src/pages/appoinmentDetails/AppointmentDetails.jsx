@@ -9,19 +9,26 @@ import {
   getFormsForAppointMentById,
 } from "../../services/services";
 import "./appointmentsdetails.scss";
+import { Box, Button, Dialog, Modal, Typography } from "@mui/material";
+import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
 
-const RenderFormsCard = ({ title, status, ViewClick }) => {
-  console.log("status", status);
+const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (
     <div className="form-card">
       <div className="form-info">
         <h4>{title}</h4>
         <span className={`status ${status}`}>
-          {status === "incomplete" ? "Forms Completed" : "Forms Not Completed"}
+          {status === "completed" ? "Completed" : "Pending"}
         </span>
       </div>
       <div className="form-actions">
-        <EditFormSvg onClick={ViewClick} />
+        {status === "completed" ? (
+          <button className="view-form-button" onClick={onViewClick}>
+            View Form
+          </button>
+        ) : (
+          <EditFormSvg onClick={onEditClick} />
+        )}
       </div>
     </div>
   );
@@ -34,6 +41,8 @@ const AppointmentDetails = () => {
   const [services, setServices] = useState([]);
   const [appointMent, setAppointMent] = useState({});
   const [filledForms, setFilledForms] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedForm, setSelectedForm] = useState(null);
   const artisId = localStorage.getItem("artistId");
 
   useEffect(() => {
@@ -93,7 +102,19 @@ const AppointmentDetails = () => {
     const filledForm = filledForms.find(
       (filledForm) => filledForm.formTemplateId === formId
     );
-    return filledForm?.status || "form-not-completed";
+    return filledForm?.status || "incomplete";
+  };
+
+  const handleViewForm = (form) => {
+    setSelectedForm(form);
+    setIsModalOpen(true);
+    console.log("form", isModalOpen);
+    console.log("selectedForm", selectedForm);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedForm(null);
   };
 
   return (
@@ -133,9 +154,12 @@ const AppointmentDetails = () => {
                 key={form.id}
                 title={form.title || "Untitled Form"}
                 status={getFormStatus(form.id)}
-                ViewClick={() =>
-                  navigate(`/forms/appointment/${appointMent?.id}`)
+                onEditClick={() =>
+                  navigate(
+                    `/forms/appointment/${appointMent?.id}?formId=${form.id}`
+                  )
                 }
+                onViewClick={() => handleViewForm(form)}
               />
             ))
           ) : (
@@ -143,6 +167,34 @@ const AppointmentDetails = () => {
           )}
         </div>
       </div>
+      {isModalOpen && selectedForm && (
+        <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>
+          <div
+            style={{
+              display: "flex",
+              position: "absolute",
+              top: "0",
+              right: "0",
+              cursor: "pointer",
+              padding: "10px",
+              fontSize: "1.5rem",
+            }}
+            onClick={handleCloseModal}
+          >
+            &times;
+          </div>
+          {selectedForm ? (
+            <ViewFilledForm
+              formTemplateId={selectedForm.id}
+              appointmentId={id}
+            />
+          ) : (
+            <Typography variant="body2" color="error">
+              No form selected. Please try again.
+            </Typography>
+          )}
+        </Dialog>
+      )}
     </div>
   );
 };

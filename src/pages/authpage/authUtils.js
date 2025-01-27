@@ -19,7 +19,7 @@ export const HandleSocialLogin = async (
       throw new Error("Authentication failed. No result received.");
     }
     const user = result.user;
-    console.log("User:", user);
+
     const userToken = await user.getIdToken();
     const artistId = localStorage.getItem("artistId");
     localStorage.setItem("userEmail", user.email);
@@ -29,11 +29,10 @@ export const HandleSocialLogin = async (
       accessToken: userToken,
       artistId: artistId,
     }).then((res) => {
-      console.log(res.data);
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
       handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-      console.log("Social login successful:", user);
+
       Toast("success", "Login successful");
       navigate("/dashboard");
     });
@@ -59,11 +58,10 @@ export const SignInSuccessWithAuthResult = async (
       accessToken: userToken,
       artistId: artistId,
     }).then((res) => {
-      console.log(res);
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
       handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-      console.log("Social login successful:", user);
+
       Toast("success", "Login successful");
       navigate("/dashboard");
     });

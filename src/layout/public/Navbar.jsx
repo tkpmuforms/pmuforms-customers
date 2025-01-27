@@ -53,6 +53,9 @@ const Navbar = ({ CreatenewClick }) => {
               [Watch Video] “How to use PMU Forms”
             </a>
           </li>
+          <li>
+            <Link to="/privacy-policy">Privacy Policy</Link>
+          </li>
         </ul>
       </div>
       <div className="buttons">

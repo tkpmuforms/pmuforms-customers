@@ -1,17 +1,16 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import {
   auth,
   createUserWithEmailAndPassword,
-} from "../../../firebase/firebase";
-import { createCustomer } from "../../../services/services";
-import { Toast } from "../../../utils/toast/Toast";
+} from "../../../../firebase/firebase";
+import { createCustomer } from "../../../../services/services";
+import { Toast } from "../../../../utils/toast/Toast";
 import "./signup.scss";
 
 const SignupPage = () => {
-  const [secondPage, setSecondPage] = useState(false);
   const navigate = useNavigate();
 
   const initialValues = {
@@ -38,23 +37,19 @@ const SignupPage = () => {
       Toast("error", "Artist ID is missing");
       return;
     }
-
-    console.log("Form values:", values);
     try {
-      console.log("Creating user...");
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
         password
       );
-      console.log("User created:", userCredential);
+
       const user = userCredential.user;
 
       await createCustomer({
         accessToken: await user.getIdToken(),
         artistId: artistId,
       }).then((res) => {
-        console.log(res.data);
         localStorage.setItem("userId", res.data?.customer?.id);
         localStorage.setItem("accessToken", res.data?.access_token);
         navigate("/dashboard");

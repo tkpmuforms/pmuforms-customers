@@ -1,0 +1,55 @@
+.view-filled-form {
+  max-width: 800px;
+  margin: 0 auto;
+
+  padding: 20px;
+
+  .form-content {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+
+    h2 {
+      font-size: 16px;
+      margin-bottom: 10px;
+      color: #8e2d8e;
+    }
+
+    h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .read-only-field {
+      margin-bottom: 15px;
+
+      label {
+        display: block;
+        font-size: 12px;
+        color: #666;
+      }
+
+      p {
+        font-size: 12px;
+        color: #333;
+        background: #eaeaea;
+        padding: 8px;
+        border-radius: 5px;
+      }
+    }
+
+    button {
+      padding: 12px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+
+      &:disabled {
+        background-color: #ddd;
+        cursor: not-allowed;
+      }
+    }
+  }
+}

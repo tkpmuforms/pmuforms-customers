@@ -1,0 +1,219 @@
+.form {
+  margin-top: 5px;
+  padding: 0 40px;
+  p {
+    font-size: 14px;
+    color: #666;
+  }
+  .appointment-info {
+    padding: 0 20px;
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 10px;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .info-title {
+        font-size: 18px;
+        color: #8e2d8e;
+        font-weight: 500;
+        line-height: 24px;
+        margin-right: 10px;
+        font-family: BoldFont;
+      }
+
+      .info-value {
+        font-size: 14px;
+        color: #000000;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .form-list {
+    .form-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+
+      .form-info {
+        text-align: left;
+
+        h4 {
+          font-size: 16px;
+          padding: 0;
+          margin: 0;
+          font-family: MediumFont;
+          font-weight: 500;
+          line-height: 24px;
+          text-align: left;
+        }
+
+        p {
+          font-size: 11px;
+          padding: 0;
+          margin: 0;
+          font-weight: 400;
+          line-height: 16px;
+          text-align: left;
+        }
+
+        .status {
+          font-size: 12px;
+          display: inline-block;
+          padding: 5px 10px;
+          border-radius: 5px;
+          margin-top: 5px;
+
+          &.completed {
+            background: #34c7591a;
+            color: #34c759;
+            border-radius: 8px;
+          }
+
+          &.incomplete {
+            background: #ffa21d1a;
+            color: var(--pmu-orange);
+            border-radius: 8px;
+          }
+        }
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+      }
+    }
+  }
+}
+
+/* Tablet View: Adjust for screens up to 768px */
+@media screen and (max-width: 768px) {
+  .form {
+    padding: 15px;
+
+    .appointment-info {
+      padding: 15px;
+      margin-bottom: 15px;
+
+      .info-item {
+        .info-title {
+          font-size: 14px;
+        }
+
+        .info-value {
+          font-size: 16px;
+        }
+      }
+    }
+
+    .form-list {
+      .form-card {
+        padding: 15px;
+        flex-direction: column; /* Stack content vertically */
+        align-items: flex-start;
+
+        .form-info {
+          margin-bottom: 10px;
+
+          h4 {
+            font-size: 15px;
+          }
+
+          p {
+            font-size: 12px;
+          }
+
+          .status {
+            font-size: 11px;
+            padding: 4px 8px;
+          }
+        }
+
+        .form-actions {
+          width: 100%;
+          justify-content: flex-start;
+        }
+      }
+    }
+  }
+}
+
+/* Mobile View: Adjust for screens up to 480px */
+@media screen and (max-width: 480px) {
+  .form {
+    padding: 10px;
+
+    .appointment-info {
+      padding: 15px;
+      margin-bottom: 15px;
+
+      .info-item {
+        .info-title {
+          font-size: 12px;
+        }
+
+        .info-value {
+          font-size: 14px;
+        }
+      }
+    }
+    .form-list {
+      .form-card {
+        padding: 12px;
+        margin-bottom: 15px;
+
+        .form-info {
+          h4 {
+            font-size: 14px;
+          }
+
+          p {
+            font-size: 11px;
+          }
+
+          .status {
+            font-size: 10px;
+            padding: 4px 6px;
+          }
+        }
+
+        .form-actions {
+          width: 100%;
+          justify-content: space-between;
+          gap: 5px;
+
+          button {
+            font-size: 12px;
+            padding: 8px;
+            width: 48%; /* Make buttons equal width */
+          }
+        }
+      }
+    }
+  }
+}
+
+.view-form-button {
+  background: #8e2d8e;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #6e1f6e;
+  }
+}

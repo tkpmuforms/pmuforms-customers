@@ -17,7 +17,7 @@ const AppWrapper = () => {
 
     // Store artistId in localStorage if found
     if (artistId) {
-      console.log("Extracted Artist ID:", artistId);
+      
       localStorage.setItem("artistId", artistId);
     }
   }, [location]);

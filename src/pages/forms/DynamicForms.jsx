@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   createFilledForm,
   getAllFilledFormsForAppointment,
@@ -9,6 +9,9 @@ import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import "./dynamicForms.scss";
 import { Toast } from "../../utils/toast/Toast";
 import useAuth from "../../context/useAuth";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import imageCompression from "browser-image-compression";
+import { storage } from "../../firebase/firebase";
 
 const FormInputTypes = {
   TEXT: "text",
@@ -26,93 +29,95 @@ const fieldToUserInfoMapping = {
   home_address: ["home_address"],
   emergency_contact_name: ["emergency_contact_name"],
   emergency_contact_phone: ["emergency_contact_phone"],
+  home_phone: ["cell_phone"],
 };
 
 const DynamicForms = () => {
   const { appointmentId } = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log("user>>>>", user?.info);
   const businessName = localStorage.getItem("businessName");
-
   const [forms, setForms] = useState([]);
   const [filledForms, setFilledForms] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
   const [formResponse, setFormResponse] = useState({});
   const [saving, setSaving] = useState(false);
+  const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
+  const [autofilledFields, setAutofilledFields] = useState(new Set());
+
+  const fetchFilledForms = async () => {
+    try {
+      const fetchedFilledForms = await getAllFilledFormsForAppointment(
+        appointmentId
+      );
+      setFilledForms(fetchedFilledForms?.filledForms || []);
+    } catch (error) {
+      console.error("Error fetching filled forms:", error);
+    }
+  };
 
   useEffect(() => {
     const fetchForms = async () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
-        console.log("fetchedForms>>>>", fetchedForms);
-        // Replace {{user.businessName}} dynamically in form titles and fields
-        const updatedForms = fetchedForms?.forms?.map((form) => ({
-          ...form,
-          sections: form?.sections.map((section) => ({
-            ...section,
-            data: section?.data.map((field) => ({
-              ...field,
-              title: field?.title?.replace(
-                "{{user.businessName}}",
-                businessName
-              ),
-            })),
-          })),
-          title: form?.title?.replace("{{user.businessName}}", businessName),
-        }));
+
+        const updatedForms = fetchedForms?.forms?.map((form) =>
+          JSON.parse(
+            JSON.stringify(form).replace(
+              /{{user\.businessName}}/g,
+              businessName
+            )
+          )
+        );
+
         setForms(updatedForms || []);
       } catch (error) {
         console.error("Error fetching forms:", error);
       }
     };
 
-    const fetchFilledForms = async () => {
-      try {
-        const fetchedFilledForms = await getAllFilledFormsForAppointment(
-          appointmentId
-        );
-        setFilledForms(fetchedFilledForms?.filledForms || []);
-      } catch (error) {
-        console.error("Error fetching filled forms:", error);
-      }
-    };
-
     fetchForms();
     fetchFilledForms();
-  }, [appointmentId]);
-
+  }, [appointmentId, businessName]);
   useEffect(() => {
-    if (forms.length && filledForms.length) {
-      const currentForm = forms[currentTab];
-      if (currentForm) {
-        const filledForm = filledForms.find(
-          (f) => f?.formTemplateId === currentForm.id
-        );
+    if (!forms.length) return;
 
-        if (filledForm) {
-          // Populate form with saved data
-          setFormResponse(filledForm?.data || {});
-        } else {
-          // Autofill fields using user info for a new form
-          const autofillResponse = {};
-          currentForm.sections.forEach((section) => {
-            section.data.forEach((field) => {
-              // Check if the field ID exists in the mapping
-              const userInfoKeys = fieldToUserInfoMapping[field.id];
-              if (userInfoKeys) {
-                // For each userInfoKey, populate the response
-                userInfoKeys.forEach((key) => {
-                  if (user?.info?.[key]) {
-                    autofillResponse[field.id] = user.info[key];
-                  }
-                });
-              }
-            });
+    const currentForm = forms[currentTab];
+    if (!currentForm) return;
+
+    const filledForm = filledForms.find(
+      (f) => f?.formTemplateId === currentForm.id
+    );
+
+    if (filledForm) {
+      // Populate form with saved data
+      setFormResponse(filledForm?.data || {});
+    } else if (
+      currentForm?.sections.some((section) => section.isClientInformation)
+    ) {
+      // Autofill for new forms with `isClientInformation` flag
+      const autofillResponse = {};
+      const autofilledFieldIds = new Set();
+
+      currentForm?.sections.forEach((section) => {
+        if (section.isClientInformation) {
+          section.data.forEach((field) => {
+            const userInfoKeys = fieldToUserInfoMapping[field.id];
+            if (userInfoKeys) {
+              userInfoKeys.forEach((key) => {
+                if (user?.info?.[key]) {
+                  autofillResponse[field.id] = user.info[key];
+                  autofilledFieldIds.add(field.id); // Track autofilled field
+                }
+              });
+            }
           });
-          setFormResponse(autofillResponse);
         }
-      }
+      });
+
+      setFormResponse(autofillResponse);
+      setAutofilledFields(autofilledFieldIds);
     }
   }, [forms, filledForms, currentTab, user]);
 
@@ -123,54 +128,29 @@ const DynamicForms = () => {
     }));
   };
 
-  const handleImageChange = (fieldId, file) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
+  const handleImageChange = async (fieldId, file) => {
+    if (!file) return;
+
+    const options = {
+      maxSizeMB: 0.4, // 400KB
+      maxWidthOrHeight: 500,
+      useWebWorker: true,
+    };
+    const compressedFile = await imageCompression(file, options);
+
+    try {
+      const storageRef = ref(storage, `images/${user.uid}/${file.name}`);
+      const snapshot = await uploadBytes(storageRef, compressedFile);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
       setFormResponse((prev) => ({
         ...prev,
-        [fieldId]: e.target.result,
+        [fieldId]: downloadUrl,
       }));
-    };
-    if (file) reader.readAsDataURL(file);
-  };
 
-  const handleSubmit = async () => {
-    const currentForm = forms[currentTab];
-    if (!currentForm) return;
-
-    const requiredFields = currentForm.sections.flatMap(
-      (section) => section.data?.filter((field) => field.required) || []
-    );
-
-    const missingFields = requiredFields.some(
-      (field) => !formResponse[field?.id]
-    );
-
-    if (missingFields) {
-      Toast("error", "Please fill in all required fields");
-      return;
-    }
-
-    setSaving(true);
-    try {
-      await createFilledForm({
-        appointmentId,
-        formTemplateId: currentForm.id,
-        data: formResponse,
-      });
-      setFormResponse({});
-      setSaving(false);
-      Toast("success", "Form submitted successfully");
-      if (currentTab < forms.length - 1) {
-        setCurrentTab(currentTab + 1); // Move to the next form tab
-      } else {
-        navigate(`/appointments/${appointmentId}`);
-      }
+      Toast("success", "Image uploaded successfully!");
     } catch (error) {
-      console.error("Error submitting form:", error);
-
-      Toast("error", error?.message || "An error occurred");
-      setSaving(false);
+      console.error("Error uploading image:", error);
+      Toast("error", "Failed to upload image.");
     }
   };
 
@@ -178,6 +158,17 @@ const DynamicForms = () => {
     fields.map((field) => {
       if (!field || !field.id) return null;
       const fieldValue = formResponse[field?.id] || "";
+      const isRequired = field.required;
+      const isFieldInvalid =
+        !fieldValue && requiredFieldsOnSubmit.includes(field.id);
+      const isAutofilled = autofilledFields.has(field.id);
+
+      const commonProps = {
+        className: isFieldInvalid ? "invalid-field" : "",
+        onChange: (e) => handleInputChange(field.id, e.target.value),
+        required: isRequired,
+        readOnly: isAutofilled,
+      };
 
       if (!field.type) {
         return (
@@ -198,21 +189,39 @@ const DynamicForms = () => {
                   onChange={(e) =>
                     handleInputChange(field.id, e.target.checked)
                   }
+                  disabled={isAutofilled}
                 />
                 {field.title}
+                {isRequired && <span className="required-star">*</span>}
               </label>
             </div>
           );
         case FormInputTypes.DATE:
+          if (field.id === "date_of_signing") {
+            const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+            return (
+              <div key={field.id}>
+                <label>
+                  {field.title}
+                  {isRequired && <span className="required-star">*</span>}
+                  <input
+                    type="date"
+                    min={today}
+                    max={today}
+                    onChange={(e) =>
+                      handleInputChange(field.id, e.target.value)
+                    }
+                  />
+                </label>
+              </div>
+            );
+          }
           return (
             <div key={field.id}>
               <label>
                 {field.title}
-                <input
-                  type="date"
-                  value={fieldValue}
-                  onChange={(e) => handleInputChange(field.id, e.target.value)}
-                />
+                {isRequired && <span className="required-star">*</span>}
+                <input type="date" value={fieldValue} {...commonProps} />
               </label>
             </div>
           );
@@ -221,6 +230,7 @@ const DynamicForms = () => {
             <div key={field.id}>
               <label>
                 {field.title}
+                {isRequired && <span className="required-star">*</span>}
                 <input
                   type="file"
                   accept="image/*"
@@ -231,7 +241,16 @@ const DynamicForms = () => {
               </label>
               {fieldValue && (
                 <div className="image-preview">
-                  <img src={fieldValue} alt="Preview" />
+                  <img
+                    src={fieldValue}
+                    alt="Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      objectFit: "contain",
+                      marginTop: "10px",
+                    }}
+                  />
                 </div>
               )}
             </div>
@@ -241,10 +260,12 @@ const DynamicForms = () => {
             <div key={field.id}>
               <label>
                 {field.title}
+                {isRequired && <span className="required-star">*</span>}
                 <input
                   type="number"
                   value={fieldValue}
-                  onChange={(e) => handleInputChange(field.id, e.target.value)}
+                  {...commonProps}
+                  disabled={isAutofilled}
                 />
               </label>
             </div>
@@ -254,12 +275,12 @@ const DynamicForms = () => {
             <div key={field.id}>
               <label>
                 {field.title}
+                {isRequired && <span className="required-star">*</span>}
                 <input
                   type="text"
                   value={fieldValue}
-                  placeholder={field.placeholder || ""}
-                  onChange={(e) => handleInputChange(field.id, e.target.value)}
-                  required={field.required}
+                  {...commonProps}
+                  disabled={isAutofilled}
                 />
               </label>
             </div>
@@ -267,11 +288,65 @@ const DynamicForms = () => {
       }
     });
 
+  const handleSubmit = async () => {
+    const currentForm = forms[currentTab];
+    if (!currentForm) return;
+
+    const requiredFields = currentForm.sections.flatMap(
+      (section) => section.data?.filter((field) => field.required) || []
+    );
+
+    const missingFields = requiredFields.filter(
+      (field) => !formResponse[field?.id]
+    );
+
+    setRequiredFieldsOnSubmit(missingFields.map((field) => field.id));
+
+    if (missingFields.length > 0) {
+      Toast("error", "Please fill in all required fields");
+      return;
+    }
+
+    setSaving(true);
+    try {
+      await createFilledForm({
+        appointmentId,
+        formTemplateId: currentForm.id,
+        data: formResponse,
+      });
+      setFormResponse({});
+      setSaving(false);
+      Toast("success", "Form submitted successfully");
+      if (currentTab < forms.length - 1) {
+        setCurrentTab(currentTab + 1); // Move to the next form tab
+      } else {
+        navigate(`/filled-forms/appointment/${appointmentId}`);
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      Toast("error", error?.message || "An error occurred");
+      setSaving(false);
+    }
+  };
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const formId = queryParams.get("formId");
+
+    if (!forms.length) return;
+
+    const startTab = formId ? forms.findIndex((form) => form.id === formId) : 0;
+
+    if (startTab !== -1) {
+      setCurrentTab(startTab);
+    }
+  }, [forms, location.search]);
+
   return (
     <div className="dynamic-forms">
-      <div className="go-back" onClick={() => navigate("/dashboard")}>
+      <div className="go-back" onClick={() => navigate(-1)}>
         <GoBackSvg />
-        <p>Go back to dashboard</p>
+        <p>Go back </p>
       </div>
       <div className="progress-container">
         <p className="progress-text">
@@ -312,7 +387,7 @@ const DynamicForms = () => {
                 color: "#8E2D8E",
               }}
             >
-              Go Back
+              Previous Form
             </button>
 
             <button
@@ -320,7 +395,8 @@ const DynamicForms = () => {
                 filledForms.some(
                   (f) => f.formTemplateId === forms[currentTab]?.id
                 )
-                  ? () => setCurrentTab(currentTab + 1)
+                  ? // ? () => setCurrentTab(currentTab + 1)
+                    handleSubmit
                   : handleSubmit
               }
               disabled={saving}

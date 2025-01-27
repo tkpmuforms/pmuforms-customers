@@ -1,12 +1,13 @@
 import { lazy } from "react";
 import AuthPage from "../pages/authpage/AuthPage";
 import NotFound from "../components/not-found/NotFound";
+import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")
 );
 const AppointmentDetails = lazy(() =>
-  import("../pages/appointsments/AppointmentDetails")
+  import("../pages/appoinmentDetails/AppointmentDetails")
 );
 const BookAppointment = lazy(() =>
   import("../pages/bookAppointment/BookAppointment")
@@ -14,6 +15,7 @@ const BookAppointment = lazy(() =>
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const DynamicForms = lazy(() => import("../pages/forms/DynamicForms"));
 const ContactSupport = lazy(() => import("../pages/contact-us/ContactUs"));
+const FilledForms = lazy(() => import("../pages/filled-forms/FilledForms"));
 
 export const nonAuthRoutes = [
   {
@@ -22,9 +24,18 @@ export const nonAuthRoutes = [
     breadcrumbs: [],
   },
   {
+    path: "/#/:artistId",
+    element: <AuthPage />,
+    breadcrumbs: [],
+  },
+  {
     path: "*",
     element: <NotFound />,
     breadcrumbs: [],
+  },
+  {
+    path: "/privacy-policy",
+    element: <PrivacyPolicy />,
   },
 ];
 
@@ -63,5 +74,10 @@ export const authorizedRoutes = [
     path: "/forms/appointment/:appointmentId",
     element: <DynamicForms />,
     breadcrumbs: ["Dynamic Forms"],
+  },
+  {
+    path: "/filled-forms/appointment/:id",
+    element: <FilledForms />,
+    breadcrumbs: ["Filled Forms"],
   },
 ];

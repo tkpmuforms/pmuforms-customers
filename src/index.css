@@ -20,8 +20,21 @@ code {
     monospace;
 }
 
-:-webkit-scrollbar {
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar {
   width: 4px;
+  height: 2px;
+  background-color: transparent !important;
+  scroll-behavior: smooth;
+  position: relative;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c158c1 !important;
+  border-radius: 8px;
 }
 @font-face {
   font-family: "Reddit Sans";

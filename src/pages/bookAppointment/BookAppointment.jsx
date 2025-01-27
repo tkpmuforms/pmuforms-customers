@@ -1,4 +1,4 @@
-import { Checkbox } from "@mui/material";
+import { Checkbox, CircularProgress } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import React, { useEffect, useState } from "react";
@@ -15,13 +15,23 @@ const BookAppointment = () => {
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [appointmentDate, setAppointmentDate] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetchingServices, setFetchingServices] = useState(true);
+
   useEffect(() => {
     // Fetch artist and services
-
-    getArtistServices(artistId).then((res) => {
-      console.log("Services:", services);
-      setServices(res?.services);
-    });
+    setFetchingServices(true);
+    getArtistServices(artistId)
+      .then((res) => {
+        setServices(res?.services);
+      })
+      .catch((error) => {
+        Toast("error", "Failed to load services");
+        console.error("Error fetching services:", error);
+      })
+      .finally(() => {
+        setFetchingServices(false);
+      });
   }, [artistId]);
 
   // Toggle service selection
@@ -52,16 +62,17 @@ const BookAppointment = () => {
     };
 
     try {
+      setLoading(true);
       // Save appointment to the backend
-      console.log("Creating appointment:", appointment);
       await bookAppointment(appointment).then((res) => {
-        console.log("Appointment created:", res);
         Toast("success", "Appointment created successfully");
         navigate(`/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
       Toast("error", "Error creating the appointment");
       console.error("Error creating the appointment:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -74,69 +85,83 @@ const BookAppointment = () => {
           information must be filled out a few days in advance.
         </p>
 
-        <div className="form-group">
-          <p htmlFor="appointment-date">
-            What's the date of your upcoming appointment(s)?*
-          </p>
-          <div className="date-picker">
-            <DatePicker
-              value={appointmentDate}
-              shouldDisableDate={(date) => date < new Date()}
-              onChange={(newValue) => setAppointmentDate(newValue)}
-              slotProps={{
-                openPickerIcon: { fontSize: "small" },
-                openPickerButton: { color: "secondary" },
-                textField: {
-                  variant: "outlined",
-                  color: "secondary",
-                  fullWidth: true,
-                  size: "small",
-                  sx: {
-                    "& .MuiInputBase-root": {
-                      border: "none",
-                      borderRadius: "8px",
-                      backgroundColor: "#f8f8f8",
-                      boxShadow: "none",
-                      padding: "5px 10px",
-                    },
-                    "& .MuiOutlinedInput-notchedOutline": {
-                      border: "none",
-                    },
-                  },
-                },
-              }}
-              fullWidth
-            />
+        {fetchingServices ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <CircularProgress size={50} color="#8e2d8e" />
           </div>
-        </div>
-
-        <div className="form-group">
-          <p>
-            Select services that you will be getting at your upcoming
-            appointment(s)*
-          </p>
-          <div className="services-list">
-            {services.map((service) => (
-              <div key={service?.id} className="checkbox-item">
-                <Checkbox
-                  sx={{
-                    color: "#800080",
-                    "&.Mui-checked": {
-                      color: "#800080",
-                    },
-                    "& .MuiSvgIcon-root": {
-                      fontSize: 20,
-                      borderRadius: "4px",
+        ) : (
+          <>
+            <div className="form-group">
+              <p htmlFor="appointment-date">
+                What's the date of your upcoming appointment(s)?*
+              </p>
+              <div className="date-picker">
+                <DatePicker
+                  value={appointmentDate}
+                  shouldDisableDate={(date) => date < new Date()}
+                  onChange={(newValue) => setAppointmentDate(newValue)}
+                  slotProps={{
+                    openPickerIcon: { fontSize: "small" },
+                    openPickerButton: { color: "secondary" },
+                    textField: {
+                      variant: "outlined",
+                      color: "secondary",
+                      fullWidth: true,
+                      size: "small",
+                      sx: {
+                        "& .MuiInputBase-root": {
+                          border: "none",
+                          borderRadius: "8px",
+                          backgroundColor: "#f8f8f8",
+                          boxShadow: "none",
+                          padding: "5px 10px",
+                        },
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "none",
+                        },
+                      },
                     },
                   }}
-                  checked={selectedServices.includes(service)}
-                  onChange={() => handleServiceChange(service)}
+                  fullWidth
                 />
-                <label>{service?.service}</label>
               </div>
-            ))}
-          </div>
-        </div>
+            </div>
+
+            <div className="form-group">
+              <p>
+                Select services that you will be getting at your upcoming
+                appointment(s)*
+              </p>
+              <div className="services-list">
+                {services.map((service) => (
+                  <div key={service?.id} className="checkbox-item">
+                    <Checkbox
+                      sx={{
+                        color: "#800080",
+                        "&.Mui-checked": {
+                          color: "#800080",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 20,
+                          borderRadius: "4px",
+                        },
+                      }}
+                      checked={selectedServices.includes(service)}
+                      onChange={() => handleServiceChange(service)}
+                    />
+                    <label>{service?.service}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
 
         <div className="alert-box">
           <p>
@@ -149,8 +174,12 @@ const BookAppointment = () => {
           <button className="go-back-button" onClick={() => navigate(-1)}>
             Go Back
           </button>
-          <button className="continue-button" onClick={handleContinue}>
-            Continue
+          <button
+            className="continue-button"
+            onClick={handleContinue}
+            disabled={loading}
+          >
+            {loading ? "Processing..." : "Continue"}
           </button>
         </div>
       </div>

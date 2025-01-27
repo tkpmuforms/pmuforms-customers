@@ -7,7 +7,8 @@ import useAuth from "../../context/useAuth";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
-  const { logout, currentUser } = useAuth(); // Assuming `currentUser` provides username
+  const { logout, user } = useAuth();
+  console.log("user", user);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const mobileMenuRef = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown
@@ -36,7 +37,6 @@ const AuthenticatedNavbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/");
   };
 
   useEffect(() => {
@@ -79,11 +79,9 @@ const AuthenticatedNavbar = () => {
       <div style={{ display: "flex", alignItems: "center" }}>
         <div className="avatar" onClick={handleAvatarClick}>
           <Avatar
-            children={
-              currentUser?.displayName
-                ? currentUser.displayName.slice(0, 2).toUpperCase()
-                : ""
-            }
+            src={user?.info?.avatar_url ?? ""}
+            alt={user?.name ?? user?.info?.client_name ?? ""}
+            sx={{ width: 40, height: 40 }}
           />
         </div>
         <Menu
@@ -97,7 +95,9 @@ const AuthenticatedNavbar = () => {
           }}
         >
           <MenuItem>
-            <Typography>{currentUser?.displayName || "User"}</Typography>
+            <Typography>
+              {user?.name ?? user?.info?.client_name ?? ""}
+            </Typography>
           </MenuItem>
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
