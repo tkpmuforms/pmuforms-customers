@@ -65,10 +65,12 @@ const AuthenticatedNavbar = () => {
             <li>
               <Link to="/support">Contact Support</Link>
             </li>
-            {/* Add Logout to Mobile Links */}
-            <li className="mobile-logout">
-              <span onClick={handleLogout}>Logout</span>
-            </li>
+            {
+              mobileMenuVisible &&
+              <li className="mobile-logout">
+                <span onClick={handleLogout}>Logout</span>
+              </li>
+            }
           </ul>
         </div>
       </div>
