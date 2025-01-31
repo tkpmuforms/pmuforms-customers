@@ -390,10 +390,10 @@ export const GoBackSvg = ({ onClick, ...props }) => {
       <path
         d="M27 31.9201L20.48 25.4001C19.71 24.6301 19.71 23.3701 20.48 22.6001L27 16.0801"
         stroke="#8E2D8E"
-        stroke-width="1.5"
-        stroke-miterlimit="10"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeMiterlimit="10"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );

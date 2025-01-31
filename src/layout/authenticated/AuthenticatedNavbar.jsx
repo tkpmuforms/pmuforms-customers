@@ -8,7 +8,6 @@ import useAuth from "../../context/useAuth";
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
-  console.log("user", user);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const mobileMenuRef = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown

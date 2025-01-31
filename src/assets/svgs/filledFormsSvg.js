@@ -10,9 +10,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M185.157 173.781L163.697 146.773L101.891 131.917L5.03125 187.952L139.131 356.793L270.187 280.795L244.018 247.858"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M129.264 166.622L95.418 135.621L101.89 131.878L129.264 166.622Z"
@@ -21,9 +21,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M129.264 166.622L95.418 135.621L101.89 131.878L129.264 166.622Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M188.654 253.655C172.676 244.448 163.347 228.866 163.534 214.348C152.203 211.819 140.338 213.511 130.165 219.106C109.497 231.071 106.027 257.555 122.443 278.183C138.858 298.848 168.923 305.869 189.59 293.862C201.581 287.159 208.598 274.111 207.578 260.412C200.909 259.339 194.494 257.049 188.654 253.655Z"
@@ -32,65 +32,65 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M188.654 253.655C172.676 244.448 163.347 228.866 163.534 214.348C152.203 211.819 140.338 213.511 130.165 219.106C109.497 231.071 106.027 257.555 122.443 278.183C138.858 298.848 168.923 305.869 189.59 293.862C201.581 287.159 208.598 274.111 207.578 260.412C200.909 259.339 194.494 257.049 188.654 253.655Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M163.658 146.695L129.265 166.622L101.891 131.878"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M45.7422 201.052L103.336 167.713"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M63.7148 223.748L153.323 171.883"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M133.047 266.407L172.197 276.856L170.794 237.201"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M176.409 184.247L167.558 199.455C157.497 216.845 166.939 241.129 188.653 253.655C208.103 264.916 234.039 264.216 246.246 244.687L254.936 229.615"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M191.449 170.104C184.099 173.264 178.293 179.194 175.289 186.609C167.829 204.945 179.76 226.392 198.244 237.042C214.699 246.544 236.186 247.462 249.56 235.715C251.603 233.923 253.405 231.876 254.924 229.623"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M309.416 109.34L299.745 126.03C296.159 132.268 288.555 135.542 280.053 135.542C255.173 135.542 234.813 109.915 244.063 93.898L253.693 77.208C249.326 84.8124 251.862 94.1702 256.697 101.23C270.765 121.774 300.751 124.253 309.416 109.34Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M344.121 175.161C332.083 200.064 308.28 228.321 288.945 243.79C282.157 242.762 275.527 240.875 269.214 238.174C256.958 232.028 246.007 223.566 236.967 213.257L250.847 189.394C248.614 185.338 246.584 181.174 244.765 176.916C242.878 177.836 240.753 178.148 238.681 177.812C241.879 188.185 237.396 192.552 230.454 191.655C233.458 201.287 226.594 205.271 217.197 201.677C218.521 209.279 207.618 210.42 198.869 203.08C191.912 197.241 180.844 180.747 188.347 173.372C189.294 172.454 190.51 171.866 191.817 171.695C190.414 166.352 190.786 160.955 195.991 157.813C196.846 157.284 197.803 156.939 198.799 156.8C197.307 148.446 201.703 142.664 208.157 140.772C208.282 136.462 210.665 132.536 214.43 130.434C211.142 125.372 208.582 119.872 206.826 114.097C204.827 105.861 211.158 100.978 219.578 107.468C222.35 109.608 226.01 112.692 230.378 116.24C231.587 115.539 243.012 109.923 243.012 109.923C243.459 111.318 244.02 112.675 244.689 113.979C244.689 113.979 242.626 117.567 239.308 123.222C249.954 131.177 263.093 139.677 277.093 144.277L282.123 135.612C288.048 135.463 293.683 133.017 297.837 128.79C310.958 140.291 304.618 134.146 344.121 175.161Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M301.968 116.165C282.819 125.912 252.711 108.393 251.51 87.1127C250.828 75.0275 260.588 67.6953 273.379 67.6953C288.47 67.6953 304.425 78.0003 309.839 91.8329C313.705 101.696 311.425 111.349 301.968 116.165Z"
@@ -99,9 +99,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M301.968 116.165C282.819 125.912 252.711 108.393 251.51 87.1127C250.828 75.0275 260.588 67.6953 273.379 67.6953C288.47 67.6953 304.425 78.0003 309.839 91.8329C313.705 101.696 311.425 111.349 301.968 116.165Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M269.255 238.167C266.448 245.226 265.979 250.339 268.358 252.321C271.556 254.974 279.275 251.463 288.988 243.782C282.234 242.596 275.622 240.714 269.255 238.167Z"
@@ -110,9 +110,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M269.255 238.167C266.448 245.226 265.979 250.339 268.358 252.321C271.556 254.974 279.275 251.463 288.988 243.782C282.234 242.596 275.622 240.714 269.255 238.167Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M331.449 161.983L344.122 175.161C352.752 156.326 346.435 151.907 331.449 161.983Z"
@@ -121,9 +121,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M331.449 161.983L344.122 175.161C352.752 156.326 346.435 151.907 331.449 161.983Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M254.905 229.597C254.084 230.88 253.157 232.093 252.136 233.224L236.969 213.257C242.318 219.357 248.334 224.838 254.905 229.597Z"
@@ -132,9 +132,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M254.905 229.597C254.084 230.88 253.157 232.093 252.136 233.224L236.969 213.257C242.318 219.357 248.334 224.838 254.905 229.597Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M371.65 201.638C371.729 205.661 367.423 208.262 363.899 206.318C362.198 205.381 361.157 203.577 361.196 201.636C361.277 197.612 365.683 195.185 369.127 197.267C370.662 198.194 371.615 199.844 371.65 201.638Z"
@@ -143,9 +143,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M371.65 201.638C371.729 205.661 367.423 208.262 363.899 206.318C362.198 205.381 361.157 203.577 361.196 201.636C361.277 197.612 365.683 195.185 369.127 197.267C370.662 198.194 371.615 199.844 371.65 201.638Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M282.158 135.506C266.585 135.978 252.086 127.596 244.724 113.864C237.362 100.133 242.661 117.45 239.344 123.107C249.989 131.06 263.129 139.56 277.128 144.162L282.158 135.506Z"
@@ -154,9 +154,9 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M282.158 135.506C266.585 135.978 252.086 127.596 244.724 113.864C237.362 100.133 242.661 117.45 239.344 123.107C249.989 131.06 263.129 139.56 277.128 144.162L282.158 135.506Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M250.811 189.394C248.576 185.339 246.546 181.175 244.727 176.917C242.84 177.836 240.715 178.148 238.643 177.812C241.841 188.185 237.358 192.552 230.416 191.655C233.42 201.287 226.556 205.271 217.159 201.677C218.485 209.28 207.58 210.42 198.831 203.08C198.418 202.725 197.935 202.255 197.387 201.756C199.66 208.047 204.172 213.28 210.06 216.455C217.854 220.94 231.014 223.083 235.25 216.026L250.811 189.394Z"
@@ -165,93 +165,93 @@ export const FIlledFormsSvg = (props) => {
       <path
         d="M250.811 189.394C248.576 185.339 246.546 181.175 244.727 176.917C242.84 177.836 240.715 178.148 238.643 177.812C241.841 188.185 237.358 192.552 230.416 191.655C233.42 201.287 226.556 205.271 217.159 201.677C218.485 209.28 207.58 210.42 198.831 203.08C198.418 202.725 197.935 202.255 197.387 201.756C199.66 208.047 204.172 213.28 210.06 216.455C217.854 220.94 231.014 223.083 235.25 216.026L250.811 189.394Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M250.809 189.394C255.603 197.972 261.844 206.278 269.017 209.319"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M239.347 123.105C230.161 116.243 225.83 112.152 219.617 107.39C211.21 100.948 204.886 105.789 206.865 114.019C210.242 128.058 231.302 155.014 240.556 165.882C240.556 165.882 242.038 170.561 244.767 176.917"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M292.296 147.393C287.119 146.908 282.016 145.823 277.09 144.158"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M198.715 156.132C200.39 167.441 211.809 180.082 215.052 183.195C219.198 187.519 224.577 190.459 230.455 191.616"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M244.757 176.917C240.272 179.217 232.711 177.81 224.013 169.781C219.996 166.067 207.791 151.832 208.181 140.692"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M191.852 171.652C194.073 179.997 200.894 188.93 203.667 191.927C207.393 196.147 212.016 199.478 217.198 201.677"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M346.5 157.537L394.969 199.377"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M268.395 252.368L313.978 292.22"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M270.58 325.639C274.455 325.636 276.881 329.829 274.946 333.186C273.011 336.544 268.167 336.548 266.227 333.194C265.784 332.427 265.55 331.557 265.551 330.671C265.557 327.896 267.805 325.647 270.58 325.639Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M159.914 43.207L159.875 77.208"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M176.917 60.246L142.875 60.209"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
       <path
         d="M354.883 99.2412L358.353 106.22L366.034 107.351L360.458 112.771L361.784 120.453L354.883 116.827L348.02 120.453L349.307 112.771L343.73 107.351L351.45 106.22L354.883 99.2412Z"
         stroke="#4A4A4B"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
