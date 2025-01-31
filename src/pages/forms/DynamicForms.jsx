@@ -81,6 +81,7 @@ const DynamicForms = () => {
     fetchForms();
     fetchFilledForms();
   }, [appointmentId, businessName]);
+
   useEffect(() => {
     if (!forms.length) return;
 
