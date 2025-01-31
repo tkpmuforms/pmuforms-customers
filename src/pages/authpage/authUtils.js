@@ -31,14 +31,12 @@ export const HandleSocialLogin = async (
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
       handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-
-      Toast("success", "Login successful");
       navigate("/dashboard");
     });
   } catch (error) {
     console.error("Social login error:", error);
 
-    Toast("error", `Login failed: ${error.message}`);
+    Toast("error", `Login failed! Try again later.`);
   }
 };
 
@@ -60,16 +58,13 @@ export const SignInSuccessWithAuthResult = async (
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
       handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-
-      Toast("success", "Login successful");
       navigate("/dashboard");
     });
 
-    Toast("success", "Login successful");
     navigate("/dashboard");
   } catch (error) {
     console.error("Error during login callback:", error);
 
-    Toast("error", `Login failed: ${error.message}`);
+    Toast("error", `Login failed! Try again later.`);
   }
 };

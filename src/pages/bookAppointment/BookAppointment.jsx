@@ -155,7 +155,7 @@ const BookAppointment = () => {
                       checked={selectedServices.includes(service)}
                       onChange={() => handleServiceChange(service)}
                     />
-                    <label>{service?.service}</label>
+                    <label onClick={() => handleServiceChange(service)}>{service?.service}</label>
                   </div>
                 ))}
               </div>
