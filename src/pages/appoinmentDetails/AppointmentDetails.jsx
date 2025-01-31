@@ -108,8 +108,6 @@ const AppointmentDetails = () => {
   const handleViewForm = (form) => {
     setSelectedForm(form);
     setIsModalOpen(true);
-    console.log("form", isModalOpen);
-    console.log("selectedForm", selectedForm);
   };
 
   const handleCloseModal = () => {
