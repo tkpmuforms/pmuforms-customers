@@ -138,7 +138,7 @@ const PrivacyPolicy = () => {
         <p>
           If you have any questions or suggestions about our Privacy Policy, do
           not hesitate to contact us at{" "}
-          <a href="mailto:adebayoiji@gmail.com">adebayoiji@gmail.com</a>.
+          <a href="mailto:contact@pmuforms.com">contact@pmuforms.com</a>.
         </p>
       </div>
     </>

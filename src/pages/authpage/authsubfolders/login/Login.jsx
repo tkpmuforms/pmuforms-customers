@@ -25,7 +25,7 @@ const LoginPage = () => {
       SignInSuccessWithAuthResult(result, navigate, handleAuthSuccess);
     } catch (error) {
       console.error("Failed to log in:", error);
-      Toast("error", `Login failed: ${error.message}`);
+      Toast("error", `Login failed! Invalid email or password.`);
     }
   };
 
