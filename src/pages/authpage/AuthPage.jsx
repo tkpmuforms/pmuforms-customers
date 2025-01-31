@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   FacebookLoginSvg,
   GoogleLoginSvg,
-  LogoSvg,
 } from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
@@ -25,9 +24,6 @@ const AuthPage = () => {
     <>
       <Navbar CreatenewClick={() => handlePageChange("signup")} />
       <div className="auth-container">
-        <div className="auth-logo">
-          <LogoSvg />
-        </div>
         {page === "login" ? <LoginPage /> : <SignupPage />}
         <div className="switch-auth">
           {page === "login" ? (

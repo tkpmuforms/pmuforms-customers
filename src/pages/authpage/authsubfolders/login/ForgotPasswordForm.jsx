@@ -43,9 +43,15 @@ const ForgotPasswordForm = ({ onCancel }) => {
               required
             />
           </div>
-          <a onClick={onCancel} className="back-to-login">
-          Back to Login
-        </a>
+
+          <div className="switch-auth">
+            <button
+              onClick={onCancel}
+              className="switch-auth-button"
+            >
+              Back to Login
+            </button>
+          </div>
           <button type="submit" className="reset-button">
             Send Reset Link
           </button>

@@ -63,18 +63,21 @@ const AllAppointments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    fetchAppointments(currentPage);
-  }, [currentPage]);
-
-  useEffect(() => {
-    fetchServices(artistId);
-  }, [artistId]);
-
-  useEffect(() => {
-    handleSearch();
-  }, [searchQuery, appointments]);
-
+  const handleSearch = () => {
+    const query = searchQuery.toLowerCase();
+    const filtered = appointments.filter((appointment) => {
+      const title = getServiceTitle(
+        appointment?.services
+      ).fullTitle?.toLowerCase();
+      const date = new Date(appointment.date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+      return title.includes(query) || date.includes(query);
+    });
+    setFilteredAppointments(filtered);
+  };
   const fetchServices = async (artistId) => {
     try {
       const response = await getArtistServices(artistId);
@@ -129,21 +132,17 @@ const AllAppointments = () => {
     }
   };
 
-  const handleSearch = () => {
-    const query = searchQuery.toLowerCase();
-    const filtered = appointments.filter((appointment) => {
-      const title = getServiceTitle(
-        appointment?.services
-      ).fullTitle?.toLowerCase();
-      const date = new Date(appointment.date).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
-      return title.includes(query) || date.includes(query);
-    });
-    setFilteredAppointments(filtered);
-  };
+  useEffect(() => {
+    fetchAppointments(currentPage);
+  }, [currentPage]);
+
+  useEffect(() => {
+    fetchServices(artistId);
+  }, [artistId]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchQuery, appointments]);
 
   return (
     <div className="appointments">
@@ -163,11 +162,11 @@ const AllAppointments = () => {
       </div>
 
       <div className="header-container">
-        <h3>All Appointments ({metadata?.total})</h3>
+        <h3>All Appointments</h3>
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Search by title or date"
+            placeholder="Search appointments"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

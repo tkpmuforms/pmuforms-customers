@@ -9,7 +9,7 @@ import {
   getFormsForAppointMentById,
 } from "../../services/services";
 import "./appointmentsdetails.scss";
-import { Box, Button, Dialog, Modal, Typography } from "@mui/material";
+import { Dialog, Typography } from "@mui/material";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {

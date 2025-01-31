@@ -46,18 +46,19 @@ const DynamicForms = () => {
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
 
-  const fetchFilledForms = async () => {
-    try {
-      const fetchedFilledForms = await getAllFilledFormsForAppointment(
-        appointmentId
-      );
-      setFilledForms(fetchedFilledForms?.filledForms || []);
-    } catch (error) {
-      console.error("Error fetching filled forms:", error);
-    }
-  };
 
   useEffect(() => {
+    const fetchFilledForms = async () => {
+      try {
+        const fetchedFilledForms = await getAllFilledFormsForAppointment(
+          appointmentId
+        );
+        setFilledForms(fetchedFilledForms?.filledForms || []);
+      } catch (error) {
+        console.error("Error fetching filled forms:", error);
+      }
+    };
+
     const fetchForms = async () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
