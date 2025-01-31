@@ -160,8 +160,7 @@ const Dashboard = () => {
       <div className="dashboard-container">
         <header className="dashboard-header">
           <h3>
-            Hello, <span>{user?.name ?? user?.info?.client_name}</span> Welcome
-            back.
+            Hello, <span>{user?.firstName ?? user?.name ?? user?.info?.client_name}</span>
           </h3>
           <p>Welcome to {businessName}</p>
           <div className="alert">
@@ -205,7 +204,7 @@ const Dashboard = () => {
           >
             <EditPersonalInformationSvg />
             <div>
-              <h5>Edit Personal Information</h5>
+              <h5>Update Personal Information</h5>
               <p>View and edit your personal information easily.</p>
             </div>
           </div>

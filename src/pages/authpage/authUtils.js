@@ -1,4 +1,3 @@
-import useAuth from "../../context/useAuth";
 import { auth, signInWithPopup } from "../../firebase/firebase";
 import { createCustomer } from "../../services/services";
 import { Toast } from "../../utils/toast/Toast";

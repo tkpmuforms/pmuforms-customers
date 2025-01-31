@@ -63,7 +63,7 @@ const FilledForms = () => {
         )}
       </div>
       <button className="complete-button" onClick={handleCompleteForm}>
-        View AppointMents
+        View Appointments
       </button>
     </div>
   );
