@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import "./AuthenticatedNavbar.scss";
 import useAuth from "../../context/useAuth";
+import { Work } from "@mui/icons-material";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const AuthenticatedNavbar = () => {
   const mobileMenuRef = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown
   const isDropdownOpen = Boolean(anchorEl);
+  const businessName = localStorage.getItem("businessName");
+  console.log(businessName);
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
@@ -49,7 +52,8 @@ const AuthenticatedNavbar = () => {
     <div className="authenticatedNavbarContainer">
       <div className="navlink">
         <div className="authLogo" onClick={() => navigate("/dashboard")}>
-          <LogoSvg />
+          <Work />
+          {businessName ?? ""}
         </div>
         <div
           ref={mobileMenuRef}
@@ -99,7 +103,7 @@ const AuthenticatedNavbar = () => {
         }}
       >
         <MenuItem>
-          <Typography>{user?.name ?? user?.info?.client_name ?? ""}</Typography>
+          <Typography>{user?.info?.client_name ?? user?.name}</Typography>
         </MenuItem>
         <MenuItem onClick={handleLogout}>Logout</MenuItem>
       </Menu>

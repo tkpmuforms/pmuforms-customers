@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -10,6 +11,7 @@ import {
   ViewPastAppointmentsSvg,
   WarningSvg,
 } from "../../assets/svgs/DashboardSvg";
+import useAuth from "../../context/useAuth";
 import {
   deleteAppointment,
   getAllAppointments,
@@ -20,8 +22,6 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
-import { CircularProgress } from "@mui/material";
-import useAuth from "../../context/useAuth";
 
 const RenderAppointmentCard = ({
   title,
@@ -61,8 +61,7 @@ const Dashboard = () => {
   const artistId = params.artistId || localStorage.getItem("artistId");
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
-  const [pastAppointments, setPastAppointments] = useState([]);
-  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const [businessName, setBusinessName] = useState(
     localStorage.getItem("businessName")
@@ -100,7 +99,6 @@ const Dashboard = () => {
         // Update appointments
         const appointments = appointmentsRes?.appointments || [];
         setAppointments(appointments);
-        categorizeAppointments(appointments);
 
         // Update personal info visibility
         const customerInfo = customerRes?.user?.info;
@@ -118,18 +116,6 @@ const Dashboard = () => {
 
     fetchData();
   }, [artistId]);
-
-  const categorizeAppointments = (appointments) => {
-    const now = new Date();
-    const past = appointments.filter(
-      (appointment) => new Date(appointment.date) < now && !appointment.deleted
-    );
-    const upcoming = appointments.filter(
-      (appointment) => new Date(appointment.date) >= now && !appointment.deleted
-    );
-    setPastAppointments(past);
-    setUpcomingAppointments(upcoming);
-  };
 
   const getServiceTitle = (serviceIds) => {
     const serviceNames = services

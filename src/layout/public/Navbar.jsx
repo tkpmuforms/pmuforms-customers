@@ -7,7 +7,6 @@ const Navbar = ({ CreatenewClick }) => {
   const navigate = useNavigate();
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const mobileMenuRef = useRef(null);
-  const businessName = localStorage.getItem("businessName");
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
@@ -41,7 +40,7 @@ const Navbar = ({ CreatenewClick }) => {
       <div onClick={handleHomeNavigate} className="logo">
         <LogoSvg />
       </div>
-      {businessName ?? ""}
+
       <div
         ref={mobileMenuRef}
         className={`links ${mobileMenuVisible ? "visible" : ""}`}
