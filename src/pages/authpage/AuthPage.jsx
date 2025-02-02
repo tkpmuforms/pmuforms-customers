@@ -55,11 +55,6 @@ const AuthPage = () => {
               HandleSocialLogin(googleProvider, navigate, handleAuthSuccess)
             }
           />
-          <FacebookLoginSvg
-            onClick={() =>
-              HandleSocialLogin(facebookProvider, navigate, handleAuthSuccess)
-            }
-          />
         </div>
         <p className="terms-text">
           By proceeding, you agree to our <a href="#">Terms and conditions</a>{" "}
