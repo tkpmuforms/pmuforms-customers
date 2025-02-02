@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  FacebookLoginSvg,
-  GoogleLoginSvg,
-} from "../../assets/svgs/AuthSvg";
+import { FacebookLoginSvg, GoogleLoginSvg } from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
-
 import { HandleSocialLogin } from "./authUtils";
 import { facebookProvider, googleProvider } from "../../firebase/firebase";
 import useAuth from "../../context/useAuth";

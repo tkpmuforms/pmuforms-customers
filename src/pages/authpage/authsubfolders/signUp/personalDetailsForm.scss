@@ -141,3 +141,28 @@
     }
   }
 }
+
+.go-back {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #800080;
+  cursor: pointer;
+  font-family: MediumFont;
+  line-height: 20px;
+  text-align: center;
+  padding: 0 50px;
+}
+
+.go-back:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .go-back {
+    font-size: 14px;
+    padding: 0 20px;
+  }
+}

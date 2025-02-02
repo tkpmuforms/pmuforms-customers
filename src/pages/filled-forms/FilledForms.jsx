@@ -4,8 +4,10 @@ import { EditFormSvg } from "../../assets/svgs/DashboardSvg";
 import { FIlledFormsSvg } from "../../assets/svgs/filledFormsSvg";
 import { getAllFilledFormsForAppointment } from "../../services/services";
 import "./filledForms.scss";
+import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
+import { Dialog, Typography } from "@mui/material";
 
-const RenderFormsCard = ({ title, status, ViewClick }) => {
+const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (
     <div className="form-card">
       <div className="form-info">
@@ -15,7 +17,13 @@ const RenderFormsCard = ({ title, status, ViewClick }) => {
         </span>
       </div>
       <div className="form-actions">
-        <EditFormSvg onClick={ViewClick} />
+        {status === "completed" ? (
+          <button className="view-form-button" onClick={onViewClick}>
+            View Form
+          </button>
+        ) : (
+          <EditFormSvg onClick={onEditClick} />
+        )}
       </div>
     </div>
   );
@@ -25,6 +33,8 @@ const FilledForms = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [filledForms, setFilledForms] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedForm, setSelectedForm] = useState(null);
 
   useEffect(() => {
     const fetchAllFilledFormsForAppointment = async () => {
@@ -42,6 +52,16 @@ const FilledForms = () => {
     navigate(`/appointments`);
   };
 
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedForm(null);
+  };
+
+  const handleViewForm = (form) => {
+    console.log("View form", form);
+    setSelectedForm(form);
+    setIsModalOpen(true);
+  };
   return (
     <div className="filled-form">
       <div className="svg">
@@ -55,7 +75,7 @@ const FilledForms = () => {
               key={form.id}
               title={form.title || "Untitled Form"}
               status={form.status}
-              ViewClick={() => console.log("ViewClick", form.id)}
+              onViewClick={() => handleViewForm(form)}
             />
           ))
         ) : (
@@ -65,6 +85,34 @@ const FilledForms = () => {
       <button className="complete-button" onClick={handleCompleteForm}>
         View Appointments
       </button>
+      {isModalOpen && selectedForm && (
+        <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>
+          <div
+            style={{
+              display: "flex",
+              position: "absolute",
+              top: "0",
+              right: "0",
+              cursor: "pointer",
+              padding: "10px",
+              fontSize: "1.5rem",
+            }}
+            onClick={handleCloseModal}
+          >
+            &times;
+          </div>
+          {selectedForm ? (
+            <ViewFilledForm
+              formTemplateId={selectedForm.formTemplateId}
+              appointmentId={id}
+            />
+          ) : (
+            <Typography variant="body2" color="error">
+              No form selected. Please try again.
+            </Typography>
+          )}
+        </Dialog>
+      )}
     </div>
   );
 };

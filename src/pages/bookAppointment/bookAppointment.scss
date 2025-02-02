@@ -1,7 +1,7 @@
 .book-appointment-page {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 0px;
   text-align: center;
 
   h1 {
@@ -118,43 +118,41 @@
     margin: 20px auto;
     padding: 15px;
     border-radius: 12px;
-   
-  
+
     h1 {
       font-size: 22px;
       margin-bottom: 12px;
     }
-  
+
     .description {
       font-size: 14px;
       margin-bottom: 25px;
     }
-  
+
     .form-group {
       margin-bottom: 20px;
-  
+
       p {
         display: block;
         margin-bottom: 8px;
         font-size: 14px;
         line-height: 18px;
       }
-  
-  
+
       .services-list {
         display: flex;
         flex-direction: column;
         gap: 0px; /* Adjust spacing for services */
-  
+
         .checkbox-item {
           display: flex;
           align-items: center;
-  
+
           label {
             font-size: 16px;
             cursor: pointer;
           }
-  
+
           .MuiCheckbox-root {
             color: #800080; /* Purple checkbox */
             &.Mui-checked {
@@ -164,7 +162,7 @@
         }
       }
     }
-  
+
     .alert-box {
       display: flex;
       align-items: center;
@@ -176,19 +174,19 @@
       border-radius: 10px;
       font-size: 14px;
       margin-bottom: 15px;
-  
+
       p {
         color: #ff9500;
         margin: 0;
         text-align: left;
       }
     }
-  
+
     .button-group {
       display: flex;
       justify-content: space-between;
       gap: 10px;
-  
+
       button {
         flex: 1;
         padding: 14px 0;
@@ -198,24 +196,49 @@
         font-weight: 600;
         cursor: pointer;
       }
-  
+
       .go-back-button {
         background: #f5e6f8;
         color: #800080;
-  
+
         &:hover {
           background: #eed9f4;
         }
       }
-  
+
       .continue-button {
         background: #800080;
         color: #fff;
-  
+
         &:hover {
           background: #6e006e;
         }
       }
     }
+  }
+}
+
+.go-back {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #800080;
+  cursor: pointer;
+  font-family: MediumFont;
+  line-height: 20px;
+  text-align: center;
+  padding: 0 50px;
+}
+
+.go-back:hover {
+  text-decoration: underline;
+}
+
+@media screen and (max-width: 768px) {
+  .go-back {
+    font-size: 14px;
+    padding: 0 20px;
   }
 }

@@ -12,6 +12,7 @@ import useAuth from "../../context/useAuth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import imageCompression from "browser-image-compression";
 import { storage } from "../../firebase/firebase";
+import dayjs from "dayjs";
 
 const FormInputTypes = {
   TEXT: "text",
@@ -45,7 +46,6 @@ const DynamicForms = () => {
   const [saving, setSaving] = useState(false);
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
-
 
   useEffect(() => {
     const fetchFilledForms = async () => {
@@ -108,8 +108,13 @@ const DynamicForms = () => {
             if (userInfoKeys) {
               userInfoKeys.forEach((key) => {
                 if (user?.info?.[key]) {
-                  autofillResponse[field.id] = user.info[key];
-                  autofilledFieldIds.add(field.id); // Track autofilled field
+                  let value = user.info[key];
+                  if (field.id === "date_of_birth") {
+                    value = dayjs(value).format("DD-MM-YYYY");
+                  }
+
+                  autofillResponse[field.id] = value;
+                  autofilledFieldIds.add(field.id); // Track autofilled field// Track autofilled field
                 }
               });
             }

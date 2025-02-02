@@ -47,7 +47,7 @@ const AuthenticatedNavbar = () => {
 
   return (
     <div className="authenticatedNavbarContainer">
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="navlink">
         <div className="authLogo" onClick={() => navigate("/dashboard")}>
           <LogoSvg />
         </div>
@@ -65,19 +65,17 @@ const AuthenticatedNavbar = () => {
             <li>
               <Link to="/support">Contact Support</Link>
             </li>
-            {
-              mobileMenuVisible &&
+            {mobileMenuVisible && (
               <li className="mobile-logout">
                 <span onClick={handleLogout}>Logout</span>
               </li>
-            }
+            )}
           </ul>
         </div>
       </div>
 
       {/* Right Aligned Content */}
-
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="hamburger-avatar-container">
         <div className="avatar" onClick={handleAvatarClick}>
           <Avatar
             src={user?.info?.avatar_url ?? ""}
@@ -85,28 +83,26 @@ const AuthenticatedNavbar = () => {
             sx={{ width: 40, height: 40 }}
           />
         </div>
-        <Menu
-          anchorEl={anchorEl}
-          open={isDropdownOpen}
-          onClose={handleDropdownClose}
-          PaperProps={{
-            style: {
-              marginTop: "20px",
-            },
-          }}
-        >
-          <MenuItem>
-            <Typography>
-              {user?.name ?? user?.info?.client_name ?? ""}
-            </Typography>
-          </MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-
         <div className="hamburger-menu" onClick={toggleMobileMenu}>
           &#9776;
         </div>
       </div>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={isDropdownOpen}
+        onClose={handleDropdownClose}
+        PaperProps={{
+          style: {
+            marginTop: "20px",
+          },
+        }}
+      >
+        <MenuItem>
+          <Typography>{user?.name ?? user?.info?.client_name ?? ""}</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      </Menu>
     </div>
   );
 };

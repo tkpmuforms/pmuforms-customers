@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Avatar } from "@mui/material";
+import { Avatar, CircularProgress } from "@mui/material";
 import imageCompression from "browser-image-compression";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { GoBackSvg } from "../../../../assets/svgs/DashboardSvg";
 import { storage } from "../../../../firebase/firebase";
+import { setUser } from "../../../../redux/auth";
 import {
   getAuthenticatedUser,
   SavePersonalInformation,
 } from "../../../../services/services";
-import useAuth from "../../../../context/useAuth";
 import "./personalDetailsForm.scss";
+import { Toast } from "../../../../utils/toast/Toast";
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
-  const { user } = useAuth();
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const [avatarUrl, setAvatarUrl] = useState("");
   const [initialValues, setInitialValues] = useState({
     firstName: "",
@@ -24,8 +28,8 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     referralSource: "",
     emergencyContactName: "",
     emergencyContactPhone: "",
-    avatarUrl: "", // Add avatarUrl to the form values
   });
+  const [loading, setLoading] = useState(true);
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
@@ -33,13 +37,14 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     dob: Yup.date().required("Required").typeError("Invalid date format"),
     homeAddress: Yup.string().required("Required"),
     primaryPhone: Yup.string().required("Required"),
-    referralSource: Yup.string().required("Required"),
-    emergencyContactName: Yup.string().required("Required"),
-    emergencyContactPhone: Yup.string().required("Required"),
+    referralSource: Yup.string(),
+    emergencyContactName: Yup.string(),
+    emergencyContactPhone: Yup.string(),
   });
 
   useEffect(() => {
     const fetchInfo = async () => {
+      setLoading(true); // Start loading
       try {
         const customer = await getAuthenticatedUser();
         if (customer?.user?.info) {
@@ -51,7 +56,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             referred = "",
             emergency_contact_name = "",
             emergency_contact_phone = "",
-            avatar_url = "", // Fetch avatar URL
+            avatar_url = "",
           } = customer.user.info;
 
           setInitialValues({
@@ -63,13 +68,16 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             referralSource: referred || "",
             emergencyContactName: emergency_contact_name || "",
             emergencyContactPhone: emergency_contact_phone || "",
-            avatarUrl: avatar_url || "", // Set avatar URL if available
+            avatarUrl: avatar_url ?? null,
           });
 
           setAvatarUrl(avatar_url || "");
         }
       } catch (error) {
         console.error("Error fetching customer info:", error);
+        Toast("error", "Failed to load personal details.");
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -103,11 +111,16 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
       const data = { ...values, avatarUrl }; // Include avatarUrl in the form data
-      await SavePersonalInformation(data);
-      setSubmitting(false);
-      onSubmitClick();
+      SavePersonalInformation(data).then((res) => {
+        console.log(res);
+        setSubmitting(false);
+        dispatch(setUser(res?.customer));
+        onSubmitClick();
+      });
     } catch (error) {
       console.error("Error updating customer info:", error);
+      setSubmitting(false);
+      Toast("error", "Error updating personal information");
     }
   };
 
@@ -128,106 +141,125 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   );
 
   return (
-    <div className="personal-details-page">
-      <div className="personal-details-container">
-        <div className="avatar-section">
-          <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
-            <Avatar
-              src={avatarUrl || ""}
-              alt="Profile Avatar"
-              sx={{ width: 100, height: 100 }}
-            >
-              {user?.displayName
-                ? user.displayName.slice(0, 2).toUpperCase()
-                : ""}
-            </Avatar>
-          </label>
-          <input
-            type="file"
-            id="avatar-upload"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            style={{ display: "none" }}
-          />
-        </div>
-        <h2>We would like to know a little about you</h2>
-        <p className="subtext">
-          Important: Fill out this information a few days before your
-          appointment.
-        </p>
-
-        <Formik
-          enableReinitialize
-          initialValues={initialValues}
-          validationSchema={validationSchema}
-          onSubmit={handleSubmit}
-        >
-          {({ isSubmitting }) => (
-            <Form className="personal-details-form">
-              <div className="grid-container">
-                <CustomField
-                  label="First Name"
-                  name="firstName"
-                  type="text"
-                  placeholder="Enter your first name"
-                />
-                <CustomField
-                  label="Last Name"
-                  name="lastName"
-                  type="text"
-                  placeholder="Enter your last name"
-                />
-              </div>
-              <CustomField
-                label="Date of Birth"
-                name="dob"
-                type="date"
-                placeholder="DD/MM/YYYY"
-              />
-              <CustomField
-                label="Home Address"
-                name="homeAddress"
-                type="text"
-                placeholder="Enter your home address"
-              />
-              <CustomField
-                label="Primary Phone Number"
-                name="primaryPhone"
-                type="tel"
-                placeholder="Enter your primary phone number"
-              />
-              <CustomField
-                label="Referral Source"
-                name="referralSource"
-                type="text"
-                placeholder="How did you hear about us?"
-              />
-              <CustomField
-                label="Emergency Contact Name"
-                name="emergencyContactName"
-                type="text"
-                placeholder="Enter Emergency Contact Name"
-                optional
-              />
-              <CustomField
-                label="Emergency Contact Phone Number"
-                name="emergencyContactPhone"
-                type="tel"
-                placeholder="Enter Contact Phone Number"
-                optional
-              />
-
-              <button
-                type="submit"
-                className="submit-button"
-                disabled={isSubmitting}
-              >
-                Save Personal Details
-              </button>
-            </Form>
-          )}
-        </Formik>
+    <div>
+      <div onClick={() => onSubmitClick()} className="go-back">
+        <GoBackSvg />
+        <p>Go back to dashboard</p>
       </div>
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <CircularProgress size={80} sx={{ color: "#8e2d8e" }} />
+        </div>
+      ) : (
+        <div className="personal-details-page">
+          <div className="personal-details-container">
+            <div className="avatar-section">
+              <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
+                <Avatar
+                  src={avatarUrl || ""}
+                  alt="Profile Avatar"
+                  sx={{ width: 100, height: 100 }}
+                >
+                  {user?.displayName
+                    ? user.displayName.slice(0, 2).toUpperCase()
+                    : ""}
+                </Avatar>
+              </label>
+              <input
+                type="file"
+                id="avatar-upload"
+                accept="image/*"
+                onChange={handleAvatarChange}
+                style={{ display: "none" }}
+              />
+            </div>
+            <h2>We would like to know a little about you</h2>
+            <p className="subtext">
+              Important: Fill out this information a few days before your
+              appointment.
+            </p>
+
+            <Formik
+              enableReinitialize
+              initialValues={initialValues}
+              validationSchema={validationSchema}
+              onSubmit={handleSubmit}
+            >
+              {({ isSubmitting }) => (
+                <Form className="personal-details-form">
+                  <div className="grid-container">
+                    <CustomField
+                      label="First Name"
+                      name="firstName"
+                      type="text"
+                      placeholder="Enter your first name"
+                    />
+                    <CustomField
+                      label="Last Name"
+                      name="lastName"
+                      type="text"
+                      placeholder="Enter your last name"
+                    />
+                  </div>
+                  <CustomField
+                    label="Date of Birth"
+                    name="dob"
+                    type="date"
+                    placeholder="DD/MM/YYYY"
+                  />
+                  <CustomField
+                    label="Home Address"
+                    name="homeAddress"
+                    type="text"
+                    placeholder="Enter your home address"
+                  />
+                  <CustomField
+                    label="Primary Phone Number"
+                    name="primaryPhone"
+                    type="tel"
+                    placeholder="Enter your primary phone number"
+                  />
+                  <CustomField
+                    label="Referral Source"
+                    name="referralSource"
+                    type="text"
+                    placeholder="How did you hear about us?"
+                  />
+                  <CustomField
+                    label="Emergency Contact Name"
+                    name="emergencyContactName"
+                    type="text"
+                    placeholder="Enter Emergency Contact Name"
+                    optional
+                  />
+                  <CustomField
+                    label="Emergency Contact Phone Number"
+                    name="emergencyContactPhone"
+                    type="tel"
+                    placeholder="Enter Contact Phone Number"
+                    optional
+                  />
+
+                  <button
+                    type="submit"
+                    className="submit-button"
+                    disabled={isSubmitting}
+                  >
+                    Save Personal Details
+                  </button>
+                </Form>
+              )}
+            </Formik>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
