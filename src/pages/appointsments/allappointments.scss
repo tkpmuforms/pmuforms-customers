@@ -136,7 +136,7 @@
 /* Tablet View: Adjust for screens up to 768px */
 @media screen and (max-width: 768px) {
   .appointments {
-    padding: 15px;
+    padding: 25px;
 
     h3 {
       font-size: 18px;
@@ -172,46 +172,53 @@
     }
   }
 }
-
-/* Mobile View: Adjust for screens up to 480px */
 @media screen and (max-width: 480px) {
   .appointments {
     padding: 10px;
 
     h3 {
       font-size: 16px;
-      padding: 0 0 0 10px;
+      padding: 0 10px;
     }
 
     .appointments-list {
       .appointment-card {
-        padding: 12px;
-        margin-bottom: 15px;
+        padding: 10px;
+        margin-bottom: 10px;
+        border-radius: 8px;
 
         .appointment-info {
+          width: 100%;
+          margin-bottom: 10px;
+
           h4 {
             font-size: 14px;
           }
 
           p {
-            font-size: 11px;
+            font-size: 12px;
+            margin: 5px 0;
           }
 
           .status {
-            font-size: 11px;
-            padding: 4px 8px;
+            font-size: 12px;
+            padding: 4px 10px;
+            text-align: center;
           }
         }
 
         .appointment-actions {
-          width: 100%;
+          display: flex;
+          flex-direction: row;
           justify-content: space-between;
-          gap: 5px;
+          gap: 8px;
+          width: 100%;
 
           button {
             font-size: 12px;
             padding: 8px;
-            width: 48%; /* Make buttons equal width */
+            flex: 1;
+            max-width: 48%;
           }
         }
       }
@@ -220,6 +227,7 @@
     .no-appointments {
       font-size: 14px;
       padding: 10px;
+      text-align: center;
     }
   }
 }

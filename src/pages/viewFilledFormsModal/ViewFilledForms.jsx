@@ -6,6 +6,7 @@ import {
 import "./viewFilledForms.scss";
 
 const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
+  console.log(appointmentId, formTemplateId);
   const [form, setForm] = useState(null);
   const [filledForm, setFilledForm] = useState(null);
 

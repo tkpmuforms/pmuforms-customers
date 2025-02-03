@@ -3,7 +3,7 @@
   align-items: center;
   justify-content: center;
   width: 100%; /* Full width for mobile */
-  padding: 20px;
+  padding: 0 20px;
 
   .signup-container {
     text-align: center;
@@ -73,7 +73,7 @@
 /* Tablet and larger screens */
 @media (min-width: 768px) {
   .signup-page {
-    width: 550px; /* Limit width for larger screens */
+    width: 550px;
     margin: 40px auto;
   }
 

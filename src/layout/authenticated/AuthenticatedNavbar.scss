@@ -7,15 +7,16 @@
   margin-bottom: 10px;
   z-index: 2000;
 
+  .navlink {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
   .authLogo {
     display: flex;
     align-items: center;
-    padding-left: 20px;
     cursor: pointer;
-
-    svg {
-      /* Add custom styling for the logo SVG here if needed */
-    }
   }
 
   .authlinks {
@@ -48,10 +49,6 @@
             color: var(--color-blue-dark);
           }
         }
-
-        .mobile-logout {
-          display: none; // Hide by default
-        }
       }
     }
   }
@@ -76,8 +73,25 @@
   }
 }
 
+/* 📱 Mobile Styles */
 @media screen and (max-width: 768px) {
   .authenticatedNavbarContainer {
+    padding: 10px 20px; /* Reduce padding for mobile */
+
+    .navlink {
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .authLogo {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      justify-content: flex-start; /* Ensures logo is aligned left */
+      flex-grow: 1; /* Makes logo take up available space */
+    }
+
     .authlinks {
       display: none;
 
@@ -116,12 +130,25 @@
       }
     }
 
+    /* Show Avatar beside Hamburger */
+    .hamburger-avatar-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
     .avatar {
-      display: none;
+      display: block;
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      cursor: pointer;
     }
 
     .hamburger-menu {
       display: block;
+      font-size: 24px;
+      cursor: pointer;
     }
   }
 }

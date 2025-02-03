@@ -5,7 +5,6 @@ import {
 } from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
-
 import { HandleSocialLogin } from "./authUtils";
 import { googleProvider } from "../../firebase/firebase";
 import useAuth from "../../context/useAuth";

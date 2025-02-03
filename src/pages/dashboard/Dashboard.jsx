@@ -1,3 +1,4 @@
+import { CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -10,6 +11,7 @@ import {
   ViewPastAppointmentsSvg,
   WarningSvg,
 } from "../../assets/svgs/DashboardSvg";
+import useAuth from "../../context/useAuth";
 import {
   deleteAppointment,
   getAllAppointments,
@@ -20,8 +22,6 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
-import { CircularProgress } from "@mui/material";
-import useAuth from "../../context/useAuth";
 
 const RenderAppointmentCard = ({
   title,
@@ -61,15 +61,16 @@ const Dashboard = () => {
   const artistId = params.artistId || localStorage.getItem("artistId");
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
-  const [pastAppointments, setPastAppointments] = useState([]);
-  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const [businessName, setBusinessName] = useState(
     localStorage.getItem("businessName")
   );
+  const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
+  const { logout } = useAuth();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +84,12 @@ const Dashboard = () => {
             artistId ? getArtistServices(artistId) : Promise.resolve(null),
           ]);
 
+        if (artistId && !businessRes?.artist) {
+          console.error("Error fetching artist, logging out...");
+          logout();
+          return;
+        }
+
         // Update business name
         if (businessRes?.artist?.businessName) {
           localStorage.setItem("businessName", businessRes.artist.businessName);
@@ -92,7 +99,6 @@ const Dashboard = () => {
         // Update appointments
         const appointments = appointmentsRes?.appointments || [];
         setAppointments(appointments);
-        categorizeAppointments(appointments);
 
         // Update personal info visibility
         const customerInfo = customerRes?.user?.info;
@@ -102,6 +108,7 @@ const Dashboard = () => {
         setServices(servicesRes?.services || []);
       } catch (error) {
         console.error("Error fetching data:", error);
+        logout(); // Log out on error
       } finally {
         setLoading(false); // Stop loader
       }
@@ -110,18 +117,6 @@ const Dashboard = () => {
     fetchData();
   }, [artistId]);
 
-  const categorizeAppointments = (appointments) => {
-    const now = new Date();
-    const past = appointments.filter(
-      (appointment) => new Date(appointment.date) < now && !appointment.deleted
-    );
-    const upcoming = appointments.filter(
-      (appointment) => new Date(appointment.date) >= now && !appointment.deleted
-    );
-    setPastAppointments(past);
-    setUpcomingAppointments(upcoming);
-  };
-
   const getServiceTitle = (serviceIds) => {
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
@@ -129,24 +124,17 @@ const Dashboard = () => {
     return serviceNames.join(", ") || "Appointment";
   };
 
-  const deleteAppointments = (appointmentId) => {
-    const newPastAppointments = pastAppointments.filter(
-      (element) => element.data.id !== appointmentId
-    );
-    const newUpcomingAppointments = upcomingAppointments.filter(
-      (element) => element.data.id !== appointmentId
-    );
+  const removeAppointment = async (appointmentId) => {
+    try {
+      await deleteAppointment(appointmentId);
 
-    setPastAppointments(newPastAppointments);
-    setUpcomingAppointments(newUpcomingAppointments);
-
-    deleteAppointment(appointmentId)
-      .then(() => {
-        Toast("success", "Appointment deleted successfully");
-      })
-      .catch((error) => {
-        Toast("error", "Error deleting appointment");
-      });
+      Toast("success", "Appointment deleted successfully");
+      setAppointments((prev) =>
+        prev.filter((appt) => appt.id !== appointmentId)
+      );
+    } catch (error) {
+      Toast("error", "Error deleting appointment");
+    }
   };
 
   if (showPersonalInfo) {
@@ -155,20 +143,35 @@ const Dashboard = () => {
     );
   }
 
+  const hasIncompleteForms = appointments.some(
+    (appointment) => !appointment.allFormsCompleted
+  );
+
   return (
     <div className="dashboard-page">
       <div className="dashboard-container">
         <header className="dashboard-header">
           <h3>
-            Hello, <span>{user?.firstName ?? user?.name ?? user?.info?.client_name}</span>
+            Hello, <span>{user?.info?.client_name ?? userName}</span>
           </h3>
-          <p>Welcome to {businessName}</p>
-          <div className="alert">
-            <WarningSvg />
-            <p>
-              Please complete all required forms for your upcoming appointment
-            </p>
-          </div>
+          <p>
+            Welcome to{" "}
+            <span
+              style={{
+                fontWeight: "bold",
+              }}
+            >
+              {businessName}
+            </span>
+          </p>
+          {appointments?.length > 0 && hasIncompleteForms && (
+            <div className="alert">
+              <WarningSvg />
+              <p>
+                Please complete all required forms for your upcoming appointment
+              </p>
+            </div>
+          )}
         </header>
 
         <div className="actions-section">
@@ -241,7 +244,7 @@ const Dashboard = () => {
                     ViewClick={() =>
                       navigate(`/appointments/${appointment.id}`)
                     }
-                    DeleteClick={() => deleteAppointments(appointment.id)}
+                    DeleteClick={() => removeAppointment(appointment.id)}
                   />
                 ))
             ) : (

@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import "./AuthenticatedNavbar.scss";
 import useAuth from "../../context/useAuth";
+import { Work } from "@mui/icons-material";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
@@ -12,6 +13,8 @@ const AuthenticatedNavbar = () => {
   const mobileMenuRef = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown
   const isDropdownOpen = Boolean(anchorEl);
+  const businessName = localStorage.getItem("businessName");
+  console.log(businessName);
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
@@ -47,9 +50,10 @@ const AuthenticatedNavbar = () => {
 
   return (
     <div className="authenticatedNavbarContainer">
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="navlink">
         <div className="authLogo" onClick={() => navigate("/dashboard")}>
-          <LogoSvg />
+          <Work />
+          {businessName ?? ""}
         </div>
         <div
           ref={mobileMenuRef}
@@ -65,19 +69,17 @@ const AuthenticatedNavbar = () => {
             <li>
               <Link to="/support">Contact Support</Link>
             </li>
-            {
-              mobileMenuVisible &&
+            {mobileMenuVisible && (
               <li className="mobile-logout">
                 <span onClick={handleLogout}>Logout</span>
               </li>
-            }
+            )}
           </ul>
         </div>
       </div>
 
       {/* Right Aligned Content */}
-
-      <div style={{ display: "flex", alignItems: "center" }}>
+      <div className="hamburger-avatar-container">
         <div className="avatar" onClick={handleAvatarClick}>
           <Avatar
             src={user?.info?.avatar_url ?? ""}
@@ -85,28 +87,26 @@ const AuthenticatedNavbar = () => {
             sx={{ width: 40, height: 40 }}
           />
         </div>
-        <Menu
-          anchorEl={anchorEl}
-          open={isDropdownOpen}
-          onClose={handleDropdownClose}
-          PaperProps={{
-            style: {
-              marginTop: "20px",
-            },
-          }}
-        >
-          <MenuItem>
-            <Typography>
-              {user?.name ?? user?.info?.client_name ?? ""}
-            </Typography>
-          </MenuItem>
-          <MenuItem onClick={handleLogout}>Logout</MenuItem>
-        </Menu>
-
         <div className="hamburger-menu" onClick={toggleMobileMenu}>
           &#9776;
         </div>
       </div>
+
+      <Menu
+        anchorEl={anchorEl}
+        open={isDropdownOpen}
+        onClose={handleDropdownClose}
+        PaperProps={{
+          style: {
+            marginTop: "20px",
+          },
+        }}
+      >
+        <MenuItem>
+          <Typography>{user?.info?.client_name ?? user?.name}</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+      </Menu>
     </div>
   );
 };

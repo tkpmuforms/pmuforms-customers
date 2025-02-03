@@ -40,6 +40,7 @@ const Navbar = ({ CreatenewClick }) => {
       <div onClick={handleHomeNavigate} className="logo">
         <LogoSvg />
       </div>
+
       <div
         ref={mobileMenuRef}
         className={`links ${mobileMenuVisible ? "visible" : ""}`}

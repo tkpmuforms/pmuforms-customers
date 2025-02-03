@@ -1,9 +1,9 @@
 .auth-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
   .auth-logo {
     margin-bottom: 20px;
     display: flex;
@@ -25,29 +25,44 @@
     }
 
     .switch-auth-button:hover {
-      color: darken(#8E2D8E, 10%); 
+      color: darken(#8e2d8e, 10%);
     }
   }
 
-  
   .social-signin {
     display: flex;
     gap: 20px;
-  
   }
-  
+
   .terms-text {
     margin-top: 20px;
     font-size: 12px;
     color: #666;
-  
+
     a {
       color: #800080; // Purple link color
       text-decoration: none;
-  
+
       &:hover {
         text-decoration: underline;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .auth-container {
+    padding: 20px;
+    .switch-auth {
+      margin-top: 20px;
+    }
+    .social-signin {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .terms-text {
+      margin-top: 30px;
+      padding: 10px;
     }
   }
 }

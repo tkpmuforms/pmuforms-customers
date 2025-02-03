@@ -11,6 +11,7 @@ import {
 import "./appointmentsdetails.scss";
 import { Dialog, Typography } from "@mui/material";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
+import dayjs from "dayjs";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (
@@ -136,7 +137,9 @@ const AppointmentDetails = () => {
         <div className="appointment-info">
           <div className="info-item">
             <span className="info-title">Appointment Date:</span>
-            <span className="info-value">{appointMent?.date || "N/A"}</span>
+            <span className="info-value">
+              {dayjs(appointMent?.date).format("DD-MM-YYYY") || "N/A"}
+            </span>
           </div>
           <div className="info-item">
             <span className="info-title">Services Received:</span>

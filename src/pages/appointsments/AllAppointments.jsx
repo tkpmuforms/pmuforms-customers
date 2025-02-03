@@ -15,7 +15,7 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import "./allappointments.scss";
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
-import { Tooltip } from "@mui/material";
+import { CircularProgress, Tooltip } from "@mui/material";
 
 const RenderAppointmentCard = ({
   title,
@@ -58,6 +58,7 @@ const AllAppointments = () => {
   const [services, setServices] = useState([]);
   const [metadata, setMetadata] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const artistId = localStorage.getItem("artistId");
   const [currentPage, setCurrentPage] = useState(1);
@@ -104,6 +105,7 @@ const AllAppointments = () => {
   };
 
   const fetchAppointments = async (page) => {
+    setLoading(true);
     try {
       const response = await getAllAppointments(page, itemsPerPage);
       setAppointments(response?.appointments);
@@ -111,6 +113,8 @@ const AllAppointments = () => {
     } catch (error) {
       console.log(error.message);
       Toast("error", "Error fetching appointments.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -173,30 +177,43 @@ const AllAppointments = () => {
           />
         </div>
       </div>
-      <div className="appointments-list">
-        {filteredAppointments?.length > 0 ? (
-          filteredAppointments?.map((appointment, index) => (
-            <RenderAppointmentCard
-              key={index}
-              title={getServiceTitle(appointment?.services).truncatedTitle}
-              fullTitle={getServiceTitle(appointment?.services).fullTitle}
-              date={appointment.date}
-              formsFilled={appointment.formsFilled || 0}
-              status={appointment.allFormsCompleted}
-              ViewClick={() => navigate(`/appointments/${appointment.id}`)}
-              DeleteClick={() => removeAppointment(appointment.id)}
-            />
-          ))
-        ) : (
-          <div className="no-appointments">
-            <NoAppointmentsSvg />
-            <p>You have no upcoming appointments</p>
-            <BookAnAppointmentButtonSvg
-              onClick={() => navigate(`/book-appointments/${artistId}`)}
-            />
-          </div>
-        )}
-      </div>
+      {loading ? (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <CircularProgress size={80} sx={{ color: "#8e2d8e" }} />
+        </div>
+      ) : (
+        <div className="appointments-list">
+          {filteredAppointments?.length > 0 ? (
+            filteredAppointments?.map((appointment, index) => (
+              <RenderAppointmentCard
+                key={index}
+                title={getServiceTitle(appointment?.services).truncatedTitle}
+                fullTitle={getServiceTitle(appointment?.services).fullTitle}
+                date={appointment.date}
+                formsFilled={appointment.formsFilled || 0}
+                status={appointment.allFormsCompleted}
+                ViewClick={() => navigate(`/appointments/${appointment.id}`)}
+                DeleteClick={() => removeAppointment(appointment.id)}
+              />
+            ))
+          ) : (
+            <div className="no-appointments">
+              <NoAppointmentsSvg />
+              <p>You have no upcoming appointments</p>
+              <BookAnAppointmentButtonSvg
+                onClick={() => navigate(`/book-appointments/${artistId}`)}
+              />
+            </div>
+          )}
+        </div>
+      )}
 
       {metadata && (
         <div

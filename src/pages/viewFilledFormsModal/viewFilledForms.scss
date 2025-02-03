@@ -1,7 +1,6 @@
 .view-filled-form {
   max-width: 800px;
   margin: 0 auto;
-
   padding: 20px;
 
   .form-content {
@@ -45,10 +44,83 @@
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      width: 100%;
 
       &:disabled {
         background-color: #ddd;
         cursor: not-allowed;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .view-filled-form {
+    max-width: 100%;
+    padding: 15px;
+
+    .form-content {
+      padding: 15px;
+
+      h2 {
+        font-size: 14px;
+      }
+
+      h3 {
+        font-size: 13px;
+      }
+
+      .read-only-field {
+        margin-bottom: 10px;
+
+        label {
+          font-size: 11px;
+        }
+
+        p {
+          font-size: 11px;
+          padding: 6px;
+        }
+      }
+
+      button {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .view-filled-form {
+    padding: 10px;
+
+    .form-content {
+      padding: 10px;
+      border-radius: 5px;
+
+      h2 {
+        font-size: 13px;
+      }
+
+      h3 {
+        font-size: 12px;
+      }
+
+      .read-only-field {
+        label {
+          font-size: 10px;
+        }
+
+        p {
+          font-size: 10px;
+          padding: 5px;
+        }
+      }
+
+      button {
+        padding: 8px;
+        font-size: 12px;
       }
     }
   }
