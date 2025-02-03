@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FacebookLoginSvg, GoogleLoginSvg } from "../../assets/svgs/AuthSvg";
+import {
+  GoogleLoginSvg,
+} from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
 import { HandleSocialLogin } from "./authUtils";
-import { facebookProvider, googleProvider } from "../../firebase/firebase";
+import { googleProvider } from "../../firebase/firebase";
 import useAuth from "../../context/useAuth";
 import LoginPage from "./authsubfolders/login/Login";
 import SignupPage from "./authsubfolders/signUp/SignUp";
@@ -49,11 +51,6 @@ const AuthPage = () => {
           <GoogleLoginSvg
             onClick={() =>
               HandleSocialLogin(googleProvider, navigate, handleAuthSuccess)
-            }
-          />
-          <FacebookLoginSvg
-            onClick={() =>
-              HandleSocialLogin(facebookProvider, navigate, handleAuthSuccess)
             }
           />
         </div>
