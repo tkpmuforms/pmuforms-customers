@@ -138,7 +138,7 @@ const AppointmentDetails = () => {
           <div className="info-item">
             <span className="info-title">Appointment Date:</span>
             <span className="info-value">
-              {dayjs(appointMent?.date).format("DD-MM-YYYY") || "N/A"}
+              {dayjs(appointMent?.date).format("MM-DD-YYYY") || "N/A"}
             </span>
           </div>
           <div className="info-item">

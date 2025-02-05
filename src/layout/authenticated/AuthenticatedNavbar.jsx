@@ -14,7 +14,6 @@ const AuthenticatedNavbar = () => {
   const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown
   const isDropdownOpen = Boolean(anchorEl);
   const businessName = localStorage.getItem("businessName");
-  console.log(businessName);
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
@@ -52,7 +51,7 @@ const AuthenticatedNavbar = () => {
     <div className="authenticatedNavbarContainer">
       <div className="navlink">
         <div className="authLogo" onClick={() => navigate("/dashboard")}>
-          <Work />
+          <Work />&nbsp;
           {businessName ?? ""}
         </div>
         <div
