@@ -111,7 +111,7 @@ const DynamicForms = () => {
                 if (user?.info?.[key]) {
                   let value = user.info[key];
                   if (field.id === "date_of_birth") {
-                    value = dayjs(value).format("DD-MM-YYYY");
+                    value = dayjs(value).format("MM-DD-YYYY");
                   }
 
                   autofillResponse[field.id] = value;
