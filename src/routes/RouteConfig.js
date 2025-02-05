@@ -2,6 +2,7 @@ import { lazy } from "react";
 import AuthPage from "../pages/authpage/AuthPage";
 import NotFound from "../components/not-found/NotFound";
 import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
+import ContactSupport from "../pages/contact-us/ContactUs";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")
@@ -14,7 +15,7 @@ const BookAppointment = lazy(() =>
 );
 const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const DynamicForms = lazy(() => import("../pages/forms/DynamicForms"));
-const ContactSupport = lazy(() => import("../pages/contact-us/ContactUs"));
+const ContactSupportAuth = lazy(() => import("../pages/contact-us/ContactUs"));
 const FilledForms = lazy(() => import("../pages/filled-forms/FilledForms"));
 
 export const nonAuthRoutes = [
@@ -37,6 +38,11 @@ export const nonAuthRoutes = [
     path: "/privacy-policy",
     element: <PrivacyPolicy />,
   },
+  {
+    path: "/support",
+    element: <ContactSupport />,
+    breadcrumbs: ["Contact Support"],
+  },
 ];
 
 export const authorizedRoutes = [
@@ -57,7 +63,7 @@ export const authorizedRoutes = [
   },
   {
     path: "/support",
-    element: <ContactSupport />,
+    element: <ContactSupportAuth />,
     breadcrumbs: ["Contact Support"],
   },
   {

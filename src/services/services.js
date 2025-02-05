@@ -163,3 +163,13 @@ export const createFilledForm = async (data) => {
 export const getRootTemplateForm = () => {
   return axiosInstance.get("/api/forms/root-templates");
 };
+
+export const sendMessage = async (data) => {
+  try {
+    const response = await axiosInstance.post("/api/messages", data);
+    return response.data;
+  } catch (error) {
+    console.error("Error sending message:", error);
+    throw error;
+  }
+};

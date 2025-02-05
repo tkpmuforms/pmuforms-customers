@@ -5,8 +5,16 @@ import {
 } from "../../services/services";
 import "./viewFilledForms.scss";
 
+const FormInputTypes = {
+  TEXT: "text",
+  CHECKBOX: "checkbox",
+  IMAGE: "image",
+  DATE: "date",
+  TEXTFIELD: "textfield",
+  NUMBER: "number",
+};
+
 const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
-  console.log(appointmentId, formTemplateId);
   const [form, setForm] = useState(null);
   const [filledForm, setFilledForm] = useState(null);
 
@@ -47,15 +55,73 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
 
   const renderFormFields = (fields) =>
     fields.map((field) => {
-      if (!field || !field.id) return null;
-      const fieldValue = filledForm?.[field?.id] || "N/A";
+      const fieldValue = filledForm?.[field.id];
 
-      return (
-        <div key={field.id} className="read-only-field">
-          <label>{field.title}</label>
-          <p>{fieldValue}</p>
-        </div>
-      );
+      if (!field.type) {
+        return (
+          <div key={field.id} className="read-only-field">
+            <label>{field.title}</label>
+          </div>
+        );
+      }
+
+      switch (field.type) {
+        case FormInputTypes.CHECKBOX:
+          return (
+            <div className="checkbox-group" key={field.id}>
+              <label>
+                <input type="checkbox" checked={!!fieldValue} disabled />{" "}
+                {field.title}
+              </label>
+            </div>
+          );
+
+        case FormInputTypes.DATE:
+          return (
+            <div key={field.id} className="read-only-field">
+              <label>{field.title}</label>
+              <p>{new Date(fieldValue).toLocaleDateString()}</p>
+            </div>
+          );
+
+        case FormInputTypes.IMAGE:
+          return (
+            <div key={field.id} className="read-only-field">
+              <label>{field.title}</label>
+              {fieldValue ? (
+                <div className="image-preview">
+                  <img
+                    src={fieldValue}
+                    alt="Uploaded Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      objectFit: "contain",
+                    }}
+                  />
+                </div>
+              ) : (
+                <p>No Image</p>
+              )}
+            </div>
+          );
+
+        case FormInputTypes.NUMBER:
+          return (
+            <div key={field.id} className="read-only-field">
+              <label>{field.title}</label>
+              <p>{fieldValue}</p>
+            </div>
+          );
+
+        default:
+          return (
+            <div key={field.id} className="read-only-field">
+              <label>{field.title}</label>
+              <p>{fieldValue}</p>
+            </div>
+          );
+      }
     });
 
   return (

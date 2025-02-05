@@ -46,9 +46,9 @@ const Navbar = ({ CreatenewClick }) => {
         className={`links ${mobileMenuVisible ? "visible" : ""}`}
       >
         <ul>
-          <li>
+          {/* <li>
             <Link to="/">Home</Link>
-          </li>
+          </li> */}
           <li>
             <a href={videolink} target="_blank" rel="noopener noreferrer">
               [Watch Video] “How to use PMU Forms”
@@ -56,6 +56,9 @@ const Navbar = ({ CreatenewClick }) => {
           </li>
           <li>
             <Link to="/privacy-policy">Privacy Policy</Link>
+          </li>
+          <li>
+            <Link to="/support">Contact Support</Link>
           </li>
         </ul>
       </div>
