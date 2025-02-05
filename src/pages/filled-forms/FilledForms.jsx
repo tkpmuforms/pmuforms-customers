@@ -73,7 +73,7 @@ const FilledForms = () => {
           filledForms.map((form) => (
             <RenderFormsCard
               key={form.id}
-              title={form.title || "Untitled Form"}
+              title={form.title || ""}
               status={form.status}
               onViewClick={() => handleViewForm(form)}
             />
