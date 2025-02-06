@@ -21,9 +21,6 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_MEASUREMENT_ID,
 };
 
-console.log(JSON.stringify(firebaseConfig));
-
-
 let app;
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
