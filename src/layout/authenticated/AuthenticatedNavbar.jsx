@@ -16,7 +16,7 @@ const AuthenticatedNavbar = () => {
   const isDropdownOpen = Boolean(anchorEl);
   const businessName = localStorage.getItem("businessName");
 
-  const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || false);
+  const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || true);
 
   // Toggle the mobile menu
   const toggleMobileMenu = () => {
