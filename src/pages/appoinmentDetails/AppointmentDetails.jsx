@@ -92,11 +92,12 @@ const AppointmentDetails = () => {
   }, [id, artisId]);
 
   const getServiceTitle = (serviceIds) => {
-    if (!serviceIds || !services) return "Appointment";
+    if (!serviceIds || !services.length) return "Appointment";
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
-    return serviceNames.join(", ") || "Appointment";
+
+    return serviceNames.length > 0 ? serviceNames.join(", ") : "Appointment";
   };
 
   const getFormStatus = (formId) => {

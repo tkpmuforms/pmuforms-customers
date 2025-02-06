@@ -1,7 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./contactUs.scss";
+import { sendMessage } from "../../services/services";
+import { Toast } from "../../utils/toast/Toast";
+import useAuth from "../../context/useAuth";
+import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
+import { useNavigate } from "react-router-dom";
 
 const ContactUs = () => {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+  console.log(user, isAuthenticated);
+
   const [formData, setFormData] = useState({
     email: "",
     firstName: "",
@@ -10,7 +19,16 @@ const ContactUs = () => {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [responseMessage, setResponseMessage] = useState("");
+
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      setFormData((prev) => ({
+        ...prev,
+        email: user?.email || "",
+        firstName: user?.info?.client_name || user?.name || "",
+      }));
+    }
+  }, [user, isAuthenticated]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,24 +39,19 @@ const ContactUs = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const url = `https://mc.us21.list-manage.com/subscribe/form-post-json?u=9922d1f13111b8dcaa8677d50&id=36c82a9445&popup=true&EMAIL=${formData.email}&FNAME=${formData.firstName}&SUBJECT=${formData.subject}&MESSAGE=${formData.message}&c=?`;
-
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      await sendMessage(formData);
+      setFormData({
+        email: isAuthenticated ? formData.email : "",
+        firstName: isAuthenticated ? formData.firstName : "",
+        subject: "",
+        message: "",
       });
-      if (response.ok) {
-        setResponseMessage("Your message has been sent successfully!");
-      } else {
-        setResponseMessage(
-          "There was an issue sending your message. Please try again."
-        );
-      }
+
+      Toast("success", "Message sent successfully");
     } catch (error) {
-      setResponseMessage("There was an error. Please try again.");
+      console.error("Error sending message:", error);
+      Toast("error", "Error sending message");
     } finally {
       setIsSubmitting(false);
     }
@@ -46,6 +59,20 @@ const ContactUs = () => {
 
   return (
     <div className="contact-us">
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          gap: "10px",
+          cursor: "pointer",
+          marginBottom: "20px",
+        }}
+        onClick={() => navigate(-1)}
+      >
+        <GoBackSvg />
+        <p>Go back</p>
+      </div>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="email">Email:</label>
@@ -57,6 +84,7 @@ const ContactUs = () => {
             onChange={handleChange}
             required
             placeholder="Enter your email"
+            disabled={isAuthenticated} // Disable if autofilled from user
           />
         </div>
         <div className="form-group">
@@ -69,6 +97,7 @@ const ContactUs = () => {
             onChange={handleChange}
             required
             placeholder="Enter your first name"
+            disabled={isAuthenticated} // Disable if autofilled from user
           />
         </div>
         <div className="form-group">
@@ -90,6 +119,7 @@ const ContactUs = () => {
             name="message"
             value={formData.message}
             onChange={handleChange}
+            required
             placeholder="Enter your message"
           />
         </div>
@@ -97,7 +127,6 @@ const ContactUs = () => {
           {isSubmitting ? "Sending..." : "Submit"}
         </button>
       </form>
-      {responseMessage && <p className="response-message">{responseMessage}</p>}
     </div>
   );
 };

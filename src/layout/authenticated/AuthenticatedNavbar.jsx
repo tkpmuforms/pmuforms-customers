@@ -15,6 +15,10 @@ const AuthenticatedNavbar = () => {
   const isDropdownOpen = Boolean(anchorEl);
   const businessName = localStorage.getItem("businessName");
 
+
+  const USE_COMPANY_LOGO = process.env.USE_COMPANY_LOGO;
+
+
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
   };
@@ -50,9 +54,30 @@ const AuthenticatedNavbar = () => {
   return (
     <div className="authenticatedNavbarContainer">
       <div className="navlink">
-        <div className="authLogo" onClick={() => navigate("/dashboard")}>
-          <Work />&nbsp;
-          {businessName ?? ""}
+        <div
+          className="authLogo"
+          style={{
+            color: `var(--pmu-primary)`,
+          }}
+          onClick={() => navigate("/dashboard")}
+        >
+          {USE_COMPANY_LOGO ? (
+            <LogoSvg />
+          ) : (
+            <>
+              <Work />
+              &nbsp;
+              <p
+                style={{
+                  fontSize: "1rem",
+                  fontWeight: "bold",
+                }}
+              >
+                {businessName ?? ""}
+              </p>
+            </>
+          )}
+
         </div>
         <div
           ref={mobileMenuRef}
