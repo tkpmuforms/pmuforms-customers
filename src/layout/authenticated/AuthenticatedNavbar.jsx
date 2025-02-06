@@ -15,7 +15,9 @@ const AuthenticatedNavbar = () => {
   const isDropdownOpen = Boolean(anchorEl);
   const businessName = localStorage.getItem("businessName");
 
+
   const USE_COMPANY_LOGO = process.env.USE_COMPANY_LOGO;
+
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
@@ -75,6 +77,7 @@ const AuthenticatedNavbar = () => {
               </p>
             </>
           )}
+
         </div>
         <div
           ref={mobileMenuRef}
