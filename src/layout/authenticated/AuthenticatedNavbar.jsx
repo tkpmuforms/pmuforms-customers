@@ -16,7 +16,7 @@ const AuthenticatedNavbar = () => {
   const businessName = localStorage.getItem("businessName");
 
 
-  const USE_COMPANY_LOGO = process.env.USE_COMPANY_LOGO;
+  const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || false);
 
 
   const toggleMobileMenu = () => {
