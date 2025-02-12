@@ -20,7 +20,7 @@ const FormInputTypes = {
   IMAGE: "image",
   DATE: "date",
   TEXTFIELD: "textfield",
-  NUMBER: "number",
+  NUMBER: "numberOfField",
 };
 //calcualte age from date of birth
 const fieldToUserInfoMapping = {
