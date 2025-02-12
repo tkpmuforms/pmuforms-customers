@@ -67,7 +67,7 @@ const BookAppointment = () => {
       setLoading(true);
       // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
-        Toast("success", "Appointment created successfully");
+        // Toast("success", "Appointment created successfully");
         navigate(`/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {

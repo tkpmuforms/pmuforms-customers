@@ -115,7 +115,7 @@ const DynamicForms = () => {
                   }
 
                   autofillResponse[field.id] = value;
-                  autofilledFieldIds.add(field.id); // Track autofilled field// Track autofilled field
+                  autofilledFieldIds.add(field.id);
                 }
               });
             }
@@ -323,9 +323,10 @@ const DynamicForms = () => {
       });
       setFormResponse({});
       setSaving(false);
-      Toast("success", "Form submitted successfully");
+      // Toast("success", "Form submitted successfully");
       if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1); // Move to the next form tab
+        window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         navigate(`/filled-forms/appointment/${appointmentId}`);
       }

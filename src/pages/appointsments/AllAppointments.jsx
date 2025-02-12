@@ -108,7 +108,17 @@ const AllAppointments = () => {
     setLoading(true);
     try {
       const response = await getAllAppointments(page, itemsPerPage);
-      setAppointments(response?.appointments);
+      const updatedAppointments = (response?.appointments || []).map(
+        (appointment) => ({
+          ...appointment,
+          filledFormsCount:
+            appointment.filledForms?.filter(
+              (form) => form.status === "completed"
+            ).length || 0,
+        })
+      );
+
+      setAppointments(updatedAppointments);
       setMetadata(response?.metadata);
     } catch (error) {
       console.log(error.message);
@@ -122,7 +132,7 @@ const AllAppointments = () => {
     try {
       await deleteAppointment(appointmentId);
 
-      Toast("success", "Appointment deleted successfully");
+      // Toast("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
@@ -197,7 +207,7 @@ const AllAppointments = () => {
                 title={getServiceTitle(appointment?.services).truncatedTitle}
                 fullTitle={getServiceTitle(appointment?.services).fullTitle}
                 date={appointment.date}
-                formsFilled={appointment.formsFilled || 0}
+                formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}
                 ViewClick={() => navigate(`/appointments/${appointment.id}`)}
                 DeleteClick={() => removeAppointment(appointment.id)}
