@@ -111,7 +111,7 @@ const AllAppointments = () => {
       setAppointments(response?.appointments);
       setMetadata(response?.metadata);
     } catch (error) {
-      console.log(error.message);
+      console.error(error.message);
       Toast("error", "Error fetching appointments.");
     } finally {
       setLoading(false);

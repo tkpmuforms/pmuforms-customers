@@ -58,7 +58,6 @@ const FilledForms = () => {
   };
 
   const handleViewForm = (form) => {
-    console.log("View form", form);
     setSelectedForm(form);
     setIsModalOpen(true);
   };
