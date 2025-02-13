@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 const ContactUs = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated } = useAuth();
-  console.log(user, isAuthenticated);
 
   const [formData, setFormData] = useState({
     email: "",

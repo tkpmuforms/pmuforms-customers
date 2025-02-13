@@ -112,7 +112,6 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     try {
       const data = { ...values, avatarUrl }; // Include avatarUrl in the form data
       SavePersonalInformation(data).then((res) => {
-        console.log(res);
         setSubmitting(false);
         dispatch(setUser(res?.customer));
         onSubmitClick();
