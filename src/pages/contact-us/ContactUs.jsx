@@ -17,7 +17,6 @@ const ContactUs = () => {
     subject: "",
     message: "",
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {

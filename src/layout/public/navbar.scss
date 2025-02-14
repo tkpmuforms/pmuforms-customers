@@ -1,21 +1,17 @@
-
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 100px;
+  padding: 10px 20px;
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
   z-index: 2000;
+
   .logo {
     display: flex;
     align-items: center;
-    padding-left: 20px;
     cursor: pointer;
-
-    svg {
-      // Add any styles for svg if needed
-    }
+    padding-left: 10px;
   }
 
   .links {
@@ -29,21 +25,11 @@
 
       li {
         list-style: none;
-        position: relative;
         cursor: pointer;
         color: #101928;
         font-size: 14px;
         font-weight: 600;
         line-height: 20px;
-
-        .dropdown {
-          cursor: pointer;
-
-          .arrow {
-            margin-left: 5px;
-            cursor: pointer;
-          }
-        }
 
         a {
           text-decoration: none;
@@ -56,41 +42,6 @@
             color: var(--color-blue-dark);
           }
         }
-
-       
-      }
-    }
-
-    &.visible {
-      display: block;
-      position: absolute;
-     top: 50px;
-      left: 0;
-      width: 100%;
-      background: #fff;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      padding: 20px 0;
-
-      ul {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-
-        li {
-          a {
-            font-size: 16px;
-          }
-
-          .dropdown-menu {
-            position: static;
-            width: 100%;
-            box-shadow: none;
-
-            a {
-              font-size: 14px;
-            }
-          }
-        }
       }
     }
   }
@@ -101,29 +52,10 @@
     padding-right: 20px;
     gap: 20px;
 
-    .download {
-      padding: 10px 20px;
-      background-color: var(--pmu-primary); 
-      color: #fff ;
-      border-radius: 12px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-     
-      a{
-        color: white;
-        text-decoration: none;
-      }
-
-      &:hover {
-        background-color: darken($color: #8E2D8E, $amount: 10%);
-      
-      }
-    }
     .create-an-account {
       background-color: transparent;
-      border: 1px solid var(--pmu-primary); 
-      color: var(--pmu-primary); 
+      border: 1px solid var(--pmu-primary);
+      color: var(--pmu-primary);
       padding: 10px 20px;
       border-radius: 12px;
       cursor: pointer;
@@ -132,7 +64,6 @@
 
       &:hover {
         background-color: darken($color: #fff, $amount: 10%);
-        
       }
     }
   }
@@ -144,45 +75,37 @@
   }
 
   @media screen and (max-width: 768px) {
+    padding: 10px 15px;
+
     .logo {
       padding-left: 0;
     }
 
     .links {
       display: none;
+      position: absolute;
+      top: 60px;
+      left: 0;
+      width: 100%;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px 0;
+      z-index: 1000;
 
-      &.visible {
-        display: block;
-        position: absolute;
-       top: 50px;
-        left: 0;
-        width: 100%;
-        background: #fff;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 20px 0;
+      ul {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
 
-        ul {
-          flex-direction: column;
-          align-items: center;
-          gap: 20px;
-
-          li {
-            a {
-              font-size: 16px;
-            }
-
-            .dropdown-menu {
-              position: static;
-              width: 100%;
-              box-shadow: none;
-
-              a {
-                font-size: 14px;
-              }
-            }
-          }
+        li a {
+          font-size: 16px;
         }
       }
+    }
+
+    .links.visible {
+      display: flex;
+      flex-direction: column;
     }
 
     .buttons {

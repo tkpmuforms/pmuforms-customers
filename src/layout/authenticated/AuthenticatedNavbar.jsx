@@ -5,24 +5,25 @@ import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
 import "./AuthenticatedNavbar.scss";
 import useAuth from "../../context/useAuth";
 import { Work } from "@mui/icons-material";
+import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
   const { logout, user } = useAuth();
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const mobileMenuRef = useRef(null);
-  const [anchorEl, setAnchorEl] = useState(null); // For avatar dropdown
+  const [anchorEl, setAnchorEl] = useState(null); // Avatar dropdown
   const isDropdownOpen = Boolean(anchorEl);
   const businessName = localStorage.getItem("businessName");
 
-
   const USE_COMPANY_LOGO = process.env.USE_COMPANY_LOGO;
 
-
+  // Toggle the mobile menu
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
   };
 
+  // Close menu on outside click
   const handleClickOutside = (event) => {
     if (
       mobileMenuRef.current &&
@@ -30,6 +31,12 @@ const AuthenticatedNavbar = () => {
     ) {
       setMobileMenuVisible(false);
     }
+  };
+
+  // Close menu when navigating
+  const handleNavigation = (path) => {
+    navigate(path);
+    setMobileMenuVisible(false); // Close menu
   };
 
   const handleAvatarClick = (event) => {
@@ -42,6 +49,7 @@ const AuthenticatedNavbar = () => {
 
   const handleLogout = () => {
     logout();
+    setMobileMenuVisible(false);
   };
 
   useEffect(() => {
@@ -56,42 +64,45 @@ const AuthenticatedNavbar = () => {
       <div className="navlink">
         <div
           className="authLogo"
-          style={{
-            color: `var(--pmu-primary)`,
-          }}
-          onClick={() => navigate("/dashboard")}
+          onClick={() => handleNavigation("/dashboard")}
         >
           {USE_COMPANY_LOGO ? (
             <LogoSvg />
           ) : (
             <>
-              <Work />
+              <AccountBalanceOutlinedIcon />
               &nbsp;
-              <p
-                style={{
-                  fontSize: "1rem",
-                  fontWeight: "bold",
-                }}
-              >
-                {businessName ?? ""}
-              </p>
+              <p className="businessName">{businessName ?? ""}</p>
             </>
           )}
-
         </div>
+
+        {/* Mobile Menu */}
         <div
           ref={mobileMenuRef}
           className={`authlinks ${mobileMenuVisible ? "visible" : ""}`}
         >
           <ul>
             <li>
-              <Link to="/dashboard">Home</Link>
+              <Link
+                to="/dashboard"
+                onClick={() => handleNavigation("/dashboard")}
+              >
+                Home
+              </Link>
             </li>
             <li>
-              <Link to="/appointments">Appointments</Link>
+              <Link
+                to="/appointments"
+                onClick={() => handleNavigation("/appointments")}
+              >
+                Appointments
+              </Link>
             </li>
             <li>
-              <Link to="/support">Contact Support</Link>
+              <Link to="/support" onClick={() => handleNavigation("/support")}>
+                Contact Support
+              </Link>
             </li>
             {mobileMenuVisible && (
               <li className="mobile-logout">
@@ -102,7 +113,7 @@ const AuthenticatedNavbar = () => {
         </div>
       </div>
 
-      {/* Right Aligned Content */}
+      {/* Avatar & Hamburger Menu */}
       <div className="hamburger-avatar-container">
         <div className="avatar" onClick={handleAvatarClick}>
           <Avatar
@@ -121,9 +132,7 @@ const AuthenticatedNavbar = () => {
         open={isDropdownOpen}
         onClose={handleDropdownClose}
         PaperProps={{
-          style: {
-            marginTop: "20px",
-          },
+          style: { marginTop: "20px" },
         }}
       >
         <MenuItem>

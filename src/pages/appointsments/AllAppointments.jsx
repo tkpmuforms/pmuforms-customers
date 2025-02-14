@@ -204,8 +204,12 @@ const AllAppointments = () => {
             filteredAppointments?.map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
-                title={getServiceTitle(appointment?.services).truncatedTitle}
-                fullTitle={getServiceTitle(appointment?.services).fullTitle}
+                title={
+                  getServiceTitle(appointment?.services).truncatedTitle || "N/A"
+                }
+                fullTitle={
+                  getServiceTitle(appointment?.services).fullTitle || "N/A"
+                }
                 date={appointment.date}
                 formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}

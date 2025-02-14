@@ -129,7 +129,7 @@ const Dashboard = () => {
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
-    return serviceNames.join(", ") || "Appointment";
+    return serviceNames.join(", ") || "N/A";
   };
 
   const removeAppointment = async (appointmentId) => {

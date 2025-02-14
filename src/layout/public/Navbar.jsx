@@ -37,18 +37,22 @@ const Navbar = ({ CreatenewClick }) => {
 
   return (
     <div className="navbar">
+      {/* Logo */}
       <div onClick={handleHomeNavigate} className="logo">
         <LogoSvg />
       </div>
 
+      {/* Hamburger Menu Button (Visible only on mobile) */}
+      <div className="hamburger-menu" onClick={toggleMobileMenu}>
+        &#9776;
+      </div>
+
+      {/* Navigation Links */}
       <div
         ref={mobileMenuRef}
         className={`links ${mobileMenuVisible ? "visible" : ""}`}
       >
         <ul>
-          {/* <li>
-            <Link to="/">Home</Link>
-          </li> */}
           <li>
             <a href={videolink} target="_blank" rel="noopener noreferrer">
               [Watch Video] “How to use PMU Forms”
@@ -62,22 +66,12 @@ const Navbar = ({ CreatenewClick }) => {
           </li>
         </ul>
       </div>
+
+      {/* Buttons (Hidden in Mobile) */}
       <div className="buttons">
-        {/* <button className="download">
-          <a
-            href="https://apps.apple.com/us/app/pmu-forms/id1497270923"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Download App
-          </a>
-        </button> */}
         <button onClick={CreatenewClick} className="create-an-account">
           Create an Account
         </button>
-      </div>
-      <div className="hamburger-menu" onClick={toggleMobileMenu}>
-        &#9776;
       </div>
     </div>
   );
