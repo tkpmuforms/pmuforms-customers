@@ -25,7 +25,7 @@ const FormInputTypes = {
 //calcualte age from date of birth
 const fieldToUserInfoMapping = {
   client_name: ["client_name"],
-  signature: ["client_name"],
+  // signature: ["client_name"],
   date_of_birth: ["date_of_birth"],
   home_address: ["home_address"],
   emergency_contact_name: ["emergency_contact_name"],
@@ -62,15 +62,16 @@ const DynamicForms = () => {
     const fetchForms = async () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
-
-        const updatedForms = fetchedForms?.forms?.map((form) =>
-          JSON.parse(
-            JSON.stringify(form).replace(
-              /{{user\.businessName}}/g,
-              businessName
+        const updatedForms = fetchedForms?.forms
+          .filter((form) => form.sections.some((section) => !section.skip))
+          .map((form) =>
+            JSON.parse(
+              JSON.stringify(form).replace(
+                /{{user\.businessName}}/g,
+                businessName
+              )
             )
-          )
-        );
+          );
 
         setForms(updatedForms || []);
       } catch (error) {
@@ -186,6 +187,30 @@ const DynamicForms = () => {
         return (
           <div key={field.id} className="read-only-field">
             <label>{field.title}</label>
+          </div>
+        );
+      }
+
+      if (field.id === "signature") {
+        return (
+          <div key={field.id}>
+            <label>
+              {field.title}
+              {isRequired && <span className="required-star">*</span>}
+              <input
+                type="text"
+                value={fieldValue}
+                {...commonProps}
+                onBlur={() => {
+                  if (fieldValue.trim() !== formResponse.client_name?.trim()) {
+                    setFormResponse((prev) => ({
+                      ...prev,
+                      signature: "",
+                    }));
+                  }
+                }}
+              />
+            </label>
           </div>
         );
       }

@@ -8,6 +8,11 @@ import { Toast } from "../../utils/toast/Toast";
 import "./bookAppointment.scss";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const BookAppointment = () => {
   const param = useParams();
@@ -19,6 +24,9 @@ const BookAppointment = () => {
   const [appointmentDate, setAppointmentDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
+
+  // Get user's timezone
+  const userTimezone = dayjs.tz.guess();
 
   useEffect(() => {
     // Fetch artist and services
@@ -57,8 +65,14 @@ const BookAppointment = () => {
       return;
     }
 
+    // Convert selected date to UTC
+    const utcAppointmentDate = dayjs(appointmentDate)
+      .tz(userTimezone)
+      .utc()
+      .toISOString();
+
     const appointment = {
-      appointmentDate: new Date(appointmentDate),
+      appointmentDate: utcAppointmentDate,
       artistId: artistId,
       services: selectedServices.map((service) => service.id),
     };
@@ -67,7 +81,6 @@ const BookAppointment = () => {
       setLoading(true);
       // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
-        // Toast("success", "Appointment created successfully");
         navigate(`/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
@@ -112,7 +125,9 @@ const BookAppointment = () => {
                   <DatePicker
                     value={appointmentDate}
                     shouldDisableDate={(date) =>
-                      date.startOf("day").isBefore(dayjs().startOf("day"))
+                      date
+                        .startOf("day")
+                        .isBefore(dayjs().tz(userTimezone).startOf("day"))
                     }
                     onChange={(newValue) => setAppointmentDate(newValue)}
                     slotProps={{

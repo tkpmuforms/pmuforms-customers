@@ -59,7 +59,11 @@ const AppointmentDetails = () => {
     const fetchAllFormsForAppointment = async () => {
       try {
         const res = await getFormsForAppointMentById(id);
-        setForms(res?.forms || []);
+        const updatedForms = res?.forms.filter((form) =>
+          form.sections.some((section) => !section.skip)
+        );
+
+        setForms(updatedForms || []);
       } catch (error) {
         console.error("Error fetching forms:", error);
       }
