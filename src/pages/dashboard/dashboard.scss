@@ -1,6 +1,8 @@
 .dashboard-page {
-  min-height: 100vh;
-
+  display: flex;
+  justify-content: center; // Center horizontally
+  align-items: center; // Align items vertically
+  flex-direction: column;
   .dashboard-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -202,8 +204,10 @@
       }
 
       .actions-section {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        flex-direction: column; // Ensure items stack correctly on mobile
+        align-items: stretch; // Make items take full width
+        width: 100%;
 
         .action-card {
           width: 100%;
@@ -250,173 +254,6 @@
     }
   }
 }
-// @media screen and (max-width: 768px) {
-//   .dashboard-page {
-//     padding: 10px; /* Adjust padding for mobile */
-
-//     .dashboard-container {
-//       padding: 0;
-//       margin: 0;
-
-//       .dashboard-header {
-//         h3 {
-//           font-size: 20px; /* Adjust heading size */
-//           line-height: 1.2;
-//         }
-
-//         p {
-//           font-size: 14px; /* Adjust welcome message size */
-//           margin-bottom: 10px; /* Add spacing */
-//         }
-
-//         .alert {
-//           flex-direction: column; /* Stack alert message vertically */
-//           align-items: flex-start;
-//           gap: 5px;
-//           background: #ffa21d1a;
-//           font-size: 14px;
-//           padding: 10px;
-//           border-radius: 8px;
-
-//           p {
-//             color: #ff9500;
-//             font-weight: 500;
-//             margin: 0;
-//           }
-//         }
-//       }
-
-//       .actions-section {
-//         display: flex;
-//         flex-direction: column; /* Stack action cards */
-//         gap: 15px; /* Increase gap between action cards */
-//         margin-top: 15px;
-
-//         .action-card {
-//           display: flex;
-//           align-items: center;
-//           gap: 10px; /* Smaller gap for icons and text */
-//           border: none; /* Remove borders */
-//           background: #f9f9f9;
-//           box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-//           padding: 15px;
-//           border-radius: 8px;
-
-//           h5 {
-//             font-size: 14px;
-//             margin-bottom: 5px; /* Spacing for text */
-//           }
-
-//           p {
-//             font-size: 12px;
-//             margin: 0;
-//           }
-//         }
-//       }
-
-//       .appointments-section {
-//         margin-top: 20px;
-
-//         h3 {
-//           font-size: 18px; /* Smaller font size */
-//           margin-bottom: 10px;
-//         }
-
-//         .see-all-appointments {
-//           text-align: left; /* Align to the left for mobile */
-//           margin-bottom: 15px;
-
-//           a {
-//             font-size: 12px;
-//             font-weight: bold;
-//             text-decoration: underline;
-//             color: #800080;
-//           }
-//         }
-
-//         .appointments-list {
-//           display: flex;
-//           flex-direction: column;
-//           gap: 15px; /* Spacing between cards */
-
-//           .appointment-card {
-//             flex-direction: column; /* Stack elements in card */
-//             align-items: flex-start;
-//             padding: 15px;
-//             background: #ffffff;
-//             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Add light shadow */
-//             border-radius: 8px;
-
-//             .appointment-info {
-//               margin-bottom: 10px;
-
-//               h4 {
-//                 font-size: 16px;
-//                 margin-bottom: 5px; /* Spacing between title and date */
-//               }
-
-//               p {
-//                 font-size: 12px;
-//                 line-height: 1.5;
-//                 margin: 0;
-//               }
-
-//               .status {
-//                 font-size: 12px;
-//                 margin-top: 5px;
-//                 padding: 5px 10px;
-//                 border-radius: 5px;
-
-//                 &.completed {
-//                   background: #e8f5e9; /* Lighter background for completed */
-//                   color: #34c759;
-//                 }
-
-//                 &.not-completed {
-//                   background: #fff4e6;
-//                   color: #ff9500;
-//                 }
-//               }
-//             }
-
-//             .appointment-actions {
-//               display: flex;
-//               width: 100%;
-//               justify-content: space-between;
-
-//               svg {
-//                 cursor: pointer;
-//                 width: 24px;
-//                 height: 24px; /* Adjust SVG icon sizes */
-//               }
-//             }
-//           }
-
-//           .no-appointments {
-//             display: flex;
-//             flex-direction: column;
-//             align-items: center;
-//             padding: 20px;
-//             background: #f9f9f9;
-//             border-radius: 8px;
-//             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-//             text-align: center;
-
-//             p {
-//               font-size: 14px;
-//               color: #666;
-//               margin-top: 10px;
-//             }
-
-//             svg {
-//               margin-bottom: 10px; /* Spacing for SVG icon */
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
 @media screen and (max-width: 768px) {
   .dashboard-page {
     .dashboard-container {
@@ -458,9 +295,9 @@
 
       .actions-section {
         display: flex;
-        flex-direction: column; /* Stack action cards */
-        gap: 10px; /* Increase gap between action cards */
-        margin-top: 10px;
+        flex-direction: column; // Ensure items stack correctly on mobile
+        align-items: stretch; // Make items take full width
+        width: 100%;
 
         .action-card {
           display: flex;

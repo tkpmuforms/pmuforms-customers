@@ -262,3 +262,24 @@
     }
   }
 }
+
+.breadcrumb {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 0 10px;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 768px) {
+  .breadcrumb {
+    padding: 0 1px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .breadcrumb {
+    padding: 0 1px;
+  }
+}

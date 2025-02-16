@@ -161,17 +161,7 @@ const AllAppointments = () => {
 
   return (
     <div className="appointments">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          cursor: "pointer",
-          marginBottom: "20px",
-          padding: "10px",
-        }}
-        onClick={() => navigate("/dashboard")}
-      >
+      <div className="breadcrumb" onClick={() => navigate("/dashboard")}>
         <GoBackSvg />
         <p>Go back to dashboard</p>
       </div>
