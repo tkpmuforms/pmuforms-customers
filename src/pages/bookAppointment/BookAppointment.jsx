@@ -1,15 +1,15 @@
 import { Checkbox, CircularProgress } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { bookAppointment, getArtistServices } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
-import "./bookAppointment.scss";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { bookAppointment, getArtistServices } from "../../services/services";
+import "./bookAppointment.scss";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -17,13 +17,13 @@ dayjs.extend(timezone);
 const BookAppointment = () => {
   const param = useParams();
   const artistId = param.artistId || localStorage.getItem("artistId");
-
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [appointmentDate, setAppointmentDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
+  const { showAlert } = useSnackbar();
 
   // Get user's timezone
   const userTimezone = dayjs.tz.guess();
@@ -36,7 +36,7 @@ const BookAppointment = () => {
         setServices(res?.services);
       })
       .catch((error) => {
-        Toast("error", "Failed to load services");
+        showAlert("error", "Failed to load services");
         console.error("Error fetching services:", error);
       })
       .finally(() => {
@@ -57,11 +57,11 @@ const BookAppointment = () => {
   const handleContinue = async () => {
     // Validate input
     if (!appointmentDate) {
-      Toast("error", "Please select an appointment date.");
+      showAlert("error", "Please select an appointment date.");
       return;
     }
     if (selectedServices.length === 0) {
-      Toast("error", "Please select at least one service.");
+      showAlert("error", "Please select at least one service.");
       return;
     }
 
@@ -84,7 +84,7 @@ const BookAppointment = () => {
         navigate(`/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
-      Toast("error", "Error creating the appointment");
+      showAlert("error", "Error creating the appointment");
       console.error("Error creating the appointment:", error);
     } finally {
       setLoading(false);

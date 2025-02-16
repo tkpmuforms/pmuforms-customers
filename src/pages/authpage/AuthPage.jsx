@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  GoogleLoginSvg,
-} from "../../assets/svgs/AuthSvg";
+import { GoogleLoginSvg } from "../../assets/svgs/AuthSvg";
 import Navbar from "../../layout/public/Navbar";
 import "./authpage.scss";
 import { HandleSocialLogin } from "./authUtils";
@@ -10,11 +8,13 @@ import { googleProvider } from "../../firebase/firebase";
 import useAuth from "../../context/useAuth";
 import LoginPage from "./authsubfolders/login/Login";
 import SignupPage from "./authsubfolders/signUp/SignUp";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 const AuthPage = () => {
   const [page, setPage] = useState("login");
   const navigate = useNavigate();
   const { handleAuthSuccess } = useAuth();
+  const { showAlert } = useSnackbar();
 
   const handlePageChange = (page) => setPage(page);
 
@@ -50,7 +50,12 @@ const AuthPage = () => {
         <div className="social-signin">
           <GoogleLoginSvg
             onClick={() =>
-              HandleSocialLogin(googleProvider, navigate, handleAuthSuccess)
+              HandleSocialLogin(
+                googleProvider,
+                navigate,
+                handleAuthSuccess,
+                showAlert
+              )
             }
           />
         </div>

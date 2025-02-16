@@ -1,15 +1,15 @@
 import { auth, signInWithPopup } from "../../firebase/firebase";
 import { createCustomer } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
 
 export const HandleSocialLogin = async (
   provider,
   navigate,
-  handleAuthSuccess
+  handleAuthSuccess,
+  showAlert
 ) => {
   if (!provider) {
     console.error("Authentication provider is undefined");
-    Toast("error", "Authentication provider is not configured");
+    showAlert("error", "Authentication provider is not configured");
     return;
   }
   try {
@@ -35,15 +35,15 @@ export const HandleSocialLogin = async (
     });
   } catch (error) {
     console.error("Social login error:", error);
-
-    Toast("error", `Login failed! Try again later.`);
+    showAlert("error", `Login failed! Try again later.`);
   }
 };
 
 export const SignInSuccessWithAuthResult = async (
   authResult,
   navigate,
-  handleAuthSuccess
+  handleAuthSuccess,
+  showAlert
 ) => {
   const user = authResult.user;
   const userToken = await user.getIdToken();
@@ -65,6 +65,6 @@ export const SignInSuccessWithAuthResult = async (
   } catch (error) {
     console.error("Error during login callback:", error);
 
-    Toast("error", `Login failed! Try again later.`);
+    showAlert("error", `Login failed! Try again later.`);
   }
 };

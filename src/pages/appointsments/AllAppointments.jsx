@@ -1,3 +1,5 @@
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,15 +9,13 @@ import {
   NoAppointmentsSvg,
   ViewFormButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
+import { useSnackbar } from "../../context/SnackbarContext";
 import {
   deleteAppointment,
   getAllAppointments,
   getArtistServices,
 } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
 import "./allappointments.scss";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
-import { CircularProgress, Tooltip } from "@mui/material";
 
 const RenderAppointmentCard = ({
   title,
@@ -59,6 +59,7 @@ const AllAppointments = () => {
   const [metadata, setMetadata] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const { showAlert } = useSnackbar();
   const navigate = useNavigate();
   const artistId = localStorage.getItem("artistId");
   const [currentPage, setCurrentPage] = useState(1);
@@ -122,7 +123,7 @@ const AllAppointments = () => {
       setMetadata(response?.metadata);
     } catch (error) {
       console.error(error.message);
-      Toast("error", "Error fetching appointments.");
+      showAlert("error", "Error fetching appointments");
     } finally {
       setLoading(false);
     }
@@ -132,12 +133,11 @@ const AllAppointments = () => {
     try {
       await deleteAppointment(appointmentId);
 
-      // Toast("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
     } catch (error) {
-      Toast("error", "Error deleting appointment");
+      showAlert("error", "Error deleting appointment");
     }
   };
 

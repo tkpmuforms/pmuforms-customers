@@ -1,18 +1,18 @@
+import imageCompression from "browser-image-compression";
+import dayjs from "dayjs";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
+import { useSnackbar } from "../../context/SnackbarContext";
+import useAuth from "../../context/useAuth";
+import { storage } from "../../firebase/firebase";
 import {
   createFilledForm,
   getAllFilledFormsForAppointment,
   getFormsForAppointMentById,
 } from "../../services/services";
-import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import "./dynamicForms.scss";
-import { Toast } from "../../utils/toast/Toast";
-import useAuth from "../../context/useAuth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import imageCompression from "browser-image-compression";
-import { storage } from "../../firebase/firebase";
-import dayjs from "dayjs";
 
 const FormInputTypes = {
   TEXT: "text",
@@ -44,6 +44,7 @@ const DynamicForms = () => {
   const [currentTab, setCurrentTab] = useState(0);
   const [formResponse, setFormResponse] = useState({});
   const [saving, setSaving] = useState(false);
+  const { showAlert } = useSnackbar();
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
 
@@ -155,10 +156,10 @@ const DynamicForms = () => {
         [fieldId]: downloadUrl,
       }));
 
-      Toast("success", "Image uploaded successfully!");
+      showAlert("success", "Image uploaded successfully");
     } catch (error) {
       console.error("Error uploading image:", error);
-      Toast("error", "Failed to upload image.");
+      showAlert("error", "Error uploading image");
     }
   };
 
@@ -340,7 +341,7 @@ const DynamicForms = () => {
     setRequiredFieldsOnSubmit(missingFields.map((field) => field.id));
 
     if (missingFields.length > 0) {
-      Toast("error", "Please fill in all required fields");
+      showAlert("error", "Please fill out all required fields");
       return;
     }
 
@@ -353,7 +354,6 @@ const DynamicForms = () => {
       });
       setFormResponse({});
       setSaving(false);
-      // Toast("success", "Form submitted successfully");
       if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1); // Move to the next form tab
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -362,7 +362,7 @@ const DynamicForms = () => {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      Toast("error", error?.message || "An error occurred");
+      showAlert("error", "Error submitting form");
       setSaving(false);
     }
   };

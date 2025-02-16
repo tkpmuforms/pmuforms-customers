@@ -22,6 +22,7 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 const RenderAppointmentCard = ({
   title,
@@ -61,7 +62,6 @@ const Dashboard = () => {
   const artistId = params.artistId || localStorage.getItem("artistId");
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
-
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const [businessName, setBusinessName] = useState(
     localStorage.getItem("businessName")
@@ -71,6 +71,7 @@ const Dashboard = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
+  const { showAlert } = useSnackbar();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -136,12 +137,12 @@ const Dashboard = () => {
     try {
       await deleteAppointment(appointmentId);
 
-      // Toast("success", "Appointment deleted successfully");
+      showAlert("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
     } catch (error) {
-      Toast("error", "Error deleting appointment");
+      showAlert("error", "Error deleting appointment");
     }
   };
 

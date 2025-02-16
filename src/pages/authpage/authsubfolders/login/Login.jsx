@@ -1,20 +1,21 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import "./login.scss";
-import ForgotPasswordForm from "./ForgotPasswordForm";
-import { Toast } from "../../../../utils/toast/Toast";
-import { SignInSuccessWithAuthResult } from "../../authUtils";
+import { useSnackbar } from "../../../../context/SnackbarContext";
 import useAuth from "../../../../context/useAuth";
 import {
-  signInWithEmailAndPassword,
   auth,
+  signInWithEmailAndPassword,
 } from "../../../../firebase/firebase";
+import { SignInSuccessWithAuthResult } from "../../authUtils";
+import ForgotPasswordForm from "./ForgotPasswordForm";
+import "./login.scss";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { handleAuthSuccess } = useAuth();
   const [forgetpassword, setForgotPassword] = useState(false);
+  const { showAlert } = useSnackbar();
 
   const navigate = useNavigate();
 
@@ -22,10 +23,15 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      SignInSuccessWithAuthResult(result, navigate, handleAuthSuccess);
+      SignInSuccessWithAuthResult(
+        result,
+        navigate,
+        handleAuthSuccess,
+        showAlert
+      );
     } catch (error) {
       console.error("Failed to log in:", error);
-      Toast("error", `Login failed! Invalid email or password.`);
+      showAlert("error", `Login failed! Invalid email or password.`);
     }
   };
 
