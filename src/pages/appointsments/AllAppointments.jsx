@@ -123,7 +123,9 @@ const AllAppointments = () => {
       setMetadata(response?.metadata);
     } catch (error) {
       console.error(error.message);
+
       showAlert("error", "Error fetching appointments");
+
     } finally {
       setLoading(false);
     }

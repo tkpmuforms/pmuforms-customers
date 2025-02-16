@@ -18,7 +18,6 @@ const AuthenticatedNavbar = () => {
 
   const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || true);
 
-  // Toggle the mobile menu
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);
   };
