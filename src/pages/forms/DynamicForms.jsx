@@ -163,6 +163,17 @@ const DynamicForms = () => {
     }
   };
 
+  //ingnore case sensitive
+  const handleSignatureBlur = (fieldValue) => {
+    if (fieldValue?.trim() !== user?.info.client_name.trim()) {
+      showAlert("error", "Signature does not match client name");
+      setFormResponse((prev) => ({
+        ...prev,
+        signature: "",
+      }));
+    }
+  };
+
   const renderFormFields = (fields) =>
     fields.map((field) => {
       if (!field || !field.id) return null;
@@ -202,14 +213,8 @@ const DynamicForms = () => {
                 type="text"
                 value={fieldValue}
                 {...commonProps}
-                onBlur={() => {
-                  if (fieldValue.trim() !== formResponse.client_name?.trim()) {
-                    setFormResponse((prev) => ({
-                      ...prev,
-                      signature: "",
-                    }));
-                  }
-                }}
+                placeholder="Type your full name"
+                onBlur={() => handleSignatureBlur(fieldValue)}
               />
             </label>
           </div>

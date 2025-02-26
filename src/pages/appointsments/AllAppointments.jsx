@@ -55,7 +55,7 @@ const RenderAppointmentCard = ({
 const AllAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const [services, setServices] = useState([]);
+  // const [services, setServices] = useState([]);
   const [metadata, setMetadata] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -68,9 +68,9 @@ const AllAppointments = () => {
   const handleSearch = () => {
     const query = searchQuery.toLowerCase();
     const filtered = appointments.filter((appointment) => {
-      const title = getServiceTitle(
-        appointment?.services
-      ).fullTitle?.toLowerCase();
+      const title = appointment?.serviceDetails.map(
+        (service) => service.service
+      );
       const date = new Date(appointment.date).toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
@@ -80,30 +80,30 @@ const AllAppointments = () => {
     });
     setFilteredAppointments(filtered);
   };
-  const fetchServices = async (artistId) => {
-    try {
-      const response = await getArtistServices(artistId);
+  // const fetchServices = async (artistId) => {
+  //   try {
+  //     const response = await getArtistServices(artistId);
 
-      setServices(response?.services);
-    } catch (error) {
-      console.error("Error fetching services:", error);
-    }
-  };
+  //     setServices(response?.services);
+  //   } catch (error) {
+  //     console.error("Error fetching services:", error);
+  //   }
+  // };
 
-  const getServiceTitle = (serviceIds) => {
-    const serviceNames = services
-      .filter((service) => serviceIds.includes(service.id))
-      .map((service) => service.service);
+  // const getServiceTitle = (serviceIds) => {
+  //   const serviceNames = services
+  //     .filter((service) => serviceIds.includes(service.id))
+  //     .map((service) => service.service);
 
-    const fullTitle = serviceNames.join(", ");
-    let truncatedTitle = fullTitle;
+  //   const fullTitle = serviceNames.join(", ");
+  //   let truncatedTitle = fullTitle;
 
-    if (serviceNames.length > 3) {
-      truncatedTitle = `${serviceNames.slice(0, 3).join(", ")}...`;
-    }
+  //   if (serviceNames.length > 3) {
+  //     truncatedTitle = `${serviceNames.slice(0, 3).join(", ")}...`;
+  //   }
 
-    return { truncatedTitle, fullTitle };
-  };
+  //   return { truncatedTitle, fullTitle };
+  // };
 
   const fetchAppointments = async (page) => {
     setLoading(true);
@@ -125,7 +125,6 @@ const AllAppointments = () => {
       console.error(error.message);
 
       showAlert("error", "Error fetching appointments");
-
     } finally {
       setLoading(false);
     }
@@ -153,9 +152,9 @@ const AllAppointments = () => {
     fetchAppointments(currentPage);
   }, [currentPage]);
 
-  useEffect(() => {
-    fetchServices(artistId);
-  }, [artistId]);
+  // useEffect(() => {
+  //   fetchServices(artistId);
+  // }, [artistId]);
 
   useEffect(() => {
     handleSearch();
@@ -197,11 +196,19 @@ const AllAppointments = () => {
               <RenderAppointmentCard
                 key={index}
                 title={
-                  getServiceTitle(appointment?.services).truncatedTitle || "N/A"
+                  appointment?.serviceDetails.map((service) => service.service)
+                    .length > 3
+                    ? appointment?.serviceDetails
+                        .map((service) => service.service)
+                        .slice(0, 3)
+                        .join(", ") + "..."
+                    : appointment?.serviceDetails
+                        .map((service) => service.service)
+                        .join(", ")
                 }
-                fullTitle={
-                  getServiceTitle(appointment?.services).fullTitle || "N/A"
-                }
+                fullTitle={appointment?.serviceDetails
+                  .map((service) => service.service)
+                  .join(", ")}
                 date={appointment.date}
                 formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}

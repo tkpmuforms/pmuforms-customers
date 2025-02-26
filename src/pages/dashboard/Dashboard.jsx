@@ -68,7 +68,7 @@ const Dashboard = () => {
   );
   const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
-  const [services, setServices] = useState([]);
+  // const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
   const { showAlert } = useSnackbar();
@@ -82,7 +82,7 @@ const Dashboard = () => {
             artistId ? getArtistById(artistId) : Promise.resolve(null),
             getAllAppointments(),
             getAuthenticatedUser(),
-            artistId ? getArtistServices(artistId) : Promise.resolve(null),
+            // artistId ? getArtistServices(artistId) : Promise.resolve(null),
           ]);
 
         if (artistId && !businessRes?.artist) {
@@ -114,7 +114,7 @@ const Dashboard = () => {
         setShowPersonalInfo(!customerInfo);
 
         // Update services
-        setServices(servicesRes?.services || []);
+        // setServices(servicesRes?.services || []);
       } catch (error) {
         console.error("Error fetching data:", error);
         logout(); // Log out on error
@@ -126,12 +126,12 @@ const Dashboard = () => {
     fetchData();
   }, [artistId]);
 
-  const getServiceTitle = (serviceIds) => {
-    const serviceNames = services
-      .filter((service) => serviceIds.includes(service.id))
-      .map((service) => service.service);
-    return serviceNames.join(", ") || "N/A";
-  };
+  // const getServiceTitle = (serviceIds) => {
+  //   const serviceNames = services
+  //     .filter((service) => serviceIds.includes(service.id))
+  //     .map((service) => service.service);
+  //   return serviceNames.join(", ") || "N/A";
+  // };
 
   const removeAppointment = async (appointmentId) => {
     try {
@@ -246,7 +246,9 @@ const Dashboard = () => {
                 .map((appointment, index) => (
                   <RenderAppointmentCard
                     key={index}
-                    title={getServiceTitle(appointment?.services)}
+                    title={appointment?.serviceDetails
+                      .map((service) => service.service)
+                      .join(", ")}
                     date={appointment?.date}
                     formsFilled={appointment?.filledFormsCount || 0}
                     status={appointment?.allFormsCompleted}
