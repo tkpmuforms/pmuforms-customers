@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { GoBackSvg } from "../../../../assets/svgs/DashboardSvg";
+import { useSnackbar } from "../../../../context/SnackbarContext";
 import { storage } from "../../../../firebase/firebase";
 import { setUser } from "../../../../redux/auth";
 import {
@@ -13,12 +14,12 @@ import {
   SavePersonalInformation,
 } from "../../../../services/services";
 import "./personalDetailsForm.scss";
-import { Toast } from "../../../../utils/toast/Toast";
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
   const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const [avatarUrl, setAvatarUrl] = useState("");
+  const { showAlert } = useSnackbar();
   const [initialValues, setInitialValues] = useState({
     firstName: "",
     lastName: "",
@@ -75,7 +76,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
         }
       } catch (error) {
         console.error("Error fetching customer info:", error);
-        Toast("error", "Failed to load personal details.");
+        showAlert("error", "Failed to load personal details.");
       } finally {
         setLoading(false); // Stop loading
       }
@@ -119,7 +120,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     } catch (error) {
       console.error("Error updating customer info:", error);
       setSubmitting(false);
-      Toast("error", "Error updating personal information");
+      showAlert("error", "Error updating personal information");
     }
   };
 

@@ -1,24 +1,32 @@
 import { Checkbox, CircularProgress } from "@mui/material";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { bookAppointment, getArtistServices } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
-import "./bookAppointment.scss";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
-import dayjs from "dayjs";
+import { useSnackbar } from "../../context/SnackbarContext";
+import { bookAppointment, getArtistServices } from "../../services/services";
+import "./bookAppointment.scss";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const BookAppointment = () => {
   const param = useParams();
   const artistId = param.artistId || localStorage.getItem("artistId");
-
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
   const [appointmentDate, setAppointmentDate] = useState(null);
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
+  const { showAlert } = useSnackbar();
+
+  // Get user's timezone
+  const userTimezone = dayjs.tz.guess();
 
   useEffect(() => {
     // Fetch artist and services
@@ -28,7 +36,7 @@ const BookAppointment = () => {
         setServices(res?.services);
       })
       .catch((error) => {
-        Toast("error", "Failed to load services");
+        showAlert("error", "Failed to load services");
         console.error("Error fetching services:", error);
       })
       .finally(() => {
@@ -49,16 +57,22 @@ const BookAppointment = () => {
   const handleContinue = async () => {
     // Validate input
     if (!appointmentDate) {
-      Toast("error", "Please select an appointment date.");
+      showAlert("error", "Please select an appointment date.");
       return;
     }
     if (selectedServices.length === 0) {
-      Toast("error", "Please select at least one service.");
+      showAlert("error", "Please select at least one service.");
       return;
     }
 
+    // Convert selected date to UTC
+    const utcAppointmentDate = dayjs(appointmentDate)
+      .tz(userTimezone)
+      .utc()
+      .toISOString();
+
     const appointment = {
-      appointmentDate: new Date(appointmentDate),
+      appointmentDate: utcAppointmentDate,
       artistId: artistId,
       services: selectedServices.map((service) => service.id),
     };
@@ -67,11 +81,10 @@ const BookAppointment = () => {
       setLoading(true);
       // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
-        Toast("success", "Appointment created successfully");
         navigate(`/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
-      Toast("error", "Error creating the appointment");
+      showAlert("error", "Error creating the appointment");
       console.error("Error creating the appointment:", error);
     } finally {
       setLoading(false);
@@ -112,7 +125,9 @@ const BookAppointment = () => {
                   <DatePicker
                     value={appointmentDate}
                     shouldDisableDate={(date) =>
-                      date.startOf("day").isBefore(dayjs().startOf("day"))
+                      date
+                        .startOf("day")
+                        .isBefore(dayjs().tz(userTimezone).startOf("day"))
                     }
                     onChange={(newValue) => setAppointmentDate(newValue)}
                     slotProps={{

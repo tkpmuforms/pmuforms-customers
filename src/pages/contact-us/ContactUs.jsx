@@ -1,13 +1,14 @@
-import React, { useState, useEffect } from "react";
-import "./contactUs.scss";
-import { sendMessage } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
-import useAuth from "../../context/useAuth";
-import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
+import { useSnackbar } from "../../context/SnackbarContext";
+import useAuth from "../../context/useAuth";
+import { sendMessage } from "../../services/services";
+import "./contactUs.scss";
 
 const ContactUs = () => {
   const navigate = useNavigate();
+  const { showAlert } = useSnackbar();
   const { user, isAuthenticated } = useAuth();
 
   const [formData, setFormData] = useState({
@@ -16,7 +17,6 @@ const ContactUs = () => {
     subject: "",
     message: "",
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -47,10 +47,10 @@ const ContactUs = () => {
         message: "",
       });
 
-      Toast("success", "Message sent successfully");
+      showAlert("success", "Message sent successfully");
     } catch (error) {
       console.error("Error sending message:", error);
-      Toast("error", "Error sending message");
+      showAlert("error", "Failed to send message");
     } finally {
       setIsSubmitting(false);
     }

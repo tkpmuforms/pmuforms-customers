@@ -2,16 +2,17 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import { useSnackbar } from "../../../../context/SnackbarContext";
 import {
   auth,
   createUserWithEmailAndPassword,
 } from "../../../../firebase/firebase";
 import { createCustomer } from "../../../../services/services";
-import { Toast } from "../../../../utils/toast/Toast";
 import "./signup.scss";
 
 const SignupPage = () => {
   const navigate = useNavigate();
+  const { showAlert } = useSnackbar();
 
   const initialValues = {
     email: "",
@@ -34,7 +35,7 @@ const SignupPage = () => {
     const artistId = localStorage.getItem("artistId");
     if (!artistId) {
       console.error("Artist ID is missing");
-      Toast("error", "Artist ID is missing");
+      showAlert("error", "Artist ID is missing");
       return;
     }
     try {
@@ -56,7 +57,7 @@ const SignupPage = () => {
       });
     } catch (error) {
       console.error("Error creating user:", error);
-      Toast("error", error.message);
+      showAlert("error", error.message);
     }
     setSubmitting(false);
   };

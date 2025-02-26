@@ -6,6 +6,7 @@
   box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.1);
   margin-bottom: 10px;
   z-index: 2000;
+  position: relative;
 
   .navlink {
     display: flex;
@@ -57,13 +58,6 @@
     display: flex;
     align-items: center;
     cursor: pointer;
-
-    img {
-      width: 30px;
-      height: 30px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
   }
 
   .hamburger-menu {
@@ -76,7 +70,7 @@
 /* 📱 Mobile Styles */
 @media screen and (max-width: 768px) {
   .authenticatedNavbarContainer {
-    padding: 10px 20px; /* Reduce padding for mobile */
+    padding: 10px 20px;
 
     .navlink {
       display: flex;
@@ -88,22 +82,27 @@
       display: flex;
       align-items: center;
       cursor: pointer;
-      justify-content: flex-start; /* Ensures logo is aligned left */
-      flex-grow: 1; /* Makes logo take up available space */
+      justify-content: flex-start;
+      flex-grow: 1;
     }
 
     .authlinks {
       display: none;
 
       &.visible {
-        display: block;
+        display: flex;
+        flex-direction: column;
         position: absolute;
-        top: 50px;
-        left: 0;
-        width: 100%;
+        top: 60px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100vh;
         background: #fff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         padding: 20px 0;
+        text-align: center;
+        border-radius: 10px;
+        z-index: 1000;
 
         ul {
           flex-direction: column;
@@ -117,7 +116,7 @@
           }
 
           .mobile-logout {
-            display: block; // Show logout on mobile
+            display: block;
             font-size: 16px;
             color: red;
             cursor: pointer;
@@ -130,7 +129,6 @@
       }
     }
 
-    /* Show Avatar beside Hamburger */
     .hamburger-avatar-container {
       display: flex;
       align-items: center;

@@ -22,6 +22,7 @@ import {
 import { Toast } from "../../utils/toast/Toast";
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
+import { useSnackbar } from "../../context/SnackbarContext";
 
 const RenderAppointmentCard = ({
   title,
@@ -61,7 +62,6 @@ const Dashboard = () => {
   const artistId = params.artistId || localStorage.getItem("artistId");
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
-
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const [businessName, setBusinessName] = useState(
     localStorage.getItem("businessName")
@@ -71,6 +71,7 @@ const Dashboard = () => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
+  const { showAlert } = useSnackbar();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,8 +98,16 @@ const Dashboard = () => {
         }
 
         // Update appointments
-        const appointments = appointmentsRes?.appointments || [];
-        setAppointments(appointments);
+        const updatedAppointments = (appointmentsRes?.appointments || []).map(
+          (appointment) => ({
+            ...appointment,
+            filledFormsCount:
+              appointment?.filledForms?.filter(
+                (form) => form.status === "completed"
+              ).length || 0,
+          })
+        );
+        setAppointments(updatedAppointments);
 
         // Update personal info visibility
         const customerInfo = customerRes?.user?.info;
@@ -121,19 +130,19 @@ const Dashboard = () => {
     const serviceNames = services
       .filter((service) => serviceIds.includes(service.id))
       .map((service) => service.service);
-    return serviceNames.join(", ") || "Appointment";
+    return serviceNames.join(", ") || "N/A";
   };
 
   const removeAppointment = async (appointmentId) => {
     try {
       await deleteAppointment(appointmentId);
 
-      Toast("success", "Appointment deleted successfully");
+      showAlert("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
     } catch (error) {
-      Toast("error", "Error deleting appointment");
+      showAlert("error", "Error deleting appointment");
     }
   };
 
@@ -239,7 +248,7 @@ const Dashboard = () => {
                     key={index}
                     title={getServiceTitle(appointment?.services)}
                     date={appointment?.date}
-                    formsFilled={appointment?.formsFilled || 0}
+                    formsFilled={appointment?.filledFormsCount || 0}
                     status={appointment?.allFormsCompleted}
                     ViewClick={() =>
                       navigate(`/appointments/${appointment.id}`)

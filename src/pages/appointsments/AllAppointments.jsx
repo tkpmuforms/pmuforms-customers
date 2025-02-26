@@ -1,3 +1,5 @@
+import { ArrowBack, ArrowForward } from "@mui/icons-material";
+import { CircularProgress, Tooltip } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
@@ -7,15 +9,13 @@ import {
   NoAppointmentsSvg,
   ViewFormButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
+import { useSnackbar } from "../../context/SnackbarContext";
 import {
   deleteAppointment,
   getAllAppointments,
   getArtistServices,
 } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
 import "./allappointments.scss";
-import { ArrowBack, ArrowForward } from "@mui/icons-material";
-import { CircularProgress, Tooltip } from "@mui/material";
 
 const RenderAppointmentCard = ({
   title,
@@ -59,6 +59,7 @@ const AllAppointments = () => {
   const [metadata, setMetadata] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
+  const { showAlert } = useSnackbar();
   const navigate = useNavigate();
   const artistId = localStorage.getItem("artistId");
   const [currentPage, setCurrentPage] = useState(1);
@@ -108,11 +109,23 @@ const AllAppointments = () => {
     setLoading(true);
     try {
       const response = await getAllAppointments(page, itemsPerPage);
-      setAppointments(response?.appointments);
+      const updatedAppointments = (response?.appointments || []).map(
+        (appointment) => ({
+          ...appointment,
+          filledFormsCount:
+            appointment.filledForms?.filter(
+              (form) => form.status === "completed"
+            ).length || 0,
+        })
+      );
+
+      setAppointments(updatedAppointments);
       setMetadata(response?.metadata);
     } catch (error) {
       console.error(error.message);
-      Toast("error", "Error fetching appointments.");
+
+      showAlert("error", "Error fetching appointments");
+
     } finally {
       setLoading(false);
     }
@@ -122,12 +135,11 @@ const AllAppointments = () => {
     try {
       await deleteAppointment(appointmentId);
 
-      Toast("success", "Appointment deleted successfully");
       setAppointments((prev) =>
         prev.filter((appt) => appt.id !== appointmentId)
       );
     } catch (error) {
-      Toast("error", "Error deleting appointment");
+      showAlert("error", "Error deleting appointment");
     }
   };
 
@@ -151,17 +163,7 @@ const AllAppointments = () => {
 
   return (
     <div className="appointments">
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          cursor: "pointer",
-          marginBottom: "20px",
-          padding: "10px",
-        }}
-        onClick={() => navigate("/dashboard")}
-      >
+      <div className="breadcrumb" onClick={() => navigate("/dashboard")}>
         <GoBackSvg />
         <p>Go back to dashboard</p>
       </div>
@@ -194,10 +196,14 @@ const AllAppointments = () => {
             filteredAppointments?.map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
-                title={getServiceTitle(appointment?.services).truncatedTitle}
-                fullTitle={getServiceTitle(appointment?.services).fullTitle}
+                title={
+                  getServiceTitle(appointment?.services).truncatedTitle || "N/A"
+                }
+                fullTitle={
+                  getServiceTitle(appointment?.services).fullTitle || "N/A"
+                }
                 date={appointment.date}
-                formsFilled={appointment.formsFilled || 0}
+                formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}
                 ViewClick={() => navigate(`/appointments/${appointment.id}`)}
                 DeleteClick={() => removeAppointment(appointment.id)}
