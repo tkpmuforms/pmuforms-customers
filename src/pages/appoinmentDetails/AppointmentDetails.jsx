@@ -100,17 +100,7 @@ const AppointmentDetails = () => {
   return (
     <div>
       <div className="form">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            cursor: "pointer",
-            padding: "0 20px",
-            marginBottom: "20px",
-          }}
-          onClick={() => navigate("/dashboard")}
-        >
+        <div className="go-back" onClick={() => navigate("/dashboard")}>
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>
