@@ -83,10 +83,11 @@ export const renderFormFields = (
           </div>
         );
       case FormInputTypes.DATE:
-        if (field.id === "date_of_signing" || field.id === "todays_date") {
-          const userTimezone = dayjs.tz.guess(); // Detect user's timezone
-          const todayLocal = dayjs().tz(userTimezone).format("MM-DD-YYYY");
+        const userTimezone = dayjs.tz.guess(); // Get user's timezone
+        const todayLocal = dayjs().tz(userTimezone).format("YYYY-MM-DD"); // Ensure correct format
 
+        // Handle special cases for `todays_date` and `date_of_signing`
+        if (field.id === "todays_date" || field.id === "date_of_signing") {
           return (
             <div key={field.id}>
               <label>
@@ -94,33 +95,26 @@ export const renderFormFields = (
                 {isRequired && <span className="required-star">*</span>}
                 <input
                   type="date"
-                  min={todayLocal}
-                  max={todayLocal}
-                  value={
-                    formResponse[field.id]
-                      ? dayjs(formResponse[field.id])
-                          .tz(userTimezone)
-                          .format("MM-DD-YYYY")
-                      : todayLocal
-                  }
-                  onChange={(e) => {
-                    const selectedDate = dayjs(e.target.value)
-                      .tz(userTimezone)
-                      .utc()
-                      .toISOString(); // Convert to UTC before storing
-                    handleInputChange(field.id, selectedDate);
-                  }}
+                  min={todayLocal} // Prevent past dates
+                  max={todayLocal} // Lock it to today’s date
+                  value={formResponse[field.id] || todayLocal} // Default to today's date if empty
+                  onChange={(e) => handleInputChange(field.id, e.target.value)}
                 />
               </label>
             </div>
           );
         }
+
         return (
           <div key={field.id}>
             <label>
               {field.title}
               {isRequired && <span className="required-star">*</span>}
-              <input type="date" value={fieldValue} {...commonProps} />
+              <input
+                type="date"
+                value={formResponse[field.id] || ""}
+                onChange={(e) => handleInputChange(field.id, e.target.value)}
+              />
             </label>
           </div>
         );

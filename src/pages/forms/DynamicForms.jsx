@@ -24,7 +24,7 @@ dayjs.extend(timezone);
 const fieldToUserInfoMapping = {
   client_name: ["client_name"],
   // signature: ["client_name"],
-  AEA66A04E: ["date_of_birth"],
+  "AEA66A04-E": ["date_of_birth"],
   date_of_birth: ["date_of_birth"],
   home_address: ["home_address"],
   emergency_contact_name: ["emergency_contact_name"],
@@ -107,11 +107,15 @@ const DynamicForms = () => {
         if (section.isClientInformation) {
           section.data.forEach((field) => {
             const userInfoKeys = fieldToUserInfoMapping[field.id];
+
             if (userInfoKeys) {
               userInfoKeys.forEach((key) => {
                 if (user?.info?.[key]) {
                   let value = user.info[key];
-                  if (field.id === "date_of_birth") {
+                  if (
+                    field.id === "date_of_birth" ||
+                    field.id === "AEA66A04-E"
+                  ) {
                     value = dayjs(value).format("MM-DD-YYYY");
                   }
 
@@ -119,6 +123,22 @@ const DynamicForms = () => {
                   autofilledFieldIds.add(field.id);
                 }
               });
+            }
+
+            // **Automatically Calculate Age from Date of Birth**
+            if (
+              autofillResponse["date_of_birth"] ||
+              autofillResponse["AEA66A04-E"]
+            ) {
+              const birthDate = dayjs(
+                autofillResponse["date_of_birth"] ||
+                  autofillResponse["AEA66A04-E"]
+              );
+              const today = dayjs();
+              const age = today.diff(birthDate, "year"); // Calculate age in years
+
+              autofillResponse["age"] = age.toString();
+              autofilledFieldIds.add("age");
             }
           });
         }
@@ -199,8 +219,12 @@ const DynamicForms = () => {
         formTemplateId: currentForm.id,
         data: formResponse,
       });
-      setFormResponse({});
+
       setSaving(false);
+      const fetchedFilledForms = await getAllFilledFormsForAppointment(
+        appointmentId
+      );
+      setFilledForms(fetchedFilledForms?.filledForms || []);
       if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1); // Move to the next form tab
         window.scrollTo({ top: 0, behavior: "smooth" });

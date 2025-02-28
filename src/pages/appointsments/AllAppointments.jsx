@@ -10,11 +10,7 @@ import {
   ViewFormButtonSvg,
 } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
-import {
-  deleteAppointment,
-  getAllAppointments,
-  getArtistServices,
-} from "../../services/services";
+import { deleteAppointment, getAllAppointments } from "../../services/services";
 import "./allappointments.scss";
 
 const RenderAppointmentCard = ({
