@@ -146,9 +146,23 @@
 /* Tablet View: Adjust for screens up to 768px */
 @media screen and (max-width: 768px) {
   .appointments {
-    h3 {
-      font-size: 18px;
-      padding: 0 0 0 15px;
+    margin-top: 0px;
+    padding: 10px;
+    .header-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      padding: 0 10px;
+
+      h3 {
+        margin: 0;
+        font-size: 20px;
+        color: #000000;
+        font-family: BoldFont;
+        font-weight: 500;
+        line-height: 28px;
+      }
     }
 
     .appointments-list {

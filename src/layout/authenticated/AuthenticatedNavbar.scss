@@ -87,22 +87,22 @@
     }
 
     .authlinks {
+      margin-left: 0;
       display: none;
 
       &.visible {
         display: flex;
         flex-direction: column;
         position: absolute;
-        top: 60px;
+        top: 100%;
         left: 50%;
+        width: 100%;
         transform: translateX(-50%);
-        width: 100vh;
         background: #fff;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        padding: 20px 0;
         text-align: center;
-        border-radius: 10px;
-        z-index: 1000;
+
+        z-index: 100;
 
         ul {
           flex-direction: column;
