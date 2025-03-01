@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { Dialog, Typography } from "@mui/material";
+import dayjs from "dayjs";
 import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFilledFormsForAppointment,
   getAppointmentById,
-  getArtistServices,
   getFormsForAppointMentById,
 } from "../../services/services";
-import "./appointmentsdetails.scss";
-import { Dialog, Typography } from "@mui/material";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
-import dayjs from "dayjs";
+import "./appointmentsdetails.scss";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (
@@ -39,7 +37,6 @@ const AppointmentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [forms, setForms] = useState([]);
-  const [services, setServices] = useState([]);
   const [appointMent, setAppointMent] = useState({});
   const [filledForms, setFilledForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -55,29 +52,17 @@ const AppointmentDetails = () => {
         console.error("Error fetching filled appointment:", error);
       }
     };
-
     const fetchAllFormsForAppointment = async () => {
       try {
         const res = await getFormsForAppointMentById(id);
         const updatedForms = res?.forms.filter((form) =>
           form.sections.some((section) => !section.skip)
         );
-
         setForms(updatedForms || []);
       } catch (error) {
         console.error("Error fetching forms:", error);
       }
     };
-
-    const fetchServices = async (artistId) => {
-      try {
-        const response = await getArtistServices(artistId);
-        setServices(response?.services || []);
-      } catch (error) {
-        console.error("Error fetching services:", error);
-      }
-    };
-
     const fetchAppointment = async () => {
       try {
         const res = await getAppointmentById(id);
@@ -90,19 +75,10 @@ const AppointmentDetails = () => {
     if (id) {
       fetchAllFilledFormsForAppointment();
       fetchAllFormsForAppointment();
-      fetchServices(artisId);
+
       fetchAppointment();
     }
   }, [id, artisId]);
-
-  const getServiceTitle = (serviceIds) => {
-    if (!serviceIds || !services.length) return "Appointment";
-    const serviceNames = services
-      .filter((service) => serviceIds.includes(service.id))
-      .map((service) => service.service);
-
-    return serviceNames.length > 0 ? serviceNames.join(", ") : "Appointment";
-  };
 
   const getFormStatus = (formId) => {
     const filledForm = filledForms.find(
@@ -124,17 +100,7 @@ const AppointmentDetails = () => {
   return (
     <div>
       <div className="form">
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            cursor: "pointer",
-            padding: "0 20px",
-            marginBottom: "20px",
-          }}
-          onClick={() => navigate("/dashboard")}
-        >
+        <div className="go-back" onClick={() => navigate("/dashboard")}>
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>
@@ -149,7 +115,9 @@ const AppointmentDetails = () => {
           <div className="info-item">
             <span className="info-title">Services Received:</span>
             <span className="info-value">
-              {getServiceTitle(appointMent?.services) || "N/A"}
+              {appointMent?.serviceDetails
+                ?.map((service) => service.service)
+                .join(", ") || "N/A"}
             </span>
           </div>
         </div>

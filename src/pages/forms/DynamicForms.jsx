@@ -13,19 +13,18 @@ import {
   getFormsForAppointMentById,
 } from "../../services/services";
 import "./dynamicForms.scss";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { renderFormFields } from "./RenderFormFields";
 
-const FormInputTypes = {
-  TEXT: "text",
-  CHECKBOX: "checkbox",
-  IMAGE: "image",
-  DATE: "date",
-  TEXTFIELD: "textfield",
-  NUMBER: "numberOfField",
-};
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
 //calcualte age from date of birth
 const fieldToUserInfoMapping = {
   client_name: ["client_name"],
   // signature: ["client_name"],
+  "AEA66A04-E": ["date_of_birth"],
   date_of_birth: ["date_of_birth"],
   home_address: ["home_address"],
   emergency_contact_name: ["emergency_contact_name"],
@@ -108,11 +107,15 @@ const DynamicForms = () => {
         if (section.isClientInformation) {
           section.data.forEach((field) => {
             const userInfoKeys = fieldToUserInfoMapping[field.id];
+
             if (userInfoKeys) {
               userInfoKeys.forEach((key) => {
                 if (user?.info?.[key]) {
                   let value = user.info[key];
-                  if (field.id === "date_of_birth") {
+                  if (
+                    field.id === "date_of_birth" ||
+                    field.id === "AEA66A04-E"
+                  ) {
                     value = dayjs(value).format("MM-DD-YYYY");
                   }
 
@@ -120,6 +123,22 @@ const DynamicForms = () => {
                   autofilledFieldIds.add(field.id);
                 }
               });
+            }
+
+            // **Automatically Calculate Age from Date of Birth**
+            if (
+              autofillResponse["date_of_birth"] ||
+              autofillResponse["AEA66A04-E"]
+            ) {
+              const birthDate = dayjs(
+                autofillResponse["date_of_birth"] ||
+                  autofillResponse["AEA66A04-E"]
+              );
+              const today = dayjs();
+              const age = today.diff(birthDate, "year"); // Calculate age in years
+
+              autofillResponse["age"] = age.toString();
+              autofilledFieldIds.add("age");
             }
           });
         }
@@ -163,163 +182,18 @@ const DynamicForms = () => {
     }
   };
 
-  const renderFormFields = (fields) =>
-    fields.map((field) => {
-      if (!field || !field.id) return null;
-      const fieldValue = formResponse[field?.id] || "";
-      const isRequired = field.required;
-      const isFieldInvalid =
-        !fieldValue && requiredFieldsOnSubmit.includes(field.id);
-      const isAutofilled = autofilledFields.has(field.id);
 
-      const commonProps = {
-        className: isFieldInvalid ? "invalid-field" : "",
-        onChange: (e) => handleInputChange(field.id, e.target.value),
-        required: isRequired,
-        readOnly: isAutofilled,
-      };
+  //ingnore case sensitive
+  const handleSignatureBlur = (fieldValue) => {
+    if (fieldValue?.trim() !== user?.info.client_name.trim()) {
+      showAlert("error", "Signature does not match client name");
+      setFormResponse((prev) => ({
+        ...prev,
+        signature: "",
+      }));
+    }
+  };
 
-      if (!field.type) {
-        return (
-          <div key={field.id} className="read-only-field">
-            <label>{field.title}</label>
-          </div>
-        );
-      }
-
-      if (field.id === "signature") {
-        return (
-          <div key={field.id}>
-            <label>
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
-              <input
-                type="text"
-                value={fieldValue}
-                {...commonProps}
-                onBlur={() => {
-                  if (fieldValue.trim() !== formResponse.client_name?.trim()) {
-                    setFormResponse((prev) => ({
-                      ...prev,
-                      signature: "",
-                    }));
-                  }
-                }}
-              />
-            </label>
-          </div>
-        );
-      }
-
-      switch (field.type) {
-        case FormInputTypes.CHECKBOX:
-          return (
-            <div className="checkbox-group" key={field.id}>
-              <label>
-                <input
-                  type="checkbox"
-                  checked={!!fieldValue}
-                  onChange={(e) =>
-                    handleInputChange(field.id, e.target.checked)
-                  }
-                  disabled={isAutofilled}
-                />
-                {field.title}
-                {isRequired && <span className="required-star">*</span>}
-              </label>
-            </div>
-          );
-        case FormInputTypes.DATE:
-          if (field.id === "date_of_signing") {
-            const today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
-            return (
-              <div key={field.id}>
-                <label>
-                  {field.title}
-                  {isRequired && <span className="required-star">*</span>}
-                  <input
-                    type="date"
-                    min={today}
-                    max={today}
-                    onChange={(e) =>
-                      handleInputChange(field.id, e.target.value)
-                    }
-                  />
-                </label>
-              </div>
-            );
-          }
-          return (
-            <div key={field.id}>
-              <label>
-                {field.title}
-                {isRequired && <span className="required-star">*</span>}
-                <input type="date" value={fieldValue} {...commonProps} />
-              </label>
-            </div>
-          );
-        case FormInputTypes.IMAGE:
-          return (
-            <div key={field.id}>
-              <label>
-                {field.title}
-                {isRequired && <span className="required-star">*</span>}
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    handleImageChange(field.id, e.target.files[0])
-                  }
-                />
-              </label>
-              {fieldValue && (
-                <div className="image-preview">
-                  <img
-                    src={fieldValue}
-                    alt="Preview"
-                    style={{
-                      maxWidth: "100%",
-                      maxHeight: "150px",
-                      objectFit: "contain",
-                      marginTop: "10px",
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          );
-        case FormInputTypes.NUMBER:
-          return (
-            <div key={field.id}>
-              <label>
-                {field.title}
-                {isRequired && <span className="required-star">*</span>}
-                <input
-                  type="number"
-                  value={fieldValue}
-                  {...commonProps}
-                  disabled={isAutofilled}
-                />
-              </label>
-            </div>
-          );
-        default:
-          return (
-            <div key={field.id}>
-              <label>
-                {field.title}
-                {isRequired && <span className="required-star">*</span>}
-                <input
-                  type="text"
-                  value={fieldValue}
-                  {...commonProps}
-                  disabled={isAutofilled}
-                />
-              </label>
-            </div>
-          );
-      }
-    });
 
   const handleSubmit = async () => {
     const currentForm = forms[currentTab];
@@ -347,8 +221,12 @@ const DynamicForms = () => {
         formTemplateId: currentForm.id,
         data: formResponse,
       });
-      setFormResponse({});
+
       setSaving(false);
+      const fetchedFilledForms = await getAllFilledFormsForAppointment(
+        appointmentId
+      );
+      setFilledForms(fetchedFilledForms?.filledForms || []);
       if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1); // Move to the next form tab
         window.scrollTo({ top: 0, behavior: "smooth" });
@@ -402,7 +280,15 @@ const DynamicForms = () => {
           {forms[currentTab]?.sections.map((section) => (
             <div key={section._id}>
               <h3>{section.title}</h3>
-              {renderFormFields(section.data || [])}
+              {renderFormFields(
+                section.data,
+                formResponse,
+                requiredFieldsOnSubmit,
+                autofilledFields,
+                handleInputChange,
+                handleSignatureBlur,
+                handleImageChange
+              )}
             </div>
           ))}
           <div

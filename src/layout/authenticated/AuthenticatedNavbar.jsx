@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { LogoSvg } from "../../assets/svgs/AuthSvg";
-import { Link, useNavigate } from "react-router-dom";
-import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
-import "./AuthenticatedNavbar.scss";
-import useAuth from "../../context/useAuth";
-import { Work } from "@mui/icons-material";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
+import { Avatar, Menu, MenuItem, Typography } from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { LogoSvg } from "../../assets/svgs/AuthSvg";
+import useAuth from "../../context/useAuth";
+import "./AuthenticatedNavbar.scss";
 
 const AuthenticatedNavbar = () => {
   const navigate = useNavigate();
@@ -130,9 +129,7 @@ const AuthenticatedNavbar = () => {
         anchorEl={anchorEl}
         open={isDropdownOpen}
         onClose={handleDropdownClose}
-        PaperProps={{
-          style: { marginTop: "20px" },
-        }}
+        sx={{ marginTop: "20px" }}
       >
         <MenuItem>
           <Typography>{user?.info?.client_name ?? user?.name}</Typography>
