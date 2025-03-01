@@ -19,7 +19,6 @@ import {
   getArtistServices,
   getAuthenticatedUser,
 } from "../../services/services";
-import { Toast } from "../../utils/toast/Toast";
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
 import { useSnackbar } from "../../context/SnackbarContext";

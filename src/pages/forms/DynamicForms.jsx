@@ -182,6 +182,7 @@ const DynamicForms = () => {
     }
   };
 
+
   //ingnore case sensitive
   const handleSignatureBlur = (fieldValue) => {
     if (fieldValue?.trim() !== user?.info.client_name.trim()) {
@@ -192,6 +193,7 @@ const DynamicForms = () => {
       }));
     }
   };
+
 
   const handleSubmit = async () => {
     const currentForm = forms[currentTab];
