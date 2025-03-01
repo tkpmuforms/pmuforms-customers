@@ -51,7 +51,6 @@ const RenderAppointmentCard = ({
 const AllAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  // const [services, setServices] = useState([]);
   const [metadata, setMetadata] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
@@ -122,14 +121,12 @@ const AllAppointments = () => {
 
   useEffect(() => {
     fetchAppointments(currentPage);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
-
-  // useEffect(() => {
-  //   fetchServices(artistId);
-  // }, [artistId]);
 
   useEffect(() => {
     handleSearch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchQuery, appointments]);
 
   return (

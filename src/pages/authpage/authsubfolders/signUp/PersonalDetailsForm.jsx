@@ -83,7 +83,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     };
 
     fetchInfo();
-  }, []);
+  }, [showAlert]);
 
   const handleImageUpload = async (file) => {
     try {
