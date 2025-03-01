@@ -60,7 +60,7 @@ const AuthPage = () => {
           />
         </div>
         <p className="terms-text">
-          By proceeding, you agree to our <a href="#">Terms and conditions</a>{" "}
+          By proceeding, you agree to our <a href="/">Terms and conditions</a>{" "}
           and our <Link to="/privacy-policy">Privacy policy</Link>
         </p>
       </div>

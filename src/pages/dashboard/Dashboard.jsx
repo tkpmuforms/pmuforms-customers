@@ -16,7 +16,6 @@ import {
   deleteAppointment,
   getAllAppointments,
   getArtistById,
-  getArtistServices,
   getAuthenticatedUser,
 } from "../../services/services";
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
@@ -76,7 +75,7 @@ const Dashboard = () => {
     const fetchData = async () => {
       setLoading(true); // Start loader
       try {
-        const [businessRes, appointmentsRes, customerRes, servicesRes] =
+        const [businessRes, appointmentsRes, customerRes] =
           await Promise.all([
             artistId ? getArtistById(artistId) : Promise.resolve(null),
             getAllAppointments(),
@@ -123,7 +122,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [artistId]);
+  }, [artistId, logout]);
 
   // const getServiceTitle = (serviceIds) => {
   //   const serviceNames = services

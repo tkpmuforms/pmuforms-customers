@@ -42,7 +42,7 @@ const BookAppointment = () => {
       .finally(() => {
         setFetchingServices(false);
       });
-  }, [artistId]);
+  }, [artistId, showAlert]);
 
   // Toggle service selection
   const handleServiceChange = (service) => {

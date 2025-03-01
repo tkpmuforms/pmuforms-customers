@@ -30,9 +30,6 @@ export const renderFormFields = (
       !fieldValue && requiredFieldsOnSubmit.includes(field.id);
     const isAutofilled = autofilledFields.has(field.id);
 
-    const fieldClass =
-      field.line === "full" ? "form-field full-width" : "form-field half-width";
-
     const commonProps = {
       className: isFieldInvalid ? "invalid-field" : "",
       onChange: (e) => handleInputChange(field.id, e.target.value),

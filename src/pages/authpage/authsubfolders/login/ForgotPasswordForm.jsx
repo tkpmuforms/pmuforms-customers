@@ -59,7 +59,7 @@ const ForgotPasswordForm = ({ onCancel }) => {
        
 
         <div className="terms-text">
-          By proceeding, you agree to our <a href="#">Terms and conditions</a> and our <a href="#">Privacy policy</a>.
+          By proceeding, you agree to our <a href="/">Terms and conditions</a> and our <a href="/">Privacy policy</a>.
         </div>
 
      
