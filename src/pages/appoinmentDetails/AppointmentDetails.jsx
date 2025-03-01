@@ -75,7 +75,6 @@ const AppointmentDetails = () => {
     if (id) {
       fetchAllFilledFormsForAppointment();
       fetchAllFormsForAppointment();
-
       fetchAppointment();
     }
   }, [id, artisId]);

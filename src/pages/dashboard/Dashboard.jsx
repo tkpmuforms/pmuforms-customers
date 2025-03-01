@@ -81,7 +81,6 @@ const Dashboard = () => {
             artistId ? getArtistById(artistId) : Promise.resolve(null),
             getAllAppointments(),
             getAuthenticatedUser(),
-            // artistId ? getArtistServices(artistId) : Promise.resolve(null),
           ]);
 
         if (artistId && !businessRes?.artist) {
@@ -107,30 +106,18 @@ const Dashboard = () => {
           })
         );
         setAppointments(updatedAppointments);
-
-        // Update personal info visibility
         const customerInfo = customerRes?.user?.info;
         setShowPersonalInfo(!customerInfo);
-
-        // Update services
-        // setServices(servicesRes?.services || []);
       } catch (error) {
         console.error("Error fetching data:", error);
-        logout(); // Log out on error
+        logout();
       } finally {
-        setLoading(false); // Stop loader
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [artistId]);
-
-  // const getServiceTitle = (serviceIds) => {
-  //   const serviceNames = services
-  //     .filter((service) => serviceIds.includes(service.id))
-  //     .map((service) => service.service);
-  //   return serviceNames.join(", ") || "N/A";
-  // };
 
   const removeAppointment = async (appointmentId) => {
     try {

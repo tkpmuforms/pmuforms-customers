@@ -76,30 +76,6 @@ const AllAppointments = () => {
     });
     setFilteredAppointments(filtered);
   };
-  // const fetchServices = async (artistId) => {
-  //   try {
-  //     const response = await getArtistServices(artistId);
-
-  //     setServices(response?.services);
-  //   } catch (error) {
-  //     console.error("Error fetching services:", error);
-  //   }
-  // };
-
-  // const getServiceTitle = (serviceIds) => {
-  //   const serviceNames = services
-  //     .filter((service) => serviceIds.includes(service.id))
-  //     .map((service) => service.service);
-
-  //   const fullTitle = serviceNames.join(", ");
-  //   let truncatedTitle = fullTitle;
-
-  //   if (serviceNames.length > 3) {
-  //     truncatedTitle = `${serviceNames.slice(0, 3).join(", ")}...`;
-  //   }
-
-  //   return { truncatedTitle, fullTitle };
-  // };
 
   const fetchAppointments = async (page) => {
     setLoading(true);
