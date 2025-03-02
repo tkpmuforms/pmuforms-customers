@@ -200,10 +200,10 @@ const DynamicForms = () => {
       showAlert("error", "Please fill out all required fields");
       return;
     }
-    if (formResponse["signature"] !== user?.info.client_name) {
-      showAlert("error", "Signature does not match client name");
-      return;
-    }
+    // if (formResponse["signature"] !== user?.info.client_name) {
+    //   showAlert("error", "Signature does not match client name");
+    //   return;
+    // }
 
     setSaving(true);
     try {

@@ -92,9 +92,9 @@ export const renderFormFields = (
                 {isRequired && <span className="required-star">*</span>}
                 <input
                   type="date"
-                  min={todayLocal} // Prevent past dates
-                  max={todayLocal} // Lock it to today’s date
-                  value={formResponse[field.id] || todayLocal} // Default to today's date if empty
+                  min={todayLocal}
+                  max={todayLocal}
+                  value={formResponse[field.id]}
                   onChange={(e) => handleInputChange(field.id, e.target.value)}
                 />
               </label>
