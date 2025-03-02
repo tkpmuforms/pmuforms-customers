@@ -2,11 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./navbar.scss";
 import { LogoSvg } from "../../assets/svgs/AuthSvg";
+import useAuth from "../../context/useAuth";
 
 const Navbar = ({ CreatenewClick }) => {
   const navigate = useNavigate();
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
   const mobileMenuRef = useRef(null);
+  const { isAuthenticated } = useAuth();
+  console.log("User Authenticated:", isAuthenticated);
 
   const toggleMobileMenu = () => {
     setMobileMenuVisible(!mobileMenuVisible);

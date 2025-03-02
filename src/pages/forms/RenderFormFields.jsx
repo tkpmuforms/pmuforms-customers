@@ -19,7 +19,6 @@ export const renderFormFields = (
   requiredFieldsOnSubmit,
   autofilledFields,
   handleInputChange,
-  handleSignatureBlur,
   handleImageChange
 ) =>
   fields.map((field) => {
@@ -56,7 +55,8 @@ export const renderFormFields = (
               value={fieldValue}
               {...commonProps}
               placeholder="Type your full name"
-              onBlur={() => handleSignatureBlur(fieldValue)}
+              onChange={(e) => handleInputChange(field.id, e.target.value)}
+              // onBlur={() => handleSignatureBlur(fieldValue)}
             />
           </label>
         </div>

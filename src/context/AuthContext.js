@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
       dispatch(setUser(null));
       navigate(`/#/${artistId}`);
     }
-  }, [dispatch, navigate]);
+  }, [dispatch]);
 
   const logout = () => {
     setAuthHeader(null);

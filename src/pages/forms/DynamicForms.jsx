@@ -182,19 +182,6 @@ const DynamicForms = () => {
     }
   };
 
-
-  //ingnore case sensitive
-  const handleSignatureBlur = (fieldValue) => {
-    if (fieldValue?.trim() !== user?.info.client_name.trim()) {
-      showAlert("error", "Signature does not match client name");
-      setFormResponse((prev) => ({
-        ...prev,
-        signature: "",
-      }));
-    }
-  };
-
-
   const handleSubmit = async () => {
     const currentForm = forms[currentTab];
     if (!currentForm) return;
@@ -211,6 +198,10 @@ const DynamicForms = () => {
 
     if (missingFields.length > 0) {
       showAlert("error", "Please fill out all required fields");
+      return;
+    }
+    if (formResponse["signature"] !== user?.info.client_name) {
+      showAlert("error", "Signature does not match client name");
       return;
     }
 
@@ -286,7 +277,6 @@ const DynamicForms = () => {
                 requiredFieldsOnSubmit,
                 autofilledFields,
                 handleInputChange,
-                handleSignatureBlur,
                 handleImageChange
               )}
             </div>
