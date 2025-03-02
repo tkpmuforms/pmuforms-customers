@@ -25,7 +25,6 @@ export const renderFormFields = (
 ) =>
   fields.map((field) => {
     if (!field || !field.id) return null;
-
     const fieldValue = formResponse?.[formTemplateId]?.[field.id] || ""; // Retrieve field value using formTemplateId
 
     const isRequired = field?.required;

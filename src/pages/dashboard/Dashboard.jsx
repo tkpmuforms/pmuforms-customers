@@ -118,6 +118,7 @@ const Dashboard = () => {
     fetchData();
   }, [artistId, logout]);
 
+
   const removeAppointment = async (appointmentId) => {
     try {
       await deleteAppointment(appointmentId);
