@@ -54,6 +54,14 @@ const DynamicForms = () => {
           appointmentId
         );
         setFilledForms(fetchedFilledForms?.filledForms || []);
+
+        // Store each form's data under its own formTemplateId
+        const formattedResponses = {};
+        fetchedFilledForms?.filledForms.forEach((filledForm) => {
+          formattedResponses[filledForm.formTemplateId] = filledForm.data || {};
+        });
+
+        setFormResponse(formattedResponses);
       } catch (error) {
         console.error("Error fetching filled forms:", error);
       }
@@ -94,12 +102,13 @@ const DynamicForms = () => {
     );
 
     if (filledForm) {
-      // Populate form with saved data
-      setFormResponse(filledForm?.data || {});
+      setFormResponse((prev) => ({
+        ...prev,
+        [currentForm.id]: filledForm?.data || {},
+      }));
     } else if (
       currentForm?.sections.some((section) => section.isClientInformation)
     ) {
-      // Autofill for new forms with `isClientInformation` flag
       const autofillResponse = {};
       const autofilledFieldIds = new Set();
 
@@ -125,7 +134,7 @@ const DynamicForms = () => {
               });
             }
 
-            // **Automatically Calculate Age from Date of Birth**
+            // Automatically calculate age from date of birth
             if (
               autofillResponse["date_of_birth"] ||
               autofillResponse["AEA66A04-E"]
@@ -135,7 +144,7 @@ const DynamicForms = () => {
                   autofillResponse["AEA66A04-E"]
               );
               const today = dayjs();
-              const age = today.diff(birthDate, "year"); // Calculate age in years
+              const age = today.diff(birthDate, "year");
 
               autofillResponse["age"] = age.toString();
               autofilledFieldIds.add("age");
@@ -144,15 +153,30 @@ const DynamicForms = () => {
         }
       });
 
-      setFormResponse(autofillResponse);
+      setFormResponse((prev) => ({
+        ...prev,
+        [currentForm.id]: autofillResponse,
+      }));
       setAutofilledFields(autofilledFieldIds);
     }
   }, [forms, filledForms, currentTab, user]);
 
-  const handleInputChange = (fieldId, value) => {
+  const handleInputChange = (currentForm, fieldId, value) => {
+    if (!currentForm) return;
+    // console.log(
+    //   currentForm.id,
+    //   currentForm,
+    //   "fieldId",
+    //   fieldId,
+    //   "value",
+    //   value
+    // );
     setFormResponse((prev) => ({
       ...prev,
-      [fieldId]: value,
+      [currentForm]: {
+        ...prev[currentForm],
+        [fieldId]: value,
+      },
     }));
   };
 
@@ -170,9 +194,16 @@ const DynamicForms = () => {
       const storageRef = ref(storage, `images/${user.uid}/${file.name}`);
       const snapshot = await uploadBytes(storageRef, compressedFile);
       const downloadUrl = await getDownloadURL(snapshot.ref);
+
+      const currentForm = forms[currentTab];
+      if (!currentForm) return;
+
       setFormResponse((prev) => ({
         ...prev,
-        [fieldId]: downloadUrl,
+        [currentForm.id]: {
+          ...prev[currentForm.id],
+          [fieldId]: downloadUrl,
+        },
       }));
 
       showAlert("success", "Image uploaded successfully");
@@ -186,31 +217,27 @@ const DynamicForms = () => {
     const currentForm = forms[currentTab];
     if (!currentForm) return;
 
-    const requiredFields = currentForm.sections.flatMap(
+    const requiredFields = currentForm?.sections.flatMap(
       (section) => section.data?.filter((field) => field.required) || []
     );
 
-    const missingFields = requiredFields.filter(
-      (field) => !formResponse[field?.id]
+    const missingFields = requiredFields?.filter(
+      (field) => !formResponse[currentForm.id]?.[field?.id]
     );
 
-    setRequiredFieldsOnSubmit(missingFields.map((field) => field.id));
+    setRequiredFieldsOnSubmit(missingFields?.map((field) => field.id));
 
     if (missingFields.length > 0) {
       showAlert("error", "Please fill out all required fields");
       return;
     }
-    // if (formResponse["signature"] !== user?.info.client_name) {
-    //   showAlert("error", "Signature does not match client name");
-    //   return;
-    // }
 
     setSaving(true);
     try {
       await createFilledForm({
         appointmentId,
         formTemplateId: currentForm.id,
-        data: formResponse,
+        data: formResponse[currentForm.id] || {}, // Send only the fields for the current form
       });
 
       setSaving(false);
@@ -218,8 +245,9 @@ const DynamicForms = () => {
         appointmentId
       );
       setFilledForms(fetchedFilledForms?.filledForms || []);
+
       if (currentTab < forms.length - 1) {
-        setCurrentTab(currentTab + 1); // Move to the next form tab
+        setCurrentTab(currentTab + 1);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         navigate(`/filled-forms/appointment/${appointmentId}`);
@@ -273,6 +301,7 @@ const DynamicForms = () => {
               <h3>{section.title}</h3>
               {renderFormFields(
                 section.data,
+                forms[currentTab]?.id,
                 formResponse,
                 requiredFieldsOnSubmit,
                 autofilledFields,

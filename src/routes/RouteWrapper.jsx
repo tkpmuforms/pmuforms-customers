@@ -33,17 +33,11 @@ const RouteWrapper = () => {
     );
   };
 
-  console.log("User Authenticated:", isAuthenticated);
-  console.log("Non-Auth Routes:", nonAuthRoutes);
-
   return (
     <Routes>
-      {/* ✅ Ensure unauthenticated users can access public pages */}
       {nonAuthRoutes.map((route) => (
         <Route key={route.path} path={route.path} element={route.element} />
       ))}
-
-      {/* ✅ Only authenticated users can access protected routes */}
       {isAuthenticated &&
         authorizedRoutes.map((route) => (
           <Route
@@ -53,7 +47,6 @@ const RouteWrapper = () => {
           />
         ))}
 
-      {/* ✅ Catch-all route: If authenticated, redirect to dashboard, else show 404 */}
       {isAuthenticated ? (
         <Route key="not-found" path="*" element={<NotFound />} />
       ) : (
