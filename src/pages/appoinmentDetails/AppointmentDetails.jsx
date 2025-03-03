@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 import { Dialog, Typography } from "@mui/material";
 import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFilledFormsForAppointment,
@@ -52,6 +52,7 @@ const AppointmentDetails = () => {
         console.error("Error fetching filled appointment:", error);
       }
     };
+
     const fetchAllFormsForAppointment = async () => {
       try {
         const res = await getFormsForAppointMentById(id);
@@ -63,6 +64,7 @@ const AppointmentDetails = () => {
         console.error("Error fetching forms:", error);
       }
     };
+
     const fetchAppointment = async () => {
       try {
         const res = await getAppointmentById(id);
@@ -75,16 +77,16 @@ const AppointmentDetails = () => {
     if (id) {
       fetchAllFilledFormsForAppointment();
       fetchAllFormsForAppointment();
-
       fetchAppointment();
     }
   }, [id, artisId]);
 
   const getFormStatus = (formId) => {
-    const filledForm = filledForms.find(
+    return filledForms.some(
       (filledForm) => filledForm.formTemplateId === formId
-    );
-    return filledForm?.status || "incomplete";
+    )
+      ? "completed"
+      : "incomplete";
   };
 
   const handleViewForm = (form) => {
@@ -121,26 +123,41 @@ const AppointmentDetails = () => {
             </span>
           </div>
         </div>
+
         <div className="form-list">
-          {forms.length > 0 ? (
-            forms.map((form) => (
+          {filledForms.length > 0 &&
+            filledForms.map((filledForm) => (
               <RenderFormsCard
-                key={form.id}
-                title={form.title || "Untitled Form"}
-                status={getFormStatus(form.id)}
-                onEditClick={() =>
-                  navigate(
-                    `/forms/appointment/${appointMent?.id}?formId=${form.id}`
-                  )
-                }
-                onViewClick={() => handleViewForm(form)}
+                key={filledForm.formTemplateId}
+                title={filledForm.title || "Untitled Form"}
+                status="completed"
+                onViewClick={() => handleViewForm(filledForm.formTemplate)}
               />
-            ))
-          ) : (
-            <p>No appointment details available.</p>
-          )}
+            ))}
+
+          {forms.length > 0 &&
+            forms
+              .filter(
+                (form) =>
+                  !filledForms.some(
+                    (filledForm) => filledForm.formTemplateId === form.id
+                  )
+              )
+              .map((form) => (
+                <RenderFormsCard
+                  key={form.id}
+                  title={form.title || "Untitled Form"}
+                  status="incomplete"
+                  onEditClick={() =>
+                    navigate(
+                      `/forms/appointment/${appointMent?.id}?formId=${form.id}`
+                    )
+                  }
+                />
+              ))}
         </div>
       </div>
+
       {isModalOpen && selectedForm && (
         <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>
           <div
@@ -151,7 +168,8 @@ const AppointmentDetails = () => {
               right: "0",
               cursor: "pointer",
               padding: "10px",
-              fontSize: "1.5rem",
+              fontSize: "3rem",
+              color: "var(--pmu-primary)",
             }}
             onClick={handleCloseModal}
           >

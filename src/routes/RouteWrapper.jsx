@@ -35,18 +35,9 @@ const RouteWrapper = () => {
 
   return (
     <Routes>
-      {isAuthenticated ? (
-        <Route
-          key="auth-redirect"
-          path="*"
-          element={<Navigate to="/dashboard" />}
-        />
-      ) : (
-        nonAuthRoutes.map((route) => (
-          <Route key={route.path} path={route.path} element={route.element} />
-        ))
-      )}
-
+      {nonAuthRoutes.map((route) => (
+        <Route key={route.path} path={route.path} element={route.element} />
+      ))}
       {isAuthenticated &&
         authorizedRoutes.map((route) => (
           <Route
@@ -55,11 +46,11 @@ const RouteWrapper = () => {
             element={displayElement(route)}
           />
         ))}
-      {isAuthenticated && (
+
+      {isAuthenticated ? (
         <Route key="not-found" path="*" element={<NotFound />} />
-      )}
-      {!isAuthenticated && (
-        <Route key="auth-redirect" path="*" element={<Navigate to="/auth" />} />
+      ) : (
+        <Route key="auth-redirect" path="*" element={<Navigate to="/" />} />
       )}
     </Routes>
   );

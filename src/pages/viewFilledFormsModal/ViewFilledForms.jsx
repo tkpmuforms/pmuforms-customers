@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  getAllFilledFormsForAppointment,
-  getFormsForAppointMentById,
-} from "../../services/services";
+import { getAllFilledFormsForAppointment } from "../../services/services";
 import "./viewFilledForms.scss";
 
 const FormInputTypes = {
@@ -19,22 +16,6 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
   const [filledForm, setFilledForm] = useState(null);
 
   useEffect(() => {
-    const fetchForm = async () => {
-      try {
-        const fetchedForms = await getFormsForAppointMentById(appointmentId);
-        const targetForm = fetchedForms?.forms?.find(
-          (f) => f.id === formTemplateId
-        );
-        if (!targetForm) {
-          console.error("Form not found");
-          return;
-        }
-        setForm(targetForm);
-      } catch (error) {
-        console.error("Error fetching form:", error);
-      }
-    };
-
     const fetchFilledForm = async () => {
       try {
         const fetchedFilledForms = await getAllFilledFormsForAppointment(
@@ -44,12 +25,12 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
           (f) => f.formTemplateId === formTemplateId
         );
         setFilledForm(targetFilledForm?.data || {});
+        setForm(targetFilledForm?.formTemplate || {});
       } catch (error) {
         console.error("Error fetching filled form:", error);
       }
     };
 
-    fetchForm();
     fetchFilledForm();
   }, [appointmentId, formTemplateId]);
 
@@ -80,7 +61,7 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
           return (
             <div key={field.id} className="read-only-field">
               <label>{field.title}</label>
-              <p>{new Date(fieldValue).toLocaleDateString()}</p>
+              <p>{new Date(fieldValue).toLocaleDateString() || ""}</p>
             </div>
           );
 
@@ -88,6 +69,7 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
           return (
             <div key={field.id} className="read-only-field">
               <label>{field.title}</label>
+
               {fieldValue ? (
                 <div className="image-preview">
                   <img

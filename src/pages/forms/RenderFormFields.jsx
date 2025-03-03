@@ -4,6 +4,7 @@ import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
 const FormInputTypes = {
   TEXT: "text",
   CHECKBOX: "checkbox",
@@ -15,24 +16,26 @@ const FormInputTypes = {
 
 export const renderFormFields = (
   fields,
+  formTemplateId, // Pass the form ID to uniquely store data
   formResponse,
   requiredFieldsOnSubmit,
   autofilledFields,
   handleInputChange,
-  handleSignatureBlur,
   handleImageChange
 ) =>
   fields.map((field) => {
     if (!field || !field.id) return null;
-    const fieldValue = formResponse[field?.id] || "";
-    const isRequired = field.required;
+    const fieldValue = formResponse?.[formTemplateId]?.[field.id] || ""; // Retrieve field value using formTemplateId
+
+    const isRequired = field?.required;
     const isFieldInvalid =
-      !fieldValue && requiredFieldsOnSubmit.includes(field.id);
-    const isAutofilled = autofilledFields.has(field.id);
+      !fieldValue && requiredFieldsOnSubmit?.includes(field.id);
+    const isAutofilled = autofilledFields?.has(field.id);
 
     const commonProps = {
       className: isFieldInvalid ? "invalid-field" : "",
-      onChange: (e) => handleInputChange(field.id, e.target.value),
+      onChange: (e) =>
+        handleInputChange(formTemplateId, field.id, e.target.value), // Pass formTemplateId
       required: isRequired,
       readOnly: isAutofilled,
     };
@@ -54,9 +57,11 @@ export const renderFormFields = (
             <input
               type="text"
               value={fieldValue}
+              onChange={(e) =>
+                handleInputChange(formTemplateId, field.id, e.target.value)
+              }
               {...commonProps}
               placeholder="Type your full name"
-              onBlur={() => handleSignatureBlur(fieldValue)}
             />
           </label>
         </div>
@@ -71,7 +76,9 @@ export const renderFormFields = (
               <input
                 type="checkbox"
                 checked={!!fieldValue}
-                onChange={(e) => handleInputChange(field.id, e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange(formTemplateId, field.id, e.target.checked)
+                }
                 disabled={isAutofilled}
               />
               {field.title}
@@ -81,9 +88,8 @@ export const renderFormFields = (
         );
       case FormInputTypes.DATE:
         const userTimezone = dayjs.tz.guess(); // Get user's timezone
-        const todayLocal = dayjs().tz(userTimezone).format("YYYY-MM-DD"); // Ensure correct format
+        const todayLocal = dayjs().tz(userTimezone).format("YYYY-MM-DD");
 
-        // Handle special cases for `todays_date` and `date_of_signing`
         if (field.id === "todays_date" || field.id === "date_of_signing") {
           return (
             <div key={field.id}>
@@ -92,10 +98,12 @@ export const renderFormFields = (
                 {isRequired && <span className="required-star">*</span>}
                 <input
                   type="date"
-                  min={todayLocal} // Prevent past dates
-                  max={todayLocal} // Lock it to today’s date
-                  value={formResponse[field.id] || todayLocal} // Default to today's date if empty
-                  onChange={(e) => handleInputChange(field.id, e.target.value)}
+                  min={todayLocal}
+                  max={todayLocal}
+                  value={fieldValue}
+                  onChange={(e) =>
+                    handleInputChange(formTemplateId, field.id, e.target.value)
+                  }
                 />
               </label>
             </div>
@@ -109,8 +117,10 @@ export const renderFormFields = (
               {isRequired && <span className="required-star">*</span>}
               <input
                 type="date"
-                value={formResponse[field.id] || ""}
-                onChange={(e) => handleInputChange(field.id, e.target.value)}
+                value={fieldValue}
+                onChange={(e) =>
+                  handleInputChange(formTemplateId, field.id, e.target.value)
+                }
               />
             </label>
           </div>
@@ -124,7 +134,9 @@ export const renderFormFields = (
               <input
                 type="file"
                 accept="image/*"
-                onChange={(e) => handleImageChange(field.id, e.target.files[0])}
+                onChange={(e) =>
+                  handleImageChange(formTemplateId, field.id, e.target.files[0])
+                }
               />
             </label>
             {fieldValue && (
