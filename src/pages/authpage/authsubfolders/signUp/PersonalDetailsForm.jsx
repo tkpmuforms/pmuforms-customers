@@ -31,6 +31,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     emergencyContactPhone: "",
   });
   const [loading, setLoading] = useState(true);
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
@@ -87,6 +88,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   const handleImageUpload = async (file) => {
     try {
+      setUploadingAvatar(true);
       const options = {
         maxSizeMB: 0.1, // 100KB
         maxWidthOrHeight: 500,
@@ -99,6 +101,9 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
       setAvatarUrl(downloadUrl); // Update the avatar URL state
     } catch (error) {
       console.error("Error uploading image:", error);
+      showAlert("error", "Failed to upload profile picture.");
+    } finally {
+      setUploadingAvatar(false);
     }
   };
 
@@ -161,16 +166,49 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
         <div className="personal-details-page">
           <div className="personal-details-container">
             <div className="avatar-section">
-              <label htmlFor="avatar-upload" style={{ cursor: "pointer" }}>
-                <Avatar
-                  src={avatarUrl || ""}
-                  alt="Profile Avatar"
-                  sx={{ width: 100, height: 100 }}
-                >
-                  {user?.displayName
-                    ? user.displayName.slice(0, 2).toUpperCase()
-                    : ""}
-                </Avatar>
+              <label
+                htmlFor="avatar-upload"
+                style={{ cursor: "pointer", position: "relative" }}
+              >
+                {uploadingAvatar ? (
+                  <div
+                    style={{ position: "relative", width: 100, height: 100 }}
+                  >
+                    <Avatar
+                      src={avatarUrl || ""}
+                      alt="Profile Avatar"
+                      sx={{ width: 100, height: 100, opacity: 0.5 }}
+                    >
+                      {user?.displayName
+                        ? user.displayName.slice(0, 2).toUpperCase()
+                        : ""}
+                    </Avatar>
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <CircularProgress size={40} sx={{ color: "#8e2d8e" }} />
+                    </div>
+                  </div>
+                ) : (
+                  <Avatar
+                    src={avatarUrl || ""}
+                    alt="Profile Avatar"
+                    sx={{ width: 100, height: 100 }}
+                  >
+                    {user?.displayName
+                      ? user.displayName.slice(0, 2).toUpperCase()
+                      : ""}
+                  </Avatar>
+                )}
               </label>
               <input
                 type="file"
@@ -178,6 +216,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                 accept="image/*"
                 onChange={handleAvatarChange}
                 style={{ display: "none" }}
+                disabled={uploadingAvatar}
               />
             </div>
             <h2>We would like to know a little about you</h2>
@@ -250,7 +289,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                   <button
                     type="submit"
                     className="submit-button"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || uploadingAvatar}
                   >
                     Save Personal Details
                   </button>

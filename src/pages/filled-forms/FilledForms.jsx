@@ -90,11 +90,11 @@ const FilledForms = () => {
             style={{
               display: "flex",
               position: "absolute",
-              top: "0",
-              right: "0",
+              top: "5px",
+              right: "5px",
               cursor: "pointer",
               padding: "10px",
-              fontSize: "1.5rem",
+              fontSize: "2.5rem",
             }}
             onClick={handleCloseModal}
           >
