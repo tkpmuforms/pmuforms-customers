@@ -180,7 +180,7 @@ const DynamicForms = () => {
     }));
   };
 
-  const handleImageChange = async (fieldId, file) => {
+  const handleImageChange = async (currentForm, fieldId, file) => {
     if (!file) return;
 
     const options = {
@@ -188,20 +188,18 @@ const DynamicForms = () => {
       maxWidthOrHeight: 500,
       useWebWorker: true,
     };
+    console.log("file", file);
     const compressedFile = await imageCompression(file, options);
+    console.log("compressedFile", compressedFile);
 
     try {
       const storageRef = ref(storage, `images/${user.uid}/${file.name}`);
       const snapshot = await uploadBytes(storageRef, compressedFile);
       const downloadUrl = await getDownloadURL(snapshot.ref);
-
-      const currentForm = forms[currentTab];
-      if (!currentForm) return;
-
       setFormResponse((prev) => ({
         ...prev,
-        [currentForm.id]: {
-          ...prev[currentForm.id],
+        [currentForm]: {
+          ...prev[currentForm],
           [fieldId]: downloadUrl,
         },
       }));

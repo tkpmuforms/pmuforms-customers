@@ -1,6 +1,6 @@
 .form {
   margin-top: 5px;
-  padding: 0 40px;
+  padding: 0 50px;
   .go-back {
     display: flex;
     flex-direction: row;
@@ -134,11 +134,12 @@
     .form-list {
       .form-card {
         padding: 15px;
-        flex-direction: column; /* Stack content vertically */
-        align-items: flex-start;
+        flex-direction: row; /* Keep horizontal layout for tablet */
+        justify-content: space-between;
+        align-items: center;
 
         .form-info {
-          margin-bottom: 10px;
+          margin-bottom: 0;
 
           h4 {
             font-size: 15px;
@@ -155,8 +156,7 @@
         }
 
         .form-actions {
-          width: 100%;
-          justify-content: flex-start;
+          justify-content: flex-end;
         }
       }
     }
@@ -193,6 +193,10 @@
     }
     .form-list {
       .form-card {
+        display: flex;
+        flex-direction: row; /* Keep horizontal layout */
+        justify-content: space-between; /* Space between content and button */
+        align-items: center;
         padding: 12px;
         margin-bottom: 15px;
 
@@ -212,14 +216,18 @@
         }
 
         .form-actions {
-          width: 100%;
-          justify-content: space-between;
-          gap: 5px;
+          display: flex;
+          justify-content: flex-end;
+          width: auto; /* Don't make it take full width */
 
-          button {
+          .view-form-button {
+            padding: 8px 12px;
             font-size: 12px;
-            padding: 8px;
-            width: 48%; /* Make buttons equal width */
+            width: 100px; /* Set fixed width for consistency */
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
           }
         }
       }
@@ -237,6 +245,8 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
+
+  text-align: center;
 
   &:hover {
     background: #6e1f6e;

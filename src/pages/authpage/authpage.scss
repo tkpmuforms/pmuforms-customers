@@ -12,12 +12,13 @@
 
   .switch-auth {
     margin-top: 10px;
-    text-align: center;
+    text-align: end;
+    margin-bottom: 10px;
 
     .switch-auth-button {
       background: none;
       border: none;
-      color: var(--pmu-primary); // Use your primary color variable
+      color: var(--pmu-primary);
       cursor: pointer;
       font-weight: bold;
       text-decoration: underline;

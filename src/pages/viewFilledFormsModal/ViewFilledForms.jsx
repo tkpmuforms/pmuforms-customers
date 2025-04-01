@@ -1,3 +1,4 @@
+// ViewFilledForm.jsx
 import React, { useEffect, useState } from "react";
 import { getAllFilledFormsForAppointment } from "../../services/services";
 import "./viewFilledForms.scss";
@@ -49,10 +50,10 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
       switch (field.type) {
         case FormInputTypes.CHECKBOX:
           return (
-            <div className="checkbox-group" key={field.id}>
-              <label>
+            <div className="read-only-field checkbox-group" key={field.id}>
+              <label className="checkbox-label">
                 <input type="checkbox" checked={!!fieldValue} disabled />{" "}
-                {field.title}
+                <span>{field.title}</span>
               </label>
             </div>
           );
@@ -67,7 +68,7 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
 
         case FormInputTypes.IMAGE:
           return (
-            <div key={field.id} className="read-only-field">
+            <div key={field.id} className="read-only-field image-field">
               <label>{field.title}</label>
 
               {fieldValue ? (
@@ -112,7 +113,7 @@ const ViewFilledForm = ({ appointmentId, formTemplateId }) => {
         <div className="form-content">
           <h2>{form.title}</h2>
           {form?.sections.map((section) => (
-            <div key={section._id}>
+            <div key={section._id} className="form-section">
               <h3>{section.title}</h3>
               {renderFormFields(section.data || [])}
             </div>
