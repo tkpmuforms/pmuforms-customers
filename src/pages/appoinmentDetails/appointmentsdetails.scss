@@ -1,6 +1,6 @@
 .form {
   margin-top: 5px;
-  padding: 0 40px;
+  padding: 0 50px;
   .go-back {
     display: flex;
     flex-direction: row;
@@ -245,7 +245,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
-  width: 100px; /* Standard width for desktop */
+
   text-align: center;
 
   &:hover {
