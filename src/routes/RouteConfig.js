@@ -47,6 +47,11 @@ export const nonAuthRoutes = [
 
 export const authorizedRoutes = [
   {
+    path: "/",
+    element: <Dashboard />,
+    breadcrumbs: [],
+  },
+  {
     path: "/dashboard",
     element: <Dashboard />,
     breadcrumbs: ["Dashboard"],
