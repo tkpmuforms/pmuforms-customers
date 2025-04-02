@@ -1,26 +1,32 @@
 import React, { useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import RouteWrapper from "./routes/RouteWrapper";
+import useAuth from "./context/useAuth";
 
 const AppWrapper = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
 
   useEffect(() => {
     const { hash } = location;
 
     let artistId = null;
 
-    // Extract artistId from hash (e.g., "#/artistId")
     if (hash.startsWith("#/")) {
-      artistId = hash.substring(2); // Remove "#/"
+      artistId = hash.substring(2);
     }
 
-    // Store artistId in localStorage if found
     if (artistId) {
-      
       localStorage.setItem("artistId", artistId);
+
+      // Add this condition to redirect to dashboard when authenticated
+      if (isAuthenticated && location.pathname === "/") {
+        navigate("/dashboard");
+      }
     }
-  }, [location]);
+  }, [location, isAuthenticated]);
+
   return (
     <>
       <RouteWrapper />
