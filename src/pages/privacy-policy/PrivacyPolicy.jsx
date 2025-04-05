@@ -1,11 +1,17 @@
 import React from "react";
 import "./privacyPolicy.scss";
 import Navbar from "../../layout/public/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const PrivacyPolicy = () => {
+  const navigate = useNavigate();
+  const handleCreateNewClick = () => {
+    navigate(-1);
+  };
+
   return (
     <>
-      <Navbar />
+      <Navbar CreatenewClick={handleCreateNewClick} />
       <div className="privacy-policy">
         <h1>PMU Forms Privacy Policy</h1>
         <p>
