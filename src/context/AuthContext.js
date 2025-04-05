@@ -44,7 +44,15 @@ export const AuthProvider = ({ children }) => {
       dispatch(setLoading(false));
       dispatch(setAuthenticated(false));
       dispatch(setUser(null));
-      navigate(`/#/${artistId}`);
+
+      const currentPath = window.location.pathname;
+      const publicPaths = ["/privacy-policy", "/support"];
+
+      if (publicPaths.includes(currentPath)) {
+        navigate(currentPath);
+      } else {
+        navigate(`/#/${artistId}`);
+      }
     }
   }, [dispatch]);
 
