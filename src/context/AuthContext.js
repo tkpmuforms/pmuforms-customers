@@ -46,7 +46,11 @@ export const AuthProvider = ({ children }) => {
       dispatch(setUser(null));
 
       const currentPath = window.location.pathname;
-      const publicPaths = ["/privacy-policy", "/support"];
+      const publicPaths = [
+        "/privacy-policy",
+        "/support",
+        "/terms-and-agreement",
+      ];
 
       if (publicPaths.includes(currentPath)) {
         navigate(currentPath);
