@@ -164,12 +164,11 @@ const AppointmentDetails = () => {
             style={{
               display: "flex",
               position: "absolute",
-              top: "0",
-              right: "0",
+              top: "2px",
+              right: "2px",
               cursor: "pointer",
               padding: "10px",
-              fontSize: "3rem",
-              color: "var(--pmu-primary)",
+              fontSize: "1.5rem",
             }}
             onClick={handleCloseModal}
           >

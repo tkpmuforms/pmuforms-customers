@@ -227,11 +227,6 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
             </div>
           ))}
         </div>
-
-        <div className="terms-footer">
-          <button className="accept-button">I Accept</button>
-          <button className="decline-button">I Decline</button>
-        </div>
       </div>
     </>
   );
