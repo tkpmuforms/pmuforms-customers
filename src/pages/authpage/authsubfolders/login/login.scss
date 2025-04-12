@@ -95,7 +95,7 @@
 
           input {
             padding: 8px;
-            font-size: 12px;
+            font-size: 16px;
           }
         }
 
@@ -111,4 +111,10 @@
       }
     }
   }
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  font-size: 16px !important;
 }

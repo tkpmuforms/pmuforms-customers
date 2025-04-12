@@ -3,6 +3,7 @@ import AuthPage from "../pages/authpage/AuthPage";
 import NotFound from "../components/not-found/NotFound";
 import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
 import ContactSupport from "../pages/contact-us/ContactUs";
+import TermsAndAgreement from "../pages/termsandAgreement/TermsAndAgreement";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")
@@ -42,6 +43,11 @@ export const nonAuthRoutes = [
     path: "/support",
     element: <ContactSupport />,
     breadcrumbs: ["Contact Support"],
+  },
+  {
+    path: "/terms-and-agreement",
+    element: <TermsAndAgreement />,
+    breadcrumbs: ["Terms and Agreement"],
   },
 ];
 
