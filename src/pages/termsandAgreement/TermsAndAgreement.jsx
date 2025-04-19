@@ -23,9 +23,9 @@ The Application is not tailored to comply with industry-specific regulations (He
 
 2.2 This license will also govern any updates of the Application provided by Licensor that replace, repair, and/or supplement the first Application, unless a separate license is provided for such update in which case the terms of that new license will govern.
 
-2.3 You may not share or make the Application available to third parties (unless to the degree allowed by the Apple Terms and Conditions, and with Adebayo Ijidakinro's prior written consent), sell, rent, lend, lease or otherwise redistribute the Application.
+2.3 You may not share or make the Application available to third parties (unless to the degree allowed by the Apple Terms and Conditions, and with Arojem Solutions LLC prior written consent), sell, rent, lend, lease or otherwise redistribute the Application.
 
-2.4 You may not reverse engineer, translate, disassemble, integrate, decompile, integrate, remove, modify, combine, create derivative works or updates of, adapt, or attempt to derive the source code of the Application, or any part thereof (except with Adebayo Ijidakinro's prior written consent).
+2.4 You may not reverse engineer, translate, disassemble, integrate, decompile, integrate, remove, modify, combine, create derivative works or updates of, adapt, or attempt to derive the source code of the Application, or any part thereof (except with Arojem Solutions LLC prior written consent).
 
 2.5 You may not copy (excluding when expressly authorized by this license and the Usage Rules) or alter the Application or portions thereof. You may create and store copies only on devices that You own or control for backup keeping under the terms of this license, the App Store Terms of Service, and any other terms and conditions that apply to the device or software used. You may not remove any intellectual property notices. You acknowledge that no unauthorized third parties may gain access to these copies at any time.
 
@@ -47,11 +47,11 @@ The Application is not tailored to comply with industry-specific regulations (He
       title: "4. MAINTENANCE AND SUPPORT",
       content: `4.1 The Licensor is solely responsible for providing any maintenance and support services for this licensed Application. You can reach the Licensor at the email address listed in the App Store Overview for this licensed Application.
 
-4.2 Adebayo Ijidakinro and the End-User acknowledge that Apple has no obligation whatsoever to furnish any maintenance and support services with respect to the licensed Application.`,
+4.2 Arojem Solutions LLC and the End-User acknowledge that Apple has no obligation whatsoever to furnish any maintenance and support services with respect to the licensed Application.`,
     },
     {
       title: "5. USE OF DATA",
-      content: `You acknowledge that Licensor will be able to access and adjust Your downloaded licensed Application content and Your personal information, and that Licensor's use of such material and information is subject to Your legal agreements with Licensor and Licensor's privacy policy: https://flycricket.io/pmu-forms/privacy.html.`,
+      content: `You acknowledge that Licensor will be able to access and adjust Your downloaded licensed Application content and Your personal information, and that Licensor's use of such material and information is subject to Your legal agreements with Licensor and Licensor's privacy policy <a href='https://main.d399dszmqumyhd.amplifyapp.com/privacy-policy'>here</a>.`,
     },
     {
       title: "6. USER GENERATED CONTRIBUTIONS",
@@ -92,11 +92,11 @@ We do not assert any ownership over your Contributions. You retain full ownershi
       title: "9. WARRANTY",
       content: `9.1 Licensor warrants that the Application is free of spyware, trojan horses, viruses, or any other malware at the time of Your download. Licensor warrants that the Application works as described in the user documentation.
 
-9.2 No warranty is provided for the Application that is not executable on the device, that has been unauthorizedly modified, handled inappropriately or culpably, combined or installed with inappropriate hardware or software, used with inappropriate accessories, regardless if by Yourself or by third parties, or if there are any other reasons outside of Adebayo Ijidakinro's sphere of influence that affect the executability of the Application.
+9.2 No warranty is provided for the Application that is not executable on the device, that has been unauthorizedly modified, handled inappropriately or culpably, combined or installed with inappropriate hardware or software, used with inappropriate accessories, regardless if by Yourself or by third parties, or if there are any other reasons outside of Arojem Solutions LLC's sphere of influence that affect the executability of the Application.
 
-9.3 You are required to inspect the Application immediately after installing it and notify Adebayo Ijidakinro about issues discovered without delay by e-mail provided in Product Claims. The defect report will be taken into consideration and further investigated if it has been mailed within a period of thirty (30) days after discovery.
+9.3 You are required to inspect the Application immediately after installing it and notify Arojem Solutions LLC about issues discovered without delay by e-mail provided in Product Claims. The defect report will be taken into consideration and further investigated if it has been mailed within a period of thirty (30) days after discovery.
 
-9.4 If we confirm that the Application is defective, Adebayo Ijidakinro reserves a choice to remedy the situation either by means of solving the defect or substitute delivery.
+9.4 If we confirm that the Application is defective, Arojem Solutions LLC reserves a choice to remedy the situation either by means of solving the defect or substitute delivery.
 
 9.5 In the event of any failure of the Application to conform to any applicable warranty, You may notify the App-Store-Operator, and Your Application purchase price will be refunded to You. To the maximum extent permitted by applicable law, the App-Store-Operator will have no other warranty obligation whatsoever with respect to the App, and any other losses, claims, damages, liabilities, expenses and costs attributable to any negligence to adhere to any warranty.
 
@@ -104,7 +104,7 @@ We do not assert any ownership over your Contributions. You retain full ownershi
     },
     {
       title: "10. PRODUCT CLAIMS",
-      content: `Adebayo Ijidakinro and the End-User acknowledge that Adebayo Ijidakinro, and not Apple, is responsible for addressing any claims of the End-User or any third party relating to the licensed Application or the End-User's possession and/or use of that licensed Application, including, but not limited to:
+      content: `Arojem Solutions LLC and the End-User acknowledge that Arojem Solutions LLC, and not Apple, is responsible for addressing any claims of the End-User or any third party relating to the licensed Application or the End-User's possession and/or use of that licensed Application, including, but not limited to:
 
 (i) product liability claims;
 
@@ -120,7 +120,7 @@ We do not assert any ownership over your Contributions. You retain full ownershi
       title: "12. CONTACT INFORMATION",
       content: `For general inquiries, complaints, questions or claims concerning the licensed Application, please contact:
      
-Adebayo Ijidakinro
+Arojem Solutions LLC
 Summerlin, Las Vegas, NV, USA
 Las Vegas, NV 89144
 United States
@@ -128,21 +128,21 @@ adebayoiji@gmail.com`,
     },
     {
       title: "13. TERMINATION",
-      content: `The license is valid until terminated by Adebayo Ijidakinro or by You. Your rights under this license will terminate automatically and without notice from Adebayo Ijidakinro if You fail to adhere to any term(s) of this license. Upon License termination, You shall stop all use of the Application, and destroy all copies, full or partial, of the Application.`,
+      content: `The license is valid until terminated by Arojem Solutions LLC or by You. Your rights under this license will terminate automatically and without notice from Arojem Solutions LLC if You fail to adhere to any term(s) of this license. Upon License termination, You shall stop all use of the Application, and destroy all copies, full or partial, of the Application.`,
     },
     {
       title: "14. THIRD-PARTY TERMS OF AGREEMENTS AND BENEFICIARY",
-      content: `Adebayo Ijidakinro represents and warrants that Adebayo Ijidakinro will comply with applicable third-party terms of agreement when using licensed Application.
+      content: `Arojem Solutions LLC represents and warrants that Arojem Solutions LLC will comply with applicable third-party terms of agreement when using licensed Application.
 
 In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer's End-User License Agreement," Apple and Apple's subsidiaries shall be third-party beneficiaries of this End User License Agreement and - upon Your acceptance of the terms and conditions of this license agreement, Apple will have the right (and will be deemed to have accepted the right) to enforce this End User License Agreement against You as a third-party beneficiary thereof.`,
     },
     {
       title: "15. INTELLECTUAL PROPERTY RIGHTS",
-      content: `Adebayo Ijidakinro and the End-User acknowledge that, in the event of any third-party claim that the licensed Application or the End-User's possession and use of that licensed Application infringes on the third party's intellectual property rights, Adebayo Ijidakinro, and not Apple, will be solely responsible for the investigation, defense, settlement and discharge or any such intellectual property infringement claims.`,
+      content: `Arojem Solutions LLC and the End-User acknowledge that, in the event of any third-party claim that the licensed Application or the End-User's possession and use of that licensed Application infringes on the third party's intellectual property rights, Arojem Solutions LLC, and not Apple, will be solely responsible for the investigation, defense, settlement and discharge or any such intellectual property infringement claims.`,
     },
     {
       title: "16. APPLICABLE LAW",
-      content: `This license agreement is governed by the laws of the State of Nevada excluding its conflicts of law rules.`,
+      content: `This license agreement is governed by the laws of the State of Texas excluding its conflicts of law rules.`,
     },
     {
       title: "17. MISCELLANEOUS",
@@ -171,10 +171,8 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
 
         <div className="terms-intro">
           <p>
-            PMU Forms is licensed to You (End-User) by Adebayo Ijidakinro,
-            located at Summerlin, Las Vegas, NV, USA, Las Vegas, Nevada 89144,
-            United States (hereinafter: Licensor), for use only under the terms
-            of this License Agreement.
+            PMU Forms is licensed to You (End-User) by Arojem Solutions LLC,
+            located at 909 Reinli Street Unit 116, Austin, TX, USA, 78751, (hereinafter: Licensor), for use only under the terms of this License Agreement.
           </p>
           <p>
             By downloading the Application from the Apple AppStore, and any
@@ -187,14 +185,14 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
             The parties of this License Agreement acknowledge that Apple is not
             a Party to this License Agreement and is not bound by any provisions
             or obligations with regard to the Application, such as warranty,
-            liability, maintenance and support thereof. Adebayo Ijidakinro, not
+            liability, maintenance and support thereof. Arojem Solutions LLC, not
             Apple, is solely responsible for the licensed Application and the
             content thereof.
           </p>
           <p>
             This License Agreement may not provide for usage rules for the
             Application that are in conflict with the latest App Store Terms of
-            Service. Adebayo Ijidakinro acknowledges that it had the opportunity
+            Service. Arojem Solutions LLC acknowledges that it had the opportunity
             to review said terms and this License Agreement is not conflicting
             with them.
           </p>
