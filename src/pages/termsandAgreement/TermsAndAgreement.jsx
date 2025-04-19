@@ -121,10 +121,10 @@ We do not assert any ownership over your Contributions. You retain full ownershi
       content: `For general inquiries, complaints, questions or claims concerning the licensed Application, please contact:
      
 Arojem Solutions LLC
-Summerlin, Las Vegas, NV, USA
-Las Vegas, NV 89144
+909 Reinli Street, Austin, TX, USA
+Austin, TX 78751
 United States
-adebayoiji@gmail.com`,
+contact@pmuforms.com`,
     },
     {
       title: "13. TERMINATION",
@@ -145,13 +145,18 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
       content: `This license agreement is governed by the laws of the State of Texas excluding its conflicts of law rules.`,
     },
     {
+      title: "17. MESSAGING TERMS & CONDITIONS",
+      content: `When you opt-in to the service, we will send you a message to confirm your signup.`,
+    },
+
+    {
       title: "17. MISCELLANEOUS",
       content: `17.1 If any of the terms of this agreement should be or become invalid, the validity of the remaining provisions shall not be affected. Invalid terms will be replaced by valid ones formulated in a way that will achieve the primary purpose.
              
 17.2 Collateral agreements, changes and amendments are only valid if laid down in writing. The preceding clause can only be waived in writing.`,
     },
   ];
-
+  
   const toggleSection = (index) => {
     if (activeSection === index) {
       setActiveSection(null);
@@ -166,7 +171,7 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
       <div className="terms-agreement-container">
         <div className="terms-header">
           <h1>END USER LICENSE AGREEMENT</h1>
-          <p className="last-updated">Last updated July 27, 2021</p>
+          <p className="last-updated">Last updated April 19, 2025</p>
         </div>
 
         <div className="terms-intro">
@@ -198,6 +203,52 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
           </p>
           <p>All rights not expressly granted to You are reserved.</p>
         </div>
+        
+        <div className="terms-header">
+          <h1>Messaging Terms & Conditions</h1>
+        </div>
+        
+      <div className="terms-intro">
+        <h2>General</h2>
+        <p>
+          By downloading the Application from the Apple AppStore, and any
+          update thereto (as permitted by this License Agreement), you agree to receive recurring automated marketing and informational text messages from PMU Forms. Automated messages may be sent using an automatic telephone dialing system to the mobile telephone number you provided when signing up or any other number that you designate.
+        </p>
+        <p>
+          Message frequency varies, and additional mobile messages may be sent periodically based on your interaction with PMU Forms. PMU Forms reserves the right to alter the frequency of messages sent at any time to increase or decrease the total number of sent messages. PMU Forms also reserves the right to change the short code or phone number or alphanumeric sender where messages are sent
+        </p>
+        <p>
+          Your usual message and data rates may apply. If you have any questions about your text plan or data plan, it is best to contact your mobile provider. Your mobile provider is not liable for delayed or undelivered messages.
+        </p>
+        <p>
+          Your consent to receive marketing messages is not a condition of purchase.
+        </p>
+        <h2>Carriers</h2>
+        <p>
+          Carriers are not liable for delayed or undelivered messages.
+        </p>
+        <h2>Cancellation</h2>
+        <p>
+          Messages will provide instructions to unsubscribe either by texting STOP or through an included link. After you unsubscribe, we will send you a message to confirm that you have been unsubscribed and no more messages will be sent. If you would like to receive messages from PMU Forms again, just sign up as you did the first time and PMU Forms will start sending messages to you again.
+        </p>
+        <h2>Info</h2>
+        <p>
+          For support regarding our services, email us at contact@pmuforms.com or, if supported, text "HELP" to 5125211052 at any time and we will respond with instructions on how to unsubscribe. If we include a link in messages we send you from PMU Forms, you may also access instructions on how to unsubscribe and our company information by following that link.
+        </p>
+        <h2>Transfer of Number</h2>
+        <p>
+          You agree that before changing your mobile number or transferring your mobile number to another individual, you will either reply "STOP" from the original number or notify us of your old number at contact@pmuforms.com. The duty to inform us based on the above events is a condition of using this service to receive messages.
+        </p>
+        <h2>Privacy</h2>
+        <p>
+          If you have any questions about your data or our privacy practices, please visit our https://main.d399dszmqumyhd.amplifyapp.com/privacy-policy.
+        </p>
+
+        <h2>Messaging Terms Changes</h2>
+        <p>
+          We reserve the right to change or terminate our messaging program at any time. We also reserve the right to update these Messaging Terms at any time. Such changes will be effective immediately upon posting. If you do not agree to a change to these Messaging Terms, you should cancel your enrollment with our messaging program. Your continued enrollment following such changes shall constitute your acceptance of such changes.
+        </p>
+      </div>
 
         <div className="terms-accordion">
           {sections.map((section, index) => (
