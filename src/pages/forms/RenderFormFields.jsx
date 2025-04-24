@@ -16,7 +16,7 @@ const FormInputTypes = {
 
 export const renderFormFields = (
   fields,
-  formTemplateId, // Pass the form ID to uniquely store data
+  formTemplateId, 
   formResponse,
   requiredFieldsOnSubmit,
   autofilledFields,
@@ -26,6 +26,7 @@ export const renderFormFields = (
   fields.map((field) => {
     if (!field || !field.id) return null;
     const fieldValue = formResponse?.[formTemplateId]?.[field.id] || ""; // Retrieve field value using formTemplateId
+    const filesValue = formResponse?.[formTemplateId]?.[field.id]?.files || ""; // Retrieve files value using formTemplateId
 
     const isRequired = field?.required;
     const isFieldInvalid =
@@ -126,35 +127,51 @@ export const renderFormFields = (
           </div>
         );
       case FormInputTypes.IMAGE:
-        return (
-          <div key={field.id}>
-            <label>
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) =>
-                  handleImageChange(formTemplateId, field.id, e.target.files[0])
-                }
-              />
-            </label>
-            {fieldValue && (
-              <div className="image-preview">
-                <img
-                  src={fieldValue}
-                  alt="Preview"
-                  style={{
-                    maxWidth: "100%",
-                    maxHeight: "150px",
-                    objectFit: "contain",
-                    marginTop: "10px",
-                  }}
-                />
-              </div>
-            )}
+        const imageInputKey = `${formTemplateId}_${field.id}_${Date.now()}`;
+      const imageUploaded = !!fieldValue;
+  return (
+    <div key={field.id}>
+      <label>
+        {field.title}
+        {isRequired && <span className="required-star">*</span>}
+      </label>
+
+      {imageUploaded ? (
+        <div>
+          <div className="image-preview">
+            <img
+              src={fieldValue}
+              alt="Preview"
+              style={{
+                maxWidth: "100%",
+                maxHeight: "150px",
+                objectFit: "contain",
+                marginTop: "10px",
+              }}
+            />
           </div>
-        );
+          <button
+            type="button"
+            onClick={() =>
+              handleInputChange(formTemplateId, field.id, "") 
+            }
+            style={{ marginTop: "10px", backgroundColor: "#eee", color: "#333" }}
+          >
+            Replace Image
+          </button>
+        </div>
+      ) : (
+        <input
+          key={imageInputKey}
+          type="file"
+          accept="image/*"
+          onChange={(e) =>
+            handleImageChange(formTemplateId, field.id, e.target.files[0])
+          }
+        />
+      )}
+    </div>
+  );
       case FormInputTypes.NUMBER:
         return (
           <div key={field.id}>
