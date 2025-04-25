@@ -44,7 +44,7 @@ const RenderAppointmentCard = ({
         <p>Date of Appointment: {formattedDate}</p>
         <p>Forms filled: {formsFilled}</p>
         <span className={`status ${status}`}>
-          {status === "true" ? "Forms Completed" : "Forms Not Completed"}
+          {status === true ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="appointment-actions">
