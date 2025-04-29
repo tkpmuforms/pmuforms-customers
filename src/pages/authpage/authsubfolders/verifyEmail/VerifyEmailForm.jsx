@@ -1,37 +1,32 @@
 import React, { useState } from "react";
-import "./verifyEmailForm.scss"; // Import the CSS file for styling
+import "./verifyEmailForm.scss";
+import useAuth from "../../../../context/useAuth";
 
 const VerifyEmailForm = () => {
-  const [code, setCode] = useState(new Array(6).fill("")); // State for 6-digit code
-  const [timeLeft, setTimeLeft] = useState(12); // Timer for resending code
+  const [code, setCode] = useState(new Array(6).fill(""));
+  const [timeLeft, setTimeLeft] = useState(12);
+  const { user } = useAuth();
 
-  // Handle input change
   const handleChange = (element, index) => {
-    if (isNaN(element.value)) return; // Ensure input is a number
-
+    if (isNaN(element.value)) return;
     setCode([...code.map((d, idx) => (idx === index ? element.value : d))]);
 
-    // Move to next input if number is entered
     if (element.nextSibling) {
       element.nextSibling.focus();
     }
   };
 
-  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Handle verification logic here
-  
+    const codeString = code.join("");
+    console.log("Code submitted:", codeString);
   };
 
   // Handle resend code logic
   const handleResendCode = () => {
-    setTimeLeft(12); // Reset timer
-    // Handle code resend logic here
-   
+    setTimeLeft(32);
   };
 
-  // Timer for Resend Code button
   React.useEffect(() => {
     if (timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
@@ -44,7 +39,7 @@ const VerifyEmailForm = () => {
       <div className="verify-email-container">
         <h2>Verify your email address</h2>
         <p className="subtext">
-          Enter the 6-digit code that was sent to <strong>example@mail.com</strong>
+          Enter the 6-digit code that was sent to <strong>{user?.email}</strong>
         </p>
 
         <form onSubmit={handleSubmit} className="verify-email-form">
@@ -77,13 +72,10 @@ const VerifyEmailForm = () => {
         </form>
 
         <div className="terms-text">
-          By proceeding, you agree to our <a href="#">Terms and conditions</a> and our <a href="#">Privacy policy</a>.
+          By proceeding, you agree to our <a href="#">Terms and conditions</a>{" "}
+          and our <a href="#">Privacy policy</a>.
         </div>
       </div>
-
-      <footer className="footer">
-        <p>Powered by PMU Forms</p>
-      </footer>
     </div>
   );
 };

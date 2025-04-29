@@ -4,6 +4,7 @@ import NotFound from "../components/not-found/NotFound";
 import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
 import ContactSupport from "../pages/contact-us/ContactUs";
 import TermsAndAgreement from "../pages/termsandAgreement/TermsAndAgreement";
+import VerifyEmailForm from "../pages/authpage/authsubfolders/verifyEmail/VerifyEmailForm";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")
@@ -56,6 +57,10 @@ export const authorizedRoutes = [
     path: "/",
     element: <Dashboard />,
     breadcrumbs: [],
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmailForm />,
   },
   {
     path: "/dashboard",
