@@ -1,6 +1,6 @@
-import { PanoramaFishEye, RemoveRedEye } from "@mui/icons-material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useSnackbar } from "../../../../context/SnackbarContext";
 import {
@@ -9,11 +9,12 @@ import {
 } from "../../../../firebase/firebase";
 import { sendVerificationLink } from "../../../../services/services";
 import "./signup.scss";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const SignupPage = ({ handlePageChange }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-
+  const navigate = useNavigate();
   const { showAlert } = useSnackbar();
 
   const initialValues = {
@@ -103,7 +104,7 @@ const SignupPage = ({ handlePageChange }) => {
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="toggle-password"
                   >
-                    {showPassword ? <PanoramaFishEye /> : <RemoveRedEye />}
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
                 </div>
                 <ErrorMessage
@@ -127,11 +128,7 @@ const SignupPage = ({ handlePageChange }) => {
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     className="toggle-password"
                   >
-                    {showConfirmPassword ? (
-                      <PanoramaFishEye />
-                    ) : (
-                      <RemoveRedEye />
-                    )}
+                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                   </button>
                 </div>
                 <ErrorMessage
