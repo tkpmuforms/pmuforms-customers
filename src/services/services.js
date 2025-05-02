@@ -3,6 +3,9 @@ import axiosInstance from "../context/axiossetup";
 export const createCustomer = (data) =>
   axiosInstance.post(`/api/auth/customer/create`, data);
 
+export const sendVerificationLink = (id) =>
+  axiosInstance.get(`/api/auth/send-email-verification/${id}`);
+
 export const getAllAppointments = async (page, itemsPerPage) => {
   try {
     const response = await axiosInstance.get("/api/appointments/customer", {

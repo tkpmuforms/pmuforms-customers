@@ -6,7 +6,6 @@ import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFilledFormsForAppointment,
   getAppointmentById,
-  getFormsForAppointMentById,
 } from "../../services/services";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
 import "./appointmentsdetails.scss";
@@ -36,58 +35,30 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
 const AppointmentDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [forms, setForms] = useState([]);
   const [appointMent, setAppointMent] = useState({});
   const [filledForms, setFilledForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
-  const artisId = localStorage.getItem("artistId");
 
   useEffect(() => {
-    const fetchAllFilledFormsForAppointment = async () => {
+    const fetchAppointmentAndForms = async () => {
       try {
-        const res = await getAllFilledFormsForAppointment(id);
-        setFilledForms(res?.filledForms || []);
-      } catch (error) {
-        console.error("Error fetching filled appointment:", error);
-      }
-    };
+        const [appointmentRes, filledFormsRes] = await Promise.all([
+          getAppointmentById(id),
+          getAllFilledFormsForAppointment(id),
+        ]);
 
-    const fetchAllFormsForAppointment = async () => {
-      try {
-        const res = await getFormsForAppointMentById(id);
-        const updatedForms = res?.forms.filter((form) =>
-          form.sections.some((section) => !section.skip)
-        );
-        setForms(updatedForms || []);
+        setAppointMent(appointmentRes?.appointment || {});
+        setFilledForms(filledFormsRes?.filledForms || []);
       } catch (error) {
-        console.error("Error fetching forms:", error);
-      }
-    };
-
-    const fetchAppointment = async () => {
-      try {
-        const res = await getAppointmentById(id);
-        setAppointMent(res?.appointment || {});
-      } catch (error) {
-        console.error("Error fetching appointment:", error);
+        console.error("Error fetching appointment or forms:", error);
       }
     };
 
     if (id) {
-      fetchAllFilledFormsForAppointment();
-      fetchAllFormsForAppointment();
-      fetchAppointment();
+      fetchAppointmentAndForms();
     }
-  }, [id, artisId]);
-
-  const getFormStatus = (formId) => {
-    return filledForms.some(
-      (filledForm) => filledForm.formTemplateId === formId
-    )
-      ? "completed"
-      : "incomplete";
-  };
+  }, [id]);
 
   const handleViewForm = (form) => {
     setSelectedForm(form);
@@ -111,7 +82,9 @@ const AppointmentDetails = () => {
           <div className="info-item">
             <span className="info-title">Appointment Date:</span>
             <span className="info-value">
-              {dayjs(appointMent?.date).format("MM-DD-YYYY") || "N/A"}
+              {appointMent?.date
+                ? dayjs(appointMent.date).format("MM-DD-YYYY")
+                : "N/A"}
             </span>
           </div>
           <div className="info-item">
@@ -128,38 +101,29 @@ const AppointmentDetails = () => {
           {filledForms.length > 0 &&
             filledForms.map((filledForm) => (
               <RenderFormsCard
-                key={filledForm.formTemplateId}
+                key={filledForm.id}
                 title={filledForm.title || "Untitled Form"}
-                status="completed"
+                status={
+                  filledForm.status === "completed" ? "completed" : "incomplete"
+                }
                 onViewClick={() => handleViewForm(filledForm.formTemplate)}
+                onEditClick={() =>
+                  navigate(
+                    `/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
+                  )
+                }
               />
             ))}
-
-          {forms.length > 0 &&
-            forms
-              .filter(
-                (form) =>
-                  !filledForms.some(
-                    (filledForm) => filledForm.formTemplateId === form.id
-                  )
-              )
-              .map((form) => (
-                <RenderFormsCard
-                  key={form.id}
-                  title={form.title || "Untitled Form"}
-                  status="incomplete"
-                  onEditClick={() =>
-                    navigate(
-                      `/forms/appointment/${appointMent?.id}?formId=${form.id}`
-                    )
-                  }
-                />
-              ))}
         </div>
       </div>
 
       {isModalOpen && selectedForm && (
-        <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>
+        <Dialog
+          open={isModalOpen}
+          onClose={handleCloseModal}
+          maxWidth="md"
+          fullWidth
+        >
           <div
             style={{
               display: "flex",

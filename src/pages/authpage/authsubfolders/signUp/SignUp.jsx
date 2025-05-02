@@ -1,17 +1,19 @@
+import { PanoramaFishEye, RemoveRedEye } from "@mui/icons-material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useSnackbar } from "../../../../context/SnackbarContext";
 import {
   auth,
   createUserWithEmailAndPassword,
 } from "../../../../firebase/firebase";
-import { createCustomer } from "../../../../services/services";
+import { sendVerificationLink } from "../../../../services/services";
 import "./signup.scss";
 
-const SignupPage = () => {
-  const navigate = useNavigate();
+const SignupPage = ({ handlePageChange }) => {
+  const [showPassword, setShowPassword] = React.useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
+
   const { showAlert } = useSnackbar();
 
   const initialValues = {
@@ -45,15 +47,12 @@ const SignupPage = () => {
         password
       );
 
+      console.log("User created:", userCredential);
       const user = userCredential.user;
 
-      await createCustomer({
-        accessToken: await user.getIdToken(),
-        artistId: artistId,
-      }).then((res) => {
-        localStorage.setItem("userId", res.data?.customer?.id);
-        localStorage.setItem("accessToken", res.data?.access_token);
-        navigate("/dashboard");
+      await sendVerificationLink(user?.uid).then((res) => {
+        handlePageChange("login");
+        showAlert("success", "Account created. Please log in.");
       });
     } catch (error) {
       console.error("Error creating user:", error);
@@ -92,12 +91,21 @@ const SignupPage = () => {
 
               <div className="form-group">
                 <label htmlFor="password">Create Password</label>
-                <Field
-                  type="password"
-                  id="password"
-                  name="password"
-                  placeholder="Enter Password"
-                />
+                <div className="password-input-container">
+                  <Field
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    placeholder="Enter Password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="toggle-password"
+                  >
+                    {showPassword ? <PanoramaFishEye /> : <RemoveRedEye />}
+                  </button>
+                </div>
                 <ErrorMessage
                   name="password"
                   component="div"
@@ -107,12 +115,25 @@ const SignupPage = () => {
 
               <div className="form-group">
                 <label htmlFor="confirmPassword">Confirm Password</label>
-                <Field
-                  type="password"
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  placeholder="Re-enter Password"
-                />
+                <div className="password-input-container">
+                  <Field
+                    type={showConfirmPassword ? "text" : "password"}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    placeholder="Re-enter Password"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="toggle-password"
+                  >
+                    {showConfirmPassword ? (
+                      <PanoramaFishEye />
+                    ) : (
+                      <RemoveRedEye />
+                    )}
+                  </button>
+                </div>
                 <ErrorMessage
                   name="confirmPassword"
                   component="div"

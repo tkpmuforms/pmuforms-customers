@@ -44,6 +44,29 @@
           font-size: 14px;
           box-sizing: border-box;
         }
+
+        .password-input-container {
+          position: relative;
+
+          input {
+            padding-right: 40px; /* Make room for the icon */
+          }
+
+          .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+          }
+        }
       }
 
       .signup-button {
@@ -92,6 +115,10 @@
           font-size: 16px;
           padding: 14px;
         }
+
+        .password-input-container input {
+          padding-right: 45px; /* Adjust for larger screens */
+        }
       }
 
       .signup-button {
@@ -108,4 +135,11 @@
     width: 600px;
     margin: 50px auto;
   }
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-top: 5px;
+  text-align: left;
 }
