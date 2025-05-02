@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import "./verifyEmailForm.scss";
-import useAuth from "../../../../context/useAuth";
 
 const VerifyEmailForm = () => {
   const [code, setCode] = useState(new Array(6).fill(""));
   const [timeLeft, setTimeLeft] = useState(12);
-  const { user } = useAuth();
 
   const handleChange = (element, index) => {
     if (isNaN(element.value)) return;
@@ -39,7 +37,7 @@ const VerifyEmailForm = () => {
       <div className="verify-email-container">
         <h2>Verify your email address</h2>
         <p className="subtext">
-          Enter the 6-digit code that was sent to <strong>{user?.email}</strong>
+          Enter the 6-digit code that was sent to <strong>{""}</strong>
         </p>
 
         <form onSubmit={handleSubmit} className="verify-email-form">

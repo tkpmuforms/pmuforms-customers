@@ -23,13 +23,23 @@ dayjs.extend(timezone);
 //calcualte age from date of birth
 const fieldToUserInfoMapping = {
   client_name: ["client_name"],
-  // signature: ["client_name"],
+  "client-name": ["client_name"],
+
   "AEA66A04-E": ["date_of_birth"],
   date_of_birth: ["date_of_birth"],
+  "date-of-birth": ["date_of_birth"],
+
   home_address: ["home_address"],
+  "home-address": ["home_address"],
+
   emergency_contact_name: ["emergency_contact_name"],
+  "emergency-contact-name": ["emergency_contact_name"],
+
   emergency_contact_phone: ["emergency_contact_phone"],
+  "emergency-contact-phone": ["emergency_contact_phone"],
+
   home_phone: ["cell_phone"],
+  "home-phone": ["cell_phone"],
 };
 
 const DynamicForms = () => {
@@ -91,6 +101,7 @@ const DynamicForms = () => {
     fetchFilledForms();
   }, [appointmentId, businessName]);
 
+  // Updated useEffect for handling auto-filling forms
   useEffect(() => {
     if (!forms.length) return;
 
@@ -101,31 +112,42 @@ const DynamicForms = () => {
       (f) => f?.formTemplateId === currentForm.id
     );
 
-    if (filledForm) {
+    if (filledForm && Object.keys(filledForm?.data || {}).length > 0) {
       setFormResponse((prev) => ({
         ...prev,
-        [currentForm.id]: filledForm?.data || {},
+        [currentForm.id]: filledForm.data,
       }));
-    } else if (
-      currentForm?.sections.some((section) => section.isClientInformation)
-    ) {
+      return;
+    }
+
+    if (currentForm?.sections.some((section) => section.isClientInformation)) {
       const autofillResponse = {};
       const autofilledFieldIds = new Set();
 
-      currentForm?.sections.forEach((section) => {
+      currentForm.sections.forEach((section) => {
         if (section.isClientInformation) {
           section.data.forEach((field) => {
             const userInfoKeys = fieldToUserInfoMapping[field.id];
-
             if (userInfoKeys) {
               userInfoKeys.forEach((key) => {
                 if (user?.info?.[key]) {
                   let value = user.info[key];
+
+                  // Format date fields appropriately
                   if (
-                    field.id === "date_of_birth" ||
-                    field.id === "AEA66A04-E"
+                    field.id === "date-of-birth" ||
+                    field.id === "date_of_birth"
                   ) {
-                    value = dayjs(value).format("MM-DD-YYYY");
+                    value = dayjs(value).format("YYYY-MM-DD");
+                  }
+
+                  if (
+                    field.id === "todays-date" ||
+                    field.id === "todays_date" ||
+                    field.id === "date_of_signing" ||
+                    field.id === "date-of-signing"
+                  ) {
+                    value = dayjs().format("YYYY-MM-DD");
                   }
 
                   autofillResponse[field.id] = value;
@@ -133,44 +155,48 @@ const DynamicForms = () => {
                 }
               });
             }
-
-            // Automatically calculate age from date of birth
-            if (
-              autofillResponse["date_of_birth"] ||
-              autofillResponse["AEA66A04-E"]
-            ) {
-              const birthDate = dayjs(
-                autofillResponse["date_of_birth"] ||
-                  autofillResponse["AEA66A04-E"]
-              );
-              const today = dayjs();
-              const age = today.diff(birthDate, "year");
-
-              autofillResponse["age"] = age.toString();
-              autofilledFieldIds.add("age");
-            }
           });
         }
       });
+      const dob =
+        autofillResponse["date-of-birth"] || autofillResponse["date_of_birth"];
+      if (dob) {
+        const age = dayjs().diff(dayjs(dob), "year");
+        autofillResponse["age"] = age.toString();
+        autofilledFieldIds.add("age");
+      }
+      if (
+        currentForm.sections.some((section) =>
+          section.data.some((f) => f.id === "date_of_signing")
+        )
+      ) {
+        autofillResponse["date_of_signing"] = dayjs().format("YYYY-MM-DD");
+        autofilledFieldIds.add("date_of_signing");
+      } else if (
+        currentForm.sections.some((section) =>
+          section.data.some((f) => f.id === "date-of-signing")
+        )
+      ) {
+        autofillResponse["date-of-signing"] = dayjs().format("YYYY-MM-DD");
+        autofilledFieldIds.add("date-of-signing");
+      }
 
-      setFormResponse((prev) => ({
-        ...prev,
-        [currentForm.id]: autofillResponse,
-      }));
-      setAutofilledFields(autofilledFieldIds);
+      if (Object.keys(autofillResponse).length > 0) {
+        setFormResponse((prev) => ({
+          ...prev,
+          [currentForm.id]: {
+            ...prev[currentForm.id],
+            ...autofillResponse,
+          },
+        }));
+        setAutofilledFields(autofilledFieldIds);
+      }
     }
   }, [forms, filledForms, currentTab, user]);
 
   const handleInputChange = (currentForm, fieldId, value) => {
     if (!currentForm) return;
-    // console.log(
-    //   currentForm.id,
-    //   currentForm,
-    //   "fieldId",
-    //   fieldId,
-    //   "value",
-    //   value
-    // );
+
     setFormResponse((prev) => ({
       ...prev,
       [currentForm]: {
@@ -188,9 +214,8 @@ const DynamicForms = () => {
       maxWidthOrHeight: 500,
       useWebWorker: true,
     };
-    console.log("file", file);
+
     const compressedFile = await imageCompression(file, options);
-    console.log("compressedFile", compressedFile);
 
     try {
       const storageRef = ref(storage, `images/${user.uid}/${file.name}`);

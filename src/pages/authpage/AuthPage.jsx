@@ -22,7 +22,11 @@ const AuthPage = () => {
     <>
       <Navbar CreatenewClick={() => handlePageChange("signup")} />
       <div className="auth-container">
-        {page === "login" ? <LoginPage /> : <SignupPage />}
+        {page === "login" ? (
+          <LoginPage />
+        ) : (
+          <SignupPage handlePageChange={handlePageChange} />
+        )}
         <div className="switch-auth">
           {page === "login" ? (
             <p>
