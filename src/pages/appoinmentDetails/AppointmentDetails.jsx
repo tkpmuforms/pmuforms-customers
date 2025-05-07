@@ -1,4 +1,4 @@
-import { Dialog, Typography } from "@mui/material";
+import { CircularProgress, Dialog, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -39,8 +39,10 @@ const AppointmentDetails = () => {
   const [filledForms, setFilledForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const fetchAppointmentAndForms = async () => {
       try {
         const [appointmentRes, filledFormsRes] = await Promise.all([
@@ -50,8 +52,10 @@ const AppointmentDetails = () => {
 
         setAppointMent(appointmentRes?.appointment || {});
         setFilledForms(filledFormsRes?.filledForms || []);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching appointment or forms:", error);
+        setLoading(false);
       }
     };
 
@@ -69,6 +73,19 @@ const AppointmentDetails = () => {
     setIsModalOpen(false);
     setSelectedForm(null);
   };
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress size={100} color="#8e2d8e" />
+      </div>
+    );
+  }
 
   return (
     <div>
