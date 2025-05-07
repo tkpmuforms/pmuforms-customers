@@ -18,16 +18,19 @@ const AuthenticatedNavbar = () => {
   const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || true);
 
   const toggleMobileMenu = () => {
+    handleDropdownClose(); // close avatar menu if open
     setMobileMenuVisible(!mobileMenuVisible);
   };
-
   // Close menu on outside click
   const handleClickOutside = (event) => {
     if (
       mobileMenuRef.current &&
-      !mobileMenuRef.current.contains(event.target)
+      !mobileMenuRef.current.contains(event.target) &&
+      !event.target.closest(".hamburger-menu") &&
+      !event.target.closest(".avatar")
     ) {
       setMobileMenuVisible(false);
+      setAnchorEl(null);
     }
   };
 
@@ -38,6 +41,7 @@ const AuthenticatedNavbar = () => {
   };
 
   const handleAvatarClick = (event) => {
+    setMobileMenuVisible(false); // close mobile menu
     setAnchorEl(event.currentTarget);
   };
 

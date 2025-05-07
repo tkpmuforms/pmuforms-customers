@@ -16,7 +16,7 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
       <div className="form-info">
         <h4>{title}</h4>
         <span className={`status ${status}`}>
-          {status === "completed" ? "Completed" : "Pending"}
+          {status === "completed" || "signed" ? "Completed" : "Pending"}
         </span>
       </div>
       <div className="form-actions">
