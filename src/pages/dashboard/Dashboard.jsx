@@ -75,12 +75,11 @@ const Dashboard = () => {
     const fetchData = async () => {
       setLoading(true); // Start loader
       try {
-        const [businessRes, appointmentsRes, customerRes] =
-          await Promise.all([
-            artistId ? getArtistById(artistId) : Promise.resolve(null),
-            getAllAppointments(),
-            getAuthenticatedUser(),
-          ]);
+        const [businessRes, appointmentsRes, customerRes] = await Promise.all([
+          artistId ? getArtistById(artistId) : Promise.resolve(null),
+          getAllAppointments(),
+          getAuthenticatedUser(),
+        ]);
 
         if (artistId && !businessRes?.artist) {
           console.error("Error fetching artist, logging out...");
@@ -100,7 +99,8 @@ const Dashboard = () => {
             ...appointment,
             filledFormsCount:
               appointment?.filledForms?.filter(
-                (form) => form.status === "completed"
+                (form) =>
+                  form.status === "completed" || form.status === "signed"
               ).length || 0,
           })
         );
@@ -117,7 +117,6 @@ const Dashboard = () => {
 
     fetchData();
   }, [artistId, logout]);
-
 
   const removeAppointment = async (appointmentId) => {
     try {
