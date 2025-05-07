@@ -23,6 +23,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   const [initialValues, setInitialValues] = useState({
     firstName: "",
     lastName: "",
+    email: "", // Added email field to initial values
     dob: "",
     homeAddress: "",
     primaryPhone: "",
@@ -42,6 +43,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     referralSource: Yup.string(),
     emergencyContactName: Yup.string(),
     emergencyContactPhone: Yup.string(),
+    // Email is not part of validation schema as it's disabled
   });
 
   useEffect(() => {
@@ -64,6 +66,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
           setInitialValues({
             firstName: client_name.split(" ")[0] || "",
             lastName: client_name.split(" ")[1] || "",
+            email: user?.email || "", // Set email from user object
             dob: date_of_birth.split("T")[0] || "",
             homeAddress: home_address || "",
             primaryPhone: cell_phone || "",
@@ -84,7 +87,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     };
 
     fetchInfo();
-  }, [showAlert]);
+  }, [showAlert, user?.email]);
 
   const handleImageUpload = async (file) => {
     try {
@@ -116,7 +119,10 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const data = { ...values, avatarUrl }; // Include avatarUrl in the form data
+      // Filter out email field from values to exclude it from backend update
+      const { email, ...dataToSubmit } = values;
+
+      const data = { ...dataToSubmit, avatarUrl }; // Include avatarUrl in the form data, but exclude email
       SavePersonalInformation(data).then((res) => {
         setSubmitting(false);
         dispatch(setUser(res?.customer));
@@ -129,7 +135,14 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     }
   };
 
-  const CustomField = ({ label, name, type, placeholder, optional }) => (
+  const CustomField = ({
+    label,
+    name,
+    type,
+    placeholder,
+    optional,
+    disabled,
+  }) => (
     <div className="form-group">
       <label htmlFor={name}>
         {label} {optional && <span className="optional">(Optional)</span>}
@@ -140,6 +153,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
         name={name}
         placeholder={placeholder}
         className="form-field"
+        disabled={disabled}
       />
       <ErrorMessage name={name} component="div" className="error" />
     </div>
@@ -247,6 +261,16 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                       placeholder="Enter your last name"
                     />
                   </div>
+
+                  {/* Email field - disabled and styled to indicate it's not editable */}
+                  <CustomField
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    placeholder="Your email address"
+                    disabled={true}
+                  />
+
                   <CustomField
                     label="Date of Birth"
                     name="dob"

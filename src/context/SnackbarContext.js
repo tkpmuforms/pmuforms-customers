@@ -25,11 +25,12 @@ export const SnackbarProvider = ({ children }) => {
         autoHideDuration={3000}
         onClose={() => setAlert({ ...alert, open: false })}
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        sx={{ zIndex: 9999 }}
       >
         <Alert
           onClose={() => setAlert({ ...alert, open: false })}
           severity={alert.type}
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", zIndex: 9999 }}
         >
           {alert.message}
         </Alert>
