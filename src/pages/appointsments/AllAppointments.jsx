@@ -85,7 +85,7 @@ const AllAppointments = () => {
           ...appointment,
           filledFormsCount:
             appointment.filledForms?.filter(
-              (form) => form.status === "completed"
+              (form) => form.status === "completed" || form.status === "signed"
             ).length || 0,
         })
       );
