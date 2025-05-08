@@ -3,8 +3,7 @@ import { createBrowserHistory } from "history";
 
 const history = createBrowserHistory();
 
-const baseURL = "https://admin.pmuforms.com";
-// const baseURL = "http://localhost:3000";
+const baseURL = process.env.REACT_APP_BACKEND_API;
 
 const axiosInstance = axios.create({
   baseURL,
