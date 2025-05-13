@@ -16,7 +16,9 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
       <div className="form-info">
         <h4>{title}</h4>
         <span className={`status ${status}`}>
-          {status === "completed" || "signed" ? "Completed" : "Pending"}
+          {status === "completed" || status === "signed"
+            ? "Completed"
+            : "Pending"}
         </span>
       </div>
       <div className="form-actions">
@@ -132,7 +134,7 @@ const AppointmentDetails = () => {
                 onViewClick={() => handleViewForm(filledForm.formTemplate)}
                 onEditClick={() =>
                   navigate(
-                    `/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
+                    `/customer/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
                   )
                 }
               />

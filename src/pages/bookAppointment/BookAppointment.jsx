@@ -81,7 +81,7 @@ const BookAppointment = () => {
       setLoading(true);
       // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
-        navigate(`/forms/appointment/${res?.appointment?.id}`);
+        navigate(`/customer/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
       showAlert("error", "Error creating the appointment");

@@ -49,7 +49,7 @@ const FilledForms = () => {
   }, [id]);
 
   const handleCompleteForm = () => {
-    navigate(`/appointments`);
+    navigate(`/customer/appointments`);
   };
 
   const handleCloseModal = () => {

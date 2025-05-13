@@ -184,7 +184,9 @@ const AllAppointments = () => {
                 date={appointment.date}
                 formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}
-                ViewClick={() => navigate(`/appointments/${appointment.id}`)}
+                ViewClick={() =>
+                  navigate(`/customer/appointments/${appointment.id}`)
+                }
                 DeleteClick={() => removeAppointment(appointment.id)}
               />
             ))
@@ -193,7 +195,9 @@ const AllAppointments = () => {
               <NoAppointmentsSvg />
               <p>You have no upcoming appointments</p>
               <BookAnAppointmentButtonSvg
-                onClick={() => navigate(`/book-appointments/${artistId}`)}
+                onClick={() =>
+                  navigate(`/customer/book-appointments/${artistId}`)
+                }
               />
             </div>
           )}
