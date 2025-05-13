@@ -21,6 +21,7 @@ import {
 import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
 import "./dashboard.scss";
 import { useSnackbar } from "../../context/SnackbarContext";
+import SearchPage from "./SearchPage";
 
 const RenderAppointmentCard = ({
   title,
@@ -136,6 +137,9 @@ const Dashboard = () => {
       <PersonalDetailsForm onSubmitClick={() => setShowPersonalInfo(false)} />
     );
   }
+  if (!artistId) {
+    return <SearchPage />;
+  }
 
   const hasIncompleteForms = appointments.some(
     (appointment) => !appointment.allFormsCompleted
@@ -171,7 +175,7 @@ const Dashboard = () => {
         <div className="actions-section">
           <div
             className="action-card"
-            onClick={() => navigate(`/book-appointments/${artistId}`)}
+            onClick={() => navigate(`/customer/book-appointments/${artistId}`)}
           >
             <BookAnAppointmentSvg />
             <div>
@@ -184,7 +188,7 @@ const Dashboard = () => {
           </div>
           <div
             className="action-card"
-            onClick={() => navigate("/appointments")}
+            onClick={() => navigate("/customer/appointments")}
           >
             <ViewPastAppointmentsSvg />
             <div>
@@ -210,7 +214,7 @@ const Dashboard = () => {
         <section className="appointments-section">
           <h3>Upcoming Appointments</h3>
           <div className="see-all-appointments">
-            <p onClick={() => navigate("/appointments")}>
+            <p onClick={() => navigate("/customer/appointments")}>
               See All Appointments
             </p>
           </div>
@@ -238,7 +242,7 @@ const Dashboard = () => {
                     formsFilled={appointment?.filledFormsCount || 0}
                     status={appointment?.allFormsCompleted}
                     ViewClick={() =>
-                      navigate(`/appointments/${appointment.id}`)
+                      navigate(`/customer/appointments/${appointment.id}`)
                     }
                     DeleteClick={() => removeAppointment(appointment.id)}
                   />
@@ -248,7 +252,9 @@ const Dashboard = () => {
                 <NoAppointmentsSvg />
                 <p>You have no upcoming appointments</p>
                 <BookAnAppointmentButtonSvg
-                  onClick={() => navigate(`/book-appointments/${artistId}`)}
+                  onClick={() =>
+                    navigate(`/customer/book-appointments/${artistId}`)
+                  }
                   style={{ cursor: "pointer", marginTop: "1rem" }}
                 />
               </div>

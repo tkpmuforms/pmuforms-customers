@@ -22,7 +22,7 @@ const AppWrapper = () => {
 
       // Add this condition to redirect to dashboard when authenticated
       if (isAuthenticated && location.pathname === "/") {
-        navigate("/dashboard");
+        navigate("/customer/dashboard");
       }
     }
   }, [location, isAuthenticated]);

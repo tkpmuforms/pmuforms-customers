@@ -94,7 +94,7 @@ const BookAppointment = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
-        <div className="go-back" onClick={() => navigate("/dashboard")}>
+        <div className="go-back" onClick={() => navigate(-1)}>
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>

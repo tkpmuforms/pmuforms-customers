@@ -176,3 +176,30 @@ export const sendMessage = async (data) => {
     throw error;
   }
 };
+
+export const searchArtist = async (name) => {
+  try {
+    const response = await axiosInstance.get("/api/artists/search", {
+      params: { name },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching for artists:", error);
+    throw error;
+  }
+};
+
+export const switchArtist = async (artistId) => {
+  try {
+    const response = await axiosInstance.post(
+      "/api/auth/customer/switch-context",
+      {
+        artistId,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error switching artist:", error);
+    throw error;
+  }
+};

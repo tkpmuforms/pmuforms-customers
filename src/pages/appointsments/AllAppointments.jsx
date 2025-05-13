@@ -131,7 +131,10 @@ const AllAppointments = () => {
 
   return (
     <div className="appointments">
-      <div className="breadcrumb" onClick={() => navigate("/dashboard")}>
+      <div
+        className="breadcrumb"
+        onClick={() => navigate("/customer/dashboard")}
+      >
         <GoBackSvg />
         <p>Go back to dashboard</p>
       </div>

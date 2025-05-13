@@ -90,7 +90,10 @@ const AppointmentDetails = () => {
   return (
     <div>
       <div className="form">
-        <div className="go-back" onClick={() => navigate("/dashboard")}>
+        <div
+          className="go-back"
+          onClick={() => navigate("/customer/dashboard")}
+        >
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>
