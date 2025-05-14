@@ -81,7 +81,7 @@ const BookAppointment = () => {
       setLoading(true);
       // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
-        navigate(`/forms/appointment/${res?.appointment?.id}`);
+        navigate(`/customer/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
       showAlert("error", "Error creating the appointment");
@@ -94,7 +94,7 @@ const BookAppointment = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
-        <div className="go-back" onClick={() => navigate("/dashboard")}>
+        <div className="go-back" onClick={() => navigate(-1)}>
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>

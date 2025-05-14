@@ -66,7 +66,7 @@ const AuthenticatedNavbar = () => {
       <div className="navlink">
         <div
           className="authLogo"
-          onClick={() => handleNavigation("/dashboard")}
+          onClick={() => handleNavigation("/customer/dashboard")}
         >
           {USE_COMPANY_LOGO ? (
             <LogoSvg />
@@ -87,8 +87,8 @@ const AuthenticatedNavbar = () => {
           <ul>
             <li>
               <Link
-                to="/dashboard"
-                onClick={() => handleNavigation("/dashboard")}
+                to="/customer/dashboard"
+                onClick={() => handleNavigation("/customer/dashboard")}
               >
                 Home
               </Link>

@@ -273,7 +273,7 @@ const DynamicForms = () => {
         setCurrentTab(currentTab + 1);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        navigate(`/filled-forms/appointment/${appointmentId}`);
+        navigate(`/customer/filled-forms/appointment/${appointmentId}`);
       }
     } catch (error) {
       console.error("Error submitting form:", error);

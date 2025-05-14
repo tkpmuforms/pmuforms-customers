@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
     dispatch(setUser(user));
     dispatch(setAuthenticated(true));
     setAuthHeader(token);
-    navigate("/dashboard");
+    navigate("/customer/dashboard");
   };
 
   const handleAuthFail = () => {

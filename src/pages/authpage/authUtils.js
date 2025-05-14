@@ -31,7 +31,7 @@ export const HandleSocialLogin = async (
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
       handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-      navigate("/dashboard");
+      navigate("/customer/dashboard");
     });
   } catch (error) {
     console.error("Social login error:", error);
@@ -58,10 +58,10 @@ export const SignInSuccessWithAuthResult = async (
       localStorage.setItem("userId", res.data?.customer?.id);
       localStorage.setItem("accessToken", res.data?.access_token);
       handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-      navigate("/dashboard");
+      navigate(`/customer/dashboard`);
     });
 
-    navigate("/dashboard");
+    navigate("/customer/dashboard");
   } catch (error) {
     console.error("Error during login callback:", error);
 

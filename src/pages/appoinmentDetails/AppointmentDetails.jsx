@@ -1,4 +1,4 @@
-import { Dialog, Typography } from "@mui/material";
+import { CircularProgress, Dialog, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
@@ -16,7 +16,9 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
       <div className="form-info">
         <h4>{title}</h4>
         <span className={`status ${status}`}>
-          {status === "completed" || "signed" ? "Completed" : "Pending"}
+          {status === "completed" || status === "signed"
+            ? "Completed"
+            : "Pending"}
         </span>
       </div>
       <div className="form-actions">
@@ -39,8 +41,10 @@ const AppointmentDetails = () => {
   const [filledForms, setFilledForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    setLoading(true);
     const fetchAppointmentAndForms = async () => {
       try {
         const [appointmentRes, filledFormsRes] = await Promise.all([
@@ -50,8 +54,10 @@ const AppointmentDetails = () => {
 
         setAppointMent(appointmentRes?.appointment || {});
         setFilledForms(filledFormsRes?.filledForms || []);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching appointment or forms:", error);
+        setLoading(false);
       }
     };
 
@@ -69,11 +75,27 @@ const AppointmentDetails = () => {
     setIsModalOpen(false);
     setSelectedForm(null);
   };
+  if (loading) {
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <CircularProgress size={100} color="#8e2d8e" />
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="form">
-        <div className="go-back" onClick={() => navigate("/dashboard")}>
+        <div
+          className="go-back"
+          onClick={() => navigate("/customer/dashboard")}
+        >
           <GoBackSvg />
           <p>Go back to dashboard</p>
         </div>
@@ -112,7 +134,7 @@ const AppointmentDetails = () => {
                 onViewClick={() => handleViewForm(filledForm.formTemplate)}
                 onEditClick={() =>
                   navigate(
-                    `/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
+                    `/customer/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
                   )
                 }
               />

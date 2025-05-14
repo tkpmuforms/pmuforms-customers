@@ -16,7 +16,7 @@ const FormInputTypes = {
 
 export const renderFormFields = (
   fields,
-  formTemplateId, 
+  formTemplateId,
   formResponse,
   requiredFieldsOnSubmit,
   autofilledFields,
@@ -80,7 +80,7 @@ export const renderFormFields = (
                 onChange={(e) =>
                   handleInputChange(formTemplateId, field.id, e.target.checked)
                 }
-                disabled={isAutofilled}
+                // disabled={isAutofilled}
               />
               {field.title}
               {isRequired && <span className="required-star">*</span>}
@@ -128,50 +128,54 @@ export const renderFormFields = (
         );
       case FormInputTypes.IMAGE:
         const imageInputKey = `${formTemplateId}_${field.id}_${Date.now()}`;
-      const imageUploaded = !!fieldValue;
-  return (
-    <div key={field.id}>
-      <label>
-        {field.title}
-        {isRequired && <span className="required-star">*</span>}
-      </label>
+        const imageUploaded = !!fieldValue;
+        return (
+          <div key={field.id}>
+            <label>
+              {field.title}
+              {isRequired && <span className="required-star">*</span>}
+            </label>
 
-      {imageUploaded ? (
-        <div>
-          <div className="image-preview">
-            <img
-              src={fieldValue}
-              alt="Preview"
-              style={{
-                maxWidth: "100%",
-                maxHeight: "150px",
-                objectFit: "contain",
-                marginTop: "10px",
-              }}
-            />
+            {imageUploaded ? (
+              <div>
+                <div className="image-preview">
+                  <img
+                    src={fieldValue}
+                    alt="Preview"
+                    style={{
+                      maxWidth: "100%",
+                      maxHeight: "150px",
+                      objectFit: "contain",
+                      marginTop: "10px",
+                    }}
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    handleInputChange(formTemplateId, field.id, "")
+                  }
+                  style={{
+                    marginTop: "10px",
+                    backgroundColor: "#eee",
+                    color: "#333",
+                  }}
+                >
+                  Replace Image
+                </button>
+              </div>
+            ) : (
+              <input
+                key={imageInputKey}
+                type="file"
+                accept="image/*"
+                onChange={(e) =>
+                  handleImageChange(formTemplateId, field.id, e.target.files[0])
+                }
+              />
+            )}
           </div>
-          <button
-            type="button"
-            onClick={() =>
-              handleInputChange(formTemplateId, field.id, "") 
-            }
-            style={{ marginTop: "10px", backgroundColor: "#eee", color: "#333" }}
-          >
-            Replace Image
-          </button>
-        </div>
-      ) : (
-        <input
-          key={imageInputKey}
-          type="file"
-          accept="image/*"
-          onChange={(e) =>
-            handleImageChange(formTemplateId, field.id, e.target.files[0])
-          }
-        />
-      )}
-    </div>
-  );
+        );
       case FormInputTypes.NUMBER:
         return (
           <div key={field.id}>
@@ -182,7 +186,7 @@ export const renderFormFields = (
                 type="number"
                 value={fieldValue}
                 {...commonProps}
-                disabled={isAutofilled}
+                // disabled={isAutofilled}
               />
             </label>
           </div>
@@ -197,7 +201,7 @@ export const renderFormFields = (
                 type="text"
                 value={fieldValue}
                 {...commonProps}
-                disabled={isAutofilled}
+                // disabled={isAutofilled}
               />
             </label>
           </div>
