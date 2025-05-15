@@ -12,33 +12,38 @@ export const HandleSocialLogin = async (
     showAlert("error", "Authentication provider is not configured");
     return;
   }
+
   try {
     const result = await signInWithPopup(auth, provider);
-    if (!result) {
-      throw new Error("Authentication failed. No result received.");
-    }
-    const user = result.user;
+    if (!result) throw new Error("Authentication failed. No result received.");
 
+    const user = result.user;
     const userToken = await user.getIdToken();
-    const artistId = localStorage.getItem("artistId");
+    const businessUri = localStorage.getItem("businessUri");
+
     localStorage.setItem("userEmail", user.email);
     localStorage.setItem("userName", user.displayName);
 
-    await createCustomer({
-      accessToken: userToken,
-      artistId: artistId,
-    }).then((res) => {
-      localStorage.setItem("userId", res.data?.customer?.id);
-      localStorage.setItem("accessToken", res.data?.access_token);
-      handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-      navigate("/customer/dashboard");
-    });
+    const payload = businessUri
+      ? { accessToken: userToken, artistId: businessUri }
+      : { accessToken: userToken, artistId: "" };
+
+    const res = await createCustomer(payload);
+
+    localStorage.setItem("userId", res.data?.customer?.id);
+    localStorage.setItem("accessToken", res.data?.access_token);
+    handleAuthSuccess(res?.data?.customer, res.data?.access_token);
+
+    if (businessUri) {
+      navigate(`/customer/dashboard/${businessUri}`);
+    } else {
+      navigate("/customer/dashboard"); // fallback if no artistId
+    }
   } catch (error) {
     console.error("Social login error:", error);
-    showAlert("error", `Login failed! Try again later.`);
+    showAlert("error", "Login failed! Try again later.");
   }
 };
-
 export const SignInSuccessWithAuthResult = async (
   authResult,
   navigate,
@@ -47,24 +52,29 @@ export const SignInSuccessWithAuthResult = async (
 ) => {
   const user = authResult.user;
   const userToken = await user.getIdToken();
-  const artistId = localStorage.getItem("artistId");
+  const businessUri = localStorage.getItem("businessUri");
+
   try {
     localStorage.setItem("userEmail", user.email);
     localStorage.setItem("userName", user.displayName);
-    await createCustomer({
-      accessToken: userToken,
-      artistId: artistId,
-    }).then((res) => {
-      localStorage.setItem("userId", res.data?.customer?.id);
-      localStorage.setItem("accessToken", res.data?.access_token);
-      handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-      navigate(`/customer/dashboard`);
-    });
 
-    navigate("/customer/dashboard");
+    const payload = businessUri
+      ? { accessToken: userToken, artistId: businessUri }
+      : { accessToken: userToken, artistId: "" };
+
+    const res = await createCustomer(payload);
+
+    localStorage.setItem("userId", res.data?.customer?.id);
+    localStorage.setItem("accessToken", res.data?.access_token);
+    handleAuthSuccess(res?.data?.customer, res.data?.access_token);
+
+    if (businessUri) {
+      navigate(`/customer/dashboard/${businessUri}`);
+    } else {
+      navigate("/customer/dashboard");
+    }
   } catch (error) {
     console.error("Error during login callback:", error);
-
-    showAlert("error", `Login failed! Try again later.`);
+    showAlert("error", "Login failed! Try again later.");
   }
 };

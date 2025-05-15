@@ -27,7 +27,7 @@ export const nonAuthRoutes = [
     breadcrumbs: [],
   },
   {
-    path: "/#/:artistId",
+    path: "/#/:businessUri",
     element: <AuthPage />,
     breadcrumbs: [],
   },
@@ -68,7 +68,7 @@ export const authorizedRoutes = [
     breadcrumbs: ["Dashboard"],
   },
   {
-    path: "/customer/dashboard/:artistId",
+    path: "/customer/dashboard/:businessUri",
     element: <Dashboard />,
     breadcrumbs: ["Dashboard", "Artist"],
   },

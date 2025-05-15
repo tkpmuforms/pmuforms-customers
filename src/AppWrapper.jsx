@@ -11,26 +11,21 @@ const AppWrapper = () => {
   useEffect(() => {
     const { hash } = location;
 
-    let artistId = null;
-
+    let businessUri = null;
     if (hash.startsWith("#/")) {
-      artistId = hash.substring(2);
+      const raw = hash.substring(2).trim();
+      if (raw && raw !== "null" && raw !== "undefined") {
+        businessUri = raw;
+        localStorage.setItem("businessUri", businessUri);
+      }
     }
 
-    if (artistId) {
-      localStorage.setItem("artistId", artistId);
-
-      if (isAuthenticated && location.pathname === "/") {
-        navigate(`/customer/dashboard/${artistId}`);
-      }
+    if (businessUri && isAuthenticated && location.pathname === "/") {
+      navigate(`/customer/dashboard/${businessUri}`);
     }
   }, [location, isAuthenticated]);
 
-  return (
-    <>
-      <RouteWrapper />
-    </>
-  );
+  return <RouteWrapper />;
 };
 
 export default AppWrapper;

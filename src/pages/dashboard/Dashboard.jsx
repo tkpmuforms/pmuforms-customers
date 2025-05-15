@@ -58,7 +58,8 @@ const RenderAppointmentCard = ({
 
 const Dashboard = () => {
   const params = useParams();
-  const artistId = params.artistId || localStorage.getItem("artistId");
+  const artistId = localStorage.getItem("artistId");
+  const businessUri = params.businessUri || localStorage.getItem("businessUri");
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
@@ -77,12 +78,12 @@ const Dashboard = () => {
       setLoading(true); // Start loader
       try {
         const [businessRes, appointmentsRes, customerRes] = await Promise.all([
-          artistId ? getArtistById(artistId) : Promise.resolve(null),
+          businessUri ? getArtistById(businessUri) : Promise.resolve(null),
           getAllAppointments(),
           getAuthenticatedUser(),
         ]);
 
-        if (artistId && !businessRes?.artist) {
+        if (businessUri && !businessRes?.artist) {
           console.error("Error fetching artist, logging out...");
           logout();
           return;
@@ -92,6 +93,7 @@ const Dashboard = () => {
         if (businessRes?.artist?.businessName) {
           localStorage.setItem("businessName", businessRes.artist.businessName);
           setBusinessName(businessRes.artist.businessName);
+          localStorage.setItem("artistId", businessRes.artist.userId);
         }
 
         // Update appointments
@@ -117,7 +119,7 @@ const Dashboard = () => {
     };
 
     fetchData();
-  }, [artistId, logout]);
+  }, [businessUri, logout]);
 
   const removeAppointment = async (appointmentId) => {
     try {
@@ -137,7 +139,7 @@ const Dashboard = () => {
       <PersonalDetailsForm onSubmitClick={() => setShowPersonalInfo(false)} />
     );
   }
-  if (!artistId) {
+  if (!businessUri) {
     return <SearchPage />;
   }
 
