@@ -26,7 +26,6 @@ export const AuthProvider = ({ children }) => {
     dispatch(setUser(user));
     dispatch(setAuthenticated(true));
     setAuthHeader(token);
-    navigate("/customer/dashboard");
   };
 
   const handleAuthFail = () => {
@@ -40,7 +39,10 @@ export const AuthProvider = ({ children }) => {
     if (token && isValidToken(token)) {
       setAuthHeader(token);
     } else {
-      const artistId = localStorage.getItem("artistId");
+      const rawUri = localStorage.getItem("businessUri");
+      const businessUri =
+        rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
+
       dispatch(setLoading(false));
       dispatch(setAuthenticated(false));
       dispatch(setUser(null));
@@ -54,8 +56,10 @@ export const AuthProvider = ({ children }) => {
 
       if (publicPaths.includes(currentPath)) {
         navigate(currentPath);
+      } else if (businessUri) {
+        navigate(`/#/${businessUri}`);
       } else {
-        navigate(`/#/${artistId}`);
+        navigate("/");
       }
     }
   }, [dispatch]);
@@ -65,9 +69,19 @@ export const AuthProvider = ({ children }) => {
     dispatch(setLoading(false));
     dispatch(setAuthenticated(false));
     dispatch(setUser(null));
-    const artistId = localStorage.getItem("artistId");
+
+    const rawUri = localStorage.getItem("businessUri");
+    const businessUri =
+      rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
+
     localStorage.clear();
-    navigate(`/#/${artistId}`);
+
+    if (businessUri) {
+      localStorage.setItem("businessUri", businessUri); // restore valid URI after clearing
+      navigate(`/#/${businessUri}`);
+    } else {
+      navigate("/");
+    }
   };
 
   useEffect(() => {

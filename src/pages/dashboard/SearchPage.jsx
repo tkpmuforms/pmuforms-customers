@@ -51,7 +51,7 @@ const SearchPage = () => {
       localStorage.setItem("userId", res.customer?.id);
       localStorage.setItem("accessToken", res.access_token);
       handleAuthSuccess(res?.customer, res.access_token);
-      navigate(`/customer/dashboard/${selectedArtist.userId}`);
+      navigate(`/customer/dashboard/${selectedArtist.businessUri}`);
     } catch (error) {
       console.error("Failed to switch artist:", error);
       showAlert("error", "Failed to switch artist. Please try again.");
