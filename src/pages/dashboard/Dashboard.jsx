@@ -27,6 +27,7 @@ const RenderAppointmentCard = ({
   title,
   date,
   formsFilled,
+  signed,
   status,
   ViewClick,
   DeleteClick,
@@ -50,7 +51,7 @@ const RenderAppointmentCard = ({
       </div>
       <div className="appointment-actions">
         <ViewFormButtonSvg onClick={ViewClick} />
-        <DeleteAppointmentButtonSvg onClick={DeleteClick} />
+        {!signed && <DeleteAppointmentButtonSvg onClick={DeleteClick} />}
       </div>
     </div>
   );
@@ -233,6 +234,7 @@ const Dashboard = () => {
               </div>
             ) : appointments?.length > 0 ? (
               appointments
+                .reverse()
                 .slice(0, 3)
                 .map((appointment, index) => (
                   <RenderAppointmentCard
@@ -241,6 +243,7 @@ const Dashboard = () => {
                       .map((service) => service.service)
                       .join(", ")}
                     date={appointment?.date}
+                    signed={appointment?.signed}
                     formsFilled={appointment?.filledFormsCount || 0}
                     status={appointment?.allFormsCompleted}
                     ViewClick={() =>
