@@ -19,6 +19,7 @@ const RenderAppointmentCard = ({
   date,
   formsFilled,
   status,
+  signed,
   ViewClick,
   DeleteClick,
 }) => {
@@ -42,7 +43,22 @@ const RenderAppointmentCard = ({
       </div>
       <div className="appointment-actions">
         <ViewFormButtonSvg onClick={ViewClick} />
-        <DeleteAppointmentButtonSvg onClick={DeleteClick} />
+        <Tooltip
+          title={signed ? "Signed appointment" : "Delete"}
+          placement="top"
+          arrow
+        >
+          <span>
+            <DeleteAppointmentButtonSvg
+              onClick={!signed ? DeleteClick : undefined}
+              style={{
+                pointerEvents: signed ? "none" : "auto",
+                cursor: signed ? "not-allowed" : "pointer",
+                opacity: signed ? 0.5 : 1,
+              }}
+            />
+          </span>
+        </Tooltip>
       </div>
     </div>
   );
@@ -164,7 +180,7 @@ const AllAppointments = () => {
       ) : (
         <div className="appointments-list">
           {filteredAppointments?.length > 0 ? (
-            filteredAppointments?.map((appointment, index) => (
+            filteredAppointments?.reverse().map((appointment, index) => (
               <RenderAppointmentCard
                 key={index}
                 title={
@@ -181,7 +197,8 @@ const AllAppointments = () => {
                 fullTitle={appointment?.serviceDetails
                   .map((service) => service.service)
                   .join(", ")}
-                date={appointment.date}
+                date={appointment?.date}
+                signed={appointment?.signed}
                 formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}
                 ViewClick={() =>
