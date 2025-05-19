@@ -85,7 +85,7 @@ const DynamicForms = () => {
           .map((form) =>
             JSON.parse(
               JSON.stringify(form).replace(
-                /{{user\.businessName}}/g,
+                /\(?\{\{user\.businessName\}\}\)?/g,
                 businessName
               )
             )
