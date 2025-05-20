@@ -31,7 +31,7 @@ const LoginPage = () => {
       );
     } catch (error) {
       console.error("Failed to log in:", error);
-      showAlert("error", `Login failed! Invalid email or password.`);
+      showAlert("error", error.message || "Login failed! Try again later.");
     }
   };
 

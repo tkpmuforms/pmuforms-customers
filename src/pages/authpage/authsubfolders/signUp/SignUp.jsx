@@ -57,7 +57,7 @@ const SignupPage = ({ handlePageChange }) => {
       });
     } catch (error) {
       console.error("Error creating user:", error);
-      showAlert("error", error.message);
+      showAlert("error", error.message || "Signup failed! Try again later.");
     }
     setSubmitting(false);
   };

@@ -37,11 +37,16 @@ export const HandleSocialLogin = async (
     if (businessUri) {
       navigate(`/customer/dashboard/${businessUri}`);
     } else {
-      navigate("/customer/dashboard"); // fallback if no artistId
+      navigate("/customer/dashboard");
     }
   } catch (error) {
     console.error("Social login error:", error);
-    showAlert("error", "Login failed! Try again later.");
+    showAlert(
+      "error",
+      error.message ||
+        error.response?.data?.error ||
+        "Login failed! Try again later."
+    );
   }
 };
 export const SignInSuccessWithAuthResult = async (
@@ -75,6 +80,11 @@ export const SignInSuccessWithAuthResult = async (
     }
   } catch (error) {
     console.error("Error during login callback:", error);
-    showAlert("error", "Login failed! Try again later.");
+    showAlert(
+      "error",
+      error.message ||
+        error.response?.data?.error ||
+        "Login failed! Try again later."
+    );
   }
 };
