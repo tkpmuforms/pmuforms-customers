@@ -95,8 +95,8 @@ const AuthenticatedNavbar = () => {
             </li>
             <li>
               <Link
-                to="/appointments"
-                onClick={() => handleNavigation("/appointments")}
+                to="/customer/appointments"
+                onClick={() => handleNavigation("/customer/appointments")}
               >
                 Appointments
               </Link>
