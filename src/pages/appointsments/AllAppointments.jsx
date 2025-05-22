@@ -160,7 +160,7 @@ const AllAppointments = () => {
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Search appointments"
+            placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

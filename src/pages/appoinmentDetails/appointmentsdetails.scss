@@ -44,6 +44,14 @@
   }
 
   .form-list {
+    .info-title {
+        font-size: 18px;
+        color: #8e2d8e;
+        font-weight: 500;
+        line-height: 24px;
+        margin-right: 10px;
+        font-family: BoldFont;
+    }
     .form-card {
       display: flex;
       justify-content: space-between;
