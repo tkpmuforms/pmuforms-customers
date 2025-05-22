@@ -85,12 +85,12 @@ export const authorizedRoutes = [
   {
     path: "/customer/appointments",
     element: <AllAppointments />,
-    breadcrumbs: ["Appointments"],
+    breadcrumbs: ["Appointment Forms"],
   },
   {
     path: "/customer/appointments/:id",
     element: <AppointmentDetails />,
-    breadcrumbs: ["Appointments", "Details"],
+    breadcrumbs: ["Appointment Forms", "Details"],
   },
   {
     path: "/customer/forms/appointment/:appointmentId",

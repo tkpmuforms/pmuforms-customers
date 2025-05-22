@@ -156,7 +156,7 @@ const AllAppointments = () => {
       </div>
 
       <div className="header-container">
-        <h3>All Appointments</h3>
+        <h3>All Appointment Forms</h3>
         <div className="search-bar">
           <input
             type="text"

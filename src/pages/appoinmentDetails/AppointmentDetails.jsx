@@ -120,6 +120,7 @@ const AppointmentDetails = () => {
         </div>
 
         <div className="form-list">
+        <span className="info-title">Filled Forms:</span>
           {filledForms.length > 0 &&
             filledForms.map((filledForm) => (
               <RenderFormsCard
