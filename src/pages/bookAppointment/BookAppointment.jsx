@@ -99,7 +99,7 @@ const BookAppointment = () => {
           <p>Go back to dashboard</p>
         </div>
         <div className="book-appointment-page">
-          <h1>Book an Appointment</h1>
+          <h1>Fill Out a New Form</h1>
           <p className="description">
             Important: Don’t wait until the day of your appointment. Some of
             this information must be filled out a few days in advance.

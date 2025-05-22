@@ -197,10 +197,10 @@ const Dashboard = () => {
           >
             <BookAnAppointmentSvg />
             <div>
-              <h5>Book an Appointment</h5>
+              <h5>Fill Out a New Form</h5>
               <p>
-                Easily book your next appointment by selecting a service and
-                preferred time.
+                Fill out a new form for your next appointment by choosing your preferred appointment time,
+                the service(s), and hit next.
               </p>
             </div>
           </div>
@@ -210,9 +210,9 @@ const Dashboard = () => {
           >
             <ViewPastAppointmentsSvg />
             <div>
-              <h5>View Past Appointments</h5>
+              <h5>View Past Appointment Forms</h5>
               <p>
-                Review your appointment history, access details of your previous
+                Review your previous forms, access details of your previous
                 appointments.
               </p>
             </div>
@@ -230,10 +230,10 @@ const Dashboard = () => {
         </div>
 
         <section className="appointments-section">
-          <h3>Upcoming Appointments</h3>
+          <h3>Upcoming Appointment Forms</h3>
           <div className="see-all-appointments">
             <p onClick={() => navigate("/customer/appointments")}>
-              See All Appointments
+              View All Appointment Forms
             </p>
           </div>
           <div className="appointments-list">
