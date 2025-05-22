@@ -27,7 +27,7 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
             View Form
           </button>
         ) : (
-          <EditFormSvg onClick={onEditClick} />
+          <EditFormSvg onClick={onEditClick} className="edit-form-svg" />
         )}
       </div>
     </div>
@@ -75,6 +75,28 @@ const AppointmentDetails = () => {
     setIsModalOpen(false);
     setSelectedForm(null);
   };
+
+  const getFormTitle = (filledForm) => {
+    // Try direct title first
+    if (filledForm.title) return filledForm.title;
+
+    // Try formTemplate title
+    if (filledForm.formTemplate?.title) return filledForm.formTemplate.title;
+
+    // Try first section title
+    if (filledForm.formTemplate?.sections?.[0]?.title) {
+      return filledForm.formTemplate.sections[0].title;
+    }
+
+    // Try to find any section with a title
+    const sectionWithTitle = filledForm.formTemplate?.sections?.find(
+      (section) => section.title
+    );
+    if (sectionWithTitle) return sectionWithTitle.title;
+
+    return "N/A";
+  };
+
   if (loading) {
     return (
       <div
@@ -124,7 +146,7 @@ const AppointmentDetails = () => {
             filledForms.map((filledForm) => (
               <RenderFormsCard
                 key={filledForm.id}
-                title={filledForm.title || "Untitled Form"}
+                title={getFormTitle(filledForm)}
                 status={
                   filledForm.status === "completed" ||
                   filledForm.status === "signed"

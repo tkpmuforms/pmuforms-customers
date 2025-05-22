@@ -239,8 +239,10 @@
   background: #8e2d8e;
   color: #fff;
   border: none;
+  width: 186px;
+  height: 40px;
   padding: 10px 20px;
-  border-radius: 5px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -252,3 +254,16 @@
     background: #6e1f6e;
   }
 }
+
+@media screen and (max-width: 768px) {
+  .edit-form-svg {
+    width: 150px;
+  }
+}
+
+// /* Mobile View */
+// @media screen and (max-width: 480px) {
+//   .edit-form-svg {
+//     width: 100px;
+//   }
+// }
