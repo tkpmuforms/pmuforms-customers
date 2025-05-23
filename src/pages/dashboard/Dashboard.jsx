@@ -199,8 +199,7 @@ const Dashboard = () => {
             <div>
               <h5>Fill Out a New Form</h5>
               <p>
-                Fill out a new form for your next appointment by choosing your preferred appointment time and
-                the service.
+                Fill out a new form for your next appointment by choosing your preferred appointment date and service.
               </p>
             </div>
           </div>
