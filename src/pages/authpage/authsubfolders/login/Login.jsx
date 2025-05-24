@@ -31,7 +31,7 @@ const LoginPage = () => {
       );
     } catch (error) {
       console.error("Failed to log in:", error);
-      showAlert("error", error.message || "Login failed! Try again later.");
+      showAlert("error", error.message === 'EMAIL_NOT_FOUND' ? 'Account not found, Please signup and try again.' : error?.message || "Login failed! Try again later.");
     }
   };
 
