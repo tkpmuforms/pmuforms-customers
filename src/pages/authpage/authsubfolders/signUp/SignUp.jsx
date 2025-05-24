@@ -35,12 +35,6 @@ const SignupPage = ({ handlePageChange }) => {
 
   const handleSignup = async (values, { setSubmitting }) => {
     const { email, password } = values;
-    const artistId = localStorage.getItem("artistId");
-    if (!artistId) {
-      console.error("Artist ID is missing");
-      showAlert("error", "Artist ID is missing");
-      return;
-    }
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -48,7 +42,6 @@ const SignupPage = ({ handlePageChange }) => {
         password
       );
 
-      console.log("User created:", userCredential);
       const user = userCredential.user;
 
       await sendVerificationLink(user?.uid).then((res) => {
