@@ -49,6 +49,7 @@ const DynamicForms = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const businessName = localStorage.getItem("businessName");
+  const businessUri = localStorage.getItem("businessUri");
   const [forms, setForms] = useState([]);
   const [filledForms, setFilledForms] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
@@ -277,7 +278,7 @@ const DynamicForms = () => {
         navigate(
           ROUTE_PATHS.FILLED_FORMS.replace(":id", appointmentId).replace(
             ":businessUri",
-            businessName
+            businessUri
           )
         );
       }

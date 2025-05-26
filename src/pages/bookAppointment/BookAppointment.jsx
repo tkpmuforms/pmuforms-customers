@@ -10,6 +10,7 @@ import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { bookAppointment, getArtistServices } from "../../services/services";
 import "./bookAppointment.scss";
+import { ROUTE_PATHS } from "../../routes/routes";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -17,6 +18,7 @@ dayjs.extend(timezone);
 const BookAppointment = () => {
   const param = useParams();
   const artistId = param.artistId || localStorage.getItem("artistId");
+  const businessUri = localStorage.getItem("businessUri");
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -83,7 +85,14 @@ const BookAppointment = () => {
       setLoading(true);
       // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
-        navigate(`/customer/forms/appointment/${res?.appointment?.id}`);
+        navigate(
+          ROUTE_PATHS.DYNAMIC_FORMS.replace(
+            ":businessUri",
+            businessUri
+          ).replace(":appointmentId", res.appointment.id)
+        );
+        // // Redirect to the appointment form page
+        // navigate(`/customer/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
       showAlert("error", "Error creating the appointment");
