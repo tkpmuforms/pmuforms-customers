@@ -22,6 +22,7 @@ import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetai
 import "./dashboard.scss";
 import { useSnackbar } from "../../context/SnackbarContext";
 import SearchPage from "./SearchPage";
+import { ROUTE_PATHS } from "../../routes/routes";
 
 const RenderAppointmentCard = ({
   title,
@@ -193,19 +194,31 @@ const Dashboard = () => {
         <div className="actions-section">
           <div
             className="action-card"
-            onClick={() => navigate(`/customer/book-appointments/${artistId}`)}
+            onClick={() =>
+              navigate(
+                ROUTE_PATHS.BOOK_APPOINTMENT.replace(":id", artistId).replace(
+                  ":businessUri",
+                  businessUri
+                )
+              )
+            }
           >
             <BookAnAppointmentSvg />
             <div>
               <h5>Fill Out a New Form</h5>
               <p>
-                Fill out a new form for your next appointment by choosing your preferred appointment date and service.
+                Fill out a new form for your next appointment by choosing your
+                preferred appointment date and service.
               </p>
             </div>
           </div>
           <div
             className="action-card"
-            onClick={() => navigate("/customer/appointments")}
+            onClick={() =>
+              navigate(
+                ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
+              )
+            }
           >
             <ViewPastAppointmentsSvg />
             <div>
@@ -231,7 +244,13 @@ const Dashboard = () => {
         <section className="appointments-section">
           <h3>Recent Appointment Forms</h3>
           <div className="see-all-appointments">
-            <p onClick={() => navigate("/customer/appointments")}>
+            <p
+              onClick={() =>
+                navigate(
+                  ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
+                )
+              }
+            >
               View All
             </p>
           </div>
@@ -261,7 +280,12 @@ const Dashboard = () => {
                     formsFilled={appointment?.filledFormsCount || 0}
                     status={appointment?.allFormsCompleted}
                     ViewClick={() =>
-                      navigate(`/customer/appointments/${appointment.id}`)
+                      navigate(
+                        ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
+                          ":id",
+                          appointment.id
+                        ).replace(":businessUri", businessUri)
+                      )
                     }
                     DeleteClick={() => removeAppointment(appointment.id)}
                   />
@@ -272,7 +296,9 @@ const Dashboard = () => {
                 <p>You have no upcoming appointments</p>
                 <BookAnAppointmentButtonSvg
                   onClick={() =>
-                    navigate(`/customer/book-appointments/${artistId}`)
+                    navigate(
+                      ROUTE_PATHS.BOOK_APPOINTMENT.replace(":id", artistId)
+                    )
                   }
                   style={{ cursor: "pointer", marginTop: "1rem" }}
                 />

@@ -8,6 +8,7 @@ import {
   getAppointmentById,
 } from "../../services/services";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
+import { ROUTE_PATHS } from "../../routes/routes";
 import "./appointmentsdetails.scss";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
@@ -27,7 +28,7 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
             View Form
           </button>
         ) : (
-          <EditFormSvg onClick={onEditClick} />
+          <EditFormSvg onClick={onEditClick} className="edit-form-svg" />
         )}
       </div>
     </div>
@@ -42,6 +43,7 @@ const AppointmentDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [loading, setLoading] = useState(false);
+  const businessUri = localStorage.getItem("businessUri");
 
   useEffect(() => {
     setLoading(true);
@@ -75,6 +77,28 @@ const AppointmentDetails = () => {
     setIsModalOpen(false);
     setSelectedForm(null);
   };
+
+  const getFormTitle = (filledForm) => {
+    // Try direct title first
+    if (filledForm.title) return filledForm.title;
+
+    // Try formTemplate title
+    if (filledForm.formTemplate?.title) return filledForm.formTemplate.title;
+
+    // Try first section title
+    if (filledForm.formTemplate?.sections?.[0]?.title) {
+      return filledForm.formTemplate.sections[0].title;
+    }
+
+    // Try to find any section with a title
+    const sectionWithTitle = filledForm.formTemplate?.sections?.find(
+      (section) => section.title
+    );
+    if (sectionWithTitle) return sectionWithTitle.title;
+
+    return "N/A";
+  };
+
   if (loading) {
     return (
       <div
@@ -94,7 +118,14 @@ const AppointmentDetails = () => {
       <div className="form">
         <div
           className="go-back"
-          onClick={() => navigate("/customer/dashboard")}
+          onClick={() =>
+            navigate(
+              ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
+                ":businessUri",
+                businessUri
+              )
+            )
+          }
         >
           <GoBackSvg />
           <p>Go back to dashboard</p>
@@ -125,7 +156,7 @@ const AppointmentDetails = () => {
             filledForms.map((filledForm) => (
               <RenderFormsCard
                 key={filledForm.id}
-                title={filledForm.title || "Untitled Form"}
+                title={getFormTitle(filledForm)}
                 status={
                   filledForm.status === "completed" ||
                   filledForm.status === "signed"
@@ -135,7 +166,11 @@ const AppointmentDetails = () => {
                 onViewClick={() => handleViewForm(filledForm.formTemplate)}
                 onEditClick={() =>
                   navigate(
-                    `/customer/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
+                    ROUTE_PATHS.DYNAMIC_FORMS.replace(
+                      ":appointmentId",
+                      id
+                    ).replace(":businessUri", businessUri) +
+                      `?formId=${filledForm.formTemplateId}`
                   )
                 }
               />

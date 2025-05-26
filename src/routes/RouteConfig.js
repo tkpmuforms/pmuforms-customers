@@ -5,6 +5,7 @@ import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
 import ContactSupport from "../pages/contact-us/ContactUs";
 import TermsAndAgreement from "../pages/termsandAgreement/TermsAndAgreement";
 import VerifyEmailForm from "../pages/authpage/authsubfolders/verifyEmail/VerifyEmailForm";
+import { ROUTE_PATHS, BREADCRUMBS } from "./routes";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")
@@ -21,85 +22,87 @@ const ContactSupportAuth = lazy(() => import("../pages/contact-us/ContactUs"));
 const FilledForms = lazy(() => import("../pages/filled-forms/FilledForms"));
 
 export const nonAuthRoutes = [
+  // Static routes first
+  {
+    path: ROUTE_PATHS.PRIVACY_POLICY,
+    element: <PrivacyPolicy />,
+    breadcrumbs: [],
+  },
+  {
+    path: ROUTE_PATHS.SUPPORT,
+    element: <ContactSupport />,
+    breadcrumbs: BREADCRUMBS.CONTACT_SUPPORT,
+  },
+  {
+    path: ROUTE_PATHS.TERMS_AND_AGREEMENT,
+    element: <TermsAndAgreement />,
+    breadcrumbs: BREADCRUMBS.TERMS_AND_AGREEMENT,
+  },
+  // Dynamic business URI route comes after static routes
+  {
+    path: "/:businessUri",
+    element: <AuthPage />,
+    breadcrumbs: [],
+  },
+
   {
     path: "/",
     element: <AuthPage />,
     breadcrumbs: [],
   },
-  {
-    path: "/#/:businessUri",
-    element: <AuthPage />,
-    breadcrumbs: [],
-  },
+
+  // Catch-all route last
   {
     path: "*",
     element: <NotFound />,
     breadcrumbs: [],
   },
-  {
-    path: "/privacy-policy",
-    element: <PrivacyPolicy />,
-  },
-  {
-    path: "/support",
-    element: <ContactSupport />,
-    breadcrumbs: ["Contact Support"],
-  },
-  {
-    path: "/terms-and-agreement",
-    element: <TermsAndAgreement />,
-    breadcrumbs: ["Terms and Agreement"],
-  },
 ];
 
 export const authorizedRoutes = [
   {
-    path: "/",
+    path: ROUTE_PATHS.CUSTOMER_DASHBOARD,
     element: <Dashboard />,
-    breadcrumbs: [],
-  },
-  {
-    path: "/verify-email",
-    element: <VerifyEmailForm />,
+    breadcrumbs: BREADCRUMBS.DASHBOARD,
   },
   {
     path: "/customer/dashboard",
     element: <Dashboard />,
-    breadcrumbs: ["Dashboard"],
+    breadcrumbs: BREADCRUMBS.DASHBOARD,
   },
   {
-    path: "/customer/dashboard/:businessUri",
-    element: <Dashboard />,
-    breadcrumbs: ["Dashboard", "Artist"],
+    path: ROUTE_PATHS.VERIFY_EMAIL,
+    element: <VerifyEmailForm />,
+    breadcrumbs: [],
   },
   {
-    path: "/customer/book-appointments/:id",
+    path: ROUTE_PATHS.BOOK_APPOINTMENT,
     element: <BookAppointment />,
     breadcrumbs: ["New Form"],
   },
   {
-    path: "/customer/support",
+    path: ROUTE_PATHS.CUSTOMER_SUPPORT,
     element: <ContactSupportAuth />,
-    breadcrumbs: ["Contact Support"],
+    breadcrumbs: BREADCRUMBS.CONTACT_SUPPORT,
   },
   {
-    path: "/customer/appointments",
+    path: ROUTE_PATHS.APPOINTMENTS,
     element: <AllAppointments />,
     breadcrumbs: ["Appointment Forms"],
   },
   {
-    path: "/customer/appointments/:id",
+    path: ROUTE_PATHS.APPOINTMENT_DETAILS,
     element: <AppointmentDetails />,
     breadcrumbs: ["Appointment Forms", "Details"],
   },
   {
-    path: "/customer/forms/appointment/:appointmentId",
+    path: ROUTE_PATHS.DYNAMIC_FORMS,
     element: <DynamicForms />,
-    breadcrumbs: ["Dynamic Forms"],
+    breadcrumbs: BREADCRUMBS.DYNAMIC_FORMS,
   },
   {
-    path: "/customer/filled-forms/appointment/:id",
+    path: ROUTE_PATHS.FILLED_FORMS,
     element: <FilledForms />,
-    breadcrumbs: ["Filled Forms"],
+    breadcrumbs: BREADCRUMBS.FILLED_FORMS,
   },
 ];

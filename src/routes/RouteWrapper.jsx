@@ -1,13 +1,14 @@
-import React, { Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import AuthenticatedLayout from "../layout/authenticated/AuthenticatedLayout";
-import { authorizedRoutes, nonAuthRoutes } from "./RouteConfig";
+import { Suspense } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
 import NotFound from "../components/not-found/NotFound";
 import useAuth from "../context/useAuth";
+import AuthenticatedLayout from "../layout/authenticated/AuthenticatedLayout";
+import { authorizedRoutes, nonAuthRoutes } from "./RouteConfig";
 
 const RouteWrapper = () => {
   const { isAuthenticated } = useAuth();
+
   const displayElement = ({ element, layout, breadcrumbs, showAds }) => {
     return (
       <AuthenticatedLayout

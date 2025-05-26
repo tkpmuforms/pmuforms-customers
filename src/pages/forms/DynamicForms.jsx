@@ -16,6 +16,7 @@ import "./dynamicForms.scss";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { renderFormFields } from "./RenderFormFields";
+import { ROUTE_PATHS } from "../../routes/routes";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -48,6 +49,7 @@ const DynamicForms = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const businessName = localStorage.getItem("businessName");
+  const businessUri = localStorage.getItem("businessUri");
   const [forms, setForms] = useState([]);
   const [filledForms, setFilledForms] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
@@ -273,7 +275,12 @@ const DynamicForms = () => {
         setCurrentTab(currentTab + 1);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
-        navigate(`/customer/filled-forms/appointment/${appointmentId}`);
+        navigate(
+          ROUTE_PATHS.FILLED_FORMS.replace(":id", appointmentId).replace(
+            ":businessUri",
+            businessUri
+          )
+        );
       }
     } catch (error) {
       console.error("Error submitting form:", error);

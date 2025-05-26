@@ -35,7 +35,7 @@ export const HandleSocialLogin = async (
     handleAuthSuccess(res?.data?.customer, res.data?.access_token);
 
     if (businessUri) {
-      navigate(`/customer/dashboard/${businessUri}`);
+      navigate(`${businessUri}/customer/dashboard/`);
     } else {
       navigate("/customer/dashboard");
     }
@@ -74,7 +74,7 @@ export const SignInSuccessWithAuthResult = async (
     handleAuthSuccess(res?.data?.customer, res.data?.access_token);
 
     if (businessUri) {
-      navigate(`/customer/dashboard/${businessUri}`);
+      navigate(`${businessUri}/customer/dashboard/`);
     } else {
       navigate("/customer/dashboard");
     }

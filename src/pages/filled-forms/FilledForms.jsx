@@ -6,6 +6,7 @@ import { getAllFilledFormsForAppointment } from "../../services/services";
 import "./filledForms.scss";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
 import { Dialog, Typography } from "@mui/material";
+import { ROUTE_PATHS } from "../../routes/routes";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (
@@ -35,6 +36,7 @@ const FilledForms = () => {
   const [filledForms, setFilledForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
+  const businessUri = localStorage.getItem("businessUri");
 
   useEffect(() => {
     const fetchAllFilledFormsForAppointment = async () => {
@@ -49,7 +51,7 @@ const FilledForms = () => {
   }, [id]);
 
   const handleCompleteForm = () => {
-    navigate(`/customer/appointments`);
+    navigate(ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri));
   };
 
   const handleCloseModal = () => {
@@ -61,6 +63,7 @@ const FilledForms = () => {
     setSelectedForm(form);
     setIsModalOpen(true);
   };
+
   return (
     <div className="filled-form">
       <div className="svg">

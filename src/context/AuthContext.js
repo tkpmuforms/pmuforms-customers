@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
       if (publicPaths.includes(currentPath)) {
         navigate(currentPath);
       } else if (businessUri) {
-        navigate(`/#/${businessUri}`);
+        navigate(`/${businessUri}`);
       } else {
         navigate("/");
       }
@@ -78,7 +78,7 @@ export const AuthProvider = ({ children }) => {
 
     if (businessUri) {
       localStorage.setItem("businessUri", businessUri); // restore valid URI after clearing
-      navigate(`/#/${businessUri}`);
+      navigate(`/${businessUri}`);
     } else {
       navigate("/");
     }
