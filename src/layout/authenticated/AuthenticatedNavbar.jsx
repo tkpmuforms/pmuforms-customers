@@ -108,7 +108,7 @@ const AuthenticatedNavbar = () => {
                 )}
                 onClick={() => handleNavigation(ROUTE_PATHS.APPOINTMENTS)}
               >
-                Appointments
+                Appointment Forms
               </Link>
             </li>
             <li>

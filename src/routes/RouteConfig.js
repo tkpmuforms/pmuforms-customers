@@ -78,7 +78,7 @@ export const authorizedRoutes = [
   {
     path: ROUTE_PATHS.BOOK_APPOINTMENT,
     element: <BookAppointment />,
-    breadcrumbs: BREADCRUMBS.BOOK_APPOINTMENT,
+    breadcrumbs: ["New Form"],
   },
   {
     path: ROUTE_PATHS.CUSTOMER_SUPPORT,
@@ -88,12 +88,12 @@ export const authorizedRoutes = [
   {
     path: ROUTE_PATHS.APPOINTMENTS,
     element: <AllAppointments />,
-    breadcrumbs: BREADCRUMBS.APPOINTMENTS,
+    breadcrumbs: ["Appointment Forms"],
   },
   {
     path: ROUTE_PATHS.APPOINTMENT_DETAILS,
     element: <AppointmentDetails />,
-    breadcrumbs: BREADCRUMBS.APPOINTMENT_DETAILS,
+    breadcrumbs: ["Appointment Forms", "Details"],
   },
   {
     path: ROUTE_PATHS.DYNAMIC_FORMS,

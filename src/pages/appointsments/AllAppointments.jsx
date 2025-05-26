@@ -1,6 +1,6 @@
 import { ArrowBack, ArrowForward } from "@mui/icons-material";
 import { CircularProgress, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   BookAnAppointmentButtonSvg,
@@ -164,11 +164,11 @@ const AllAppointments = () => {
       </div>
 
       <div className="header-container">
-        <h3>All Appointments</h3>
+        <h3>All Appointment Forms</h3>
         <div className="search-bar">
           <input
             type="text"
-            placeholder="Search appointments"
+            placeholder="Search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />

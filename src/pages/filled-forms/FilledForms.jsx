@@ -85,7 +85,7 @@ const FilledForms = () => {
         )}
       </div>
       <button className="complete-button" onClick={handleCompleteForm}>
-        View Appointments
+        View Appointment Forms
       </button>
       {isModalOpen && selectedForm && (
         <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>

@@ -80,11 +80,13 @@ export const SignInSuccessWithAuthResult = async (
     }
   } catch (error) {
     console.error("Error during login callback:", error);
+
     showAlert(
       "error",
-      error.message ||
-        error.response?.data?.error ||
+      error?.message ||
+        error?.response?.data?.error ||
         "Login failed! Try again later."
     );
   }
 };
+

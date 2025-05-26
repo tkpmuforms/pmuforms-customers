@@ -30,8 +30,8 @@ const LoginPage = () => {
         showAlert
       );
     } catch (error) {
-      console.error("Failed to log in:", error);
-      showAlert("error", error.message || "Login failed! Try again later.");
+      console.error("LoginFailed:", error);
+      showAlert("error", error.message.includes('user-not-found') ? 'Account not found, Please signup and try again.' : error?.message || "Login failed! Try again later.");
     }
   };
 
