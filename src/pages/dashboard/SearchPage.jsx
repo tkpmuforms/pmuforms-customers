@@ -19,11 +19,13 @@ const SearchPage = () => {
   const handleSearch = async () => {
     if (!query.trim()) return;
     setLoading(true);
+    setResults([]); // Clear previous results
     try {
       const data = await searchArtist(query);
       setResults(data.artists || []);
     } catch (error) {
       console.error("Failed to search:", error);
+      showAlert("error", "Failed to search artists. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -72,23 +74,44 @@ const SearchPage = () => {
           onKeyDown={handleKeyPress}
         />
         <button onClick={handleSearch} disabled={loading}>
-          {loading ? "Searching..." : "Search"}
+          {loading ? (
+            <>
+              <span className="spinner"></span>
+              Searching...
+            </>
+          ) : (
+            "Search"
+          )}
         </button>
       </div>
 
       <div className="results">
-        {results.map((artist, idx) => (
-          <div
-            key={idx}
-            className="artist-item"
-            onClick={() => {
-              setSelectedArtist(artist);
-              setShowDialog(true);
-            }}
-          >
-            {artist.businessName}
+        {loading && (
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Searching for artists...</p>
           </div>
-        ))}
+        )}
+
+        {!loading && results.length === 0 && query.trim() && (
+          <div className="no-results">
+            <p>No artists found for "{query}". Try a different search term.</p>
+          </div>
+        )}
+
+        {!loading &&
+          results.map((artist, idx) => (
+            <div
+              key={idx}
+              className="artist-item"
+              onClick={() => {
+                setSelectedArtist(artist);
+                setShowDialog(true);
+              }}
+            >
+              {artist.businessName}
+            </div>
+          ))}
       </div>
 
       {showDialog && selectedArtist && (
@@ -106,7 +129,14 @@ const SearchPage = () => {
                 Cancel
               </button>
               <button onClick={confirmBooking} disabled={actionLoading}>
-                {actionLoading ? "Processing..." : "Yes"}
+                {actionLoading ? (
+                  <>
+                    <span className="spinner"></span>
+                    Processing...
+                  </>
+                ) : (
+                  "Yes"
+                )}
               </button>
             </div>
           </div>

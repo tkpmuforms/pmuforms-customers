@@ -1,289 +1,163 @@
-import { CircularProgress, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import {
-  BookAnAppointmentButtonSvg,
-  BookAnAppointmentSvg,
-  DeleteAppointmentButtonSvg,
-  EditPersonalInformationSvg,
-  NoAppointmentsSvg,
-  ViewFormButtonSvg,
-  ViewPastAppointmentsSvg,
-  WarningSvg,
-} from "../../assets/svgs/DashboardSvg";
-import useAuth from "../../context/useAuth";
-import {
-  deleteAppointment,
-  getAllAppointments,
-  getArtistById,
-  getAuthenticatedUser,
-} from "../../services/services";
-import PersonalDetailsForm from "../authpage/authsubfolders/signUp/PersonalDetailsForm";
-import "./dashboard.scss";
+import React, { useState } from "react";
+import "./searchpage.scss";
+import { searchArtist, switchArtist } from "../../services/services";
 import { useSnackbar } from "../../context/SnackbarContext";
-import SearchPage from "./SearchPage";
+import { useNavigate } from "react-router-dom";
+import useAuth from "../../context/useAuth";
+import { CircularProgress } from "@mui/material";
 
-const RenderAppointmentCard = ({
-  title,
-  date,
-  formsFilled,
-  signed,
-  status,
-  ViewClick,
-  DeleteClick,
-}) => {
-  // Correctly parse the ISO date string
-  const formattedDate = new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
-  return (
-    <div className="appointment-card">
-      <div className="appointment-info">
-        <h4>{title}</h4>
-        <p>Date of Appointment: {formattedDate}</p>
-        <p>Forms filled: {formsFilled}</p>
-        <span className={`status ${status}`}>
-          {status === true ? "Forms Completed" : "Forms Not Completed"}
-        </span>
-      </div>
-      <div className="appointment-actions">
-        <ViewFormButtonSvg onClick={ViewClick} />
-        <Tooltip
-          title={signed ? "Signed appointment" : "Delete"}
-          placement="top"
-          arrow
-        >
-          <span>
-            <DeleteAppointmentButtonSvg
-              onClick={!signed ? DeleteClick : undefined}
-              style={{
-                pointerEvents: signed ? "none" : "auto",
-                cursor: signed ? "not-allowed" : "pointer",
-                opacity: signed ? 0.5 : 1,
-              }}
-            />
-          </span>
-        </Tooltip>
-      </div>
-    </div>
-  );
-};
-
-const Dashboard = () => {
-  const params = useParams();
-  const artistId = localStorage.getItem("artistId");
-  const businessUri = params.businessUri || localStorage.getItem("businessUri");
-  const { user } = useAuth();
-  const [appointments, setAppointments] = useState([]);
-  const [showPersonalInfo, setShowPersonalInfo] = useState(false);
-  const [businessName, setBusinessName] = useState(
-    localStorage.getItem("businessName")
-  );
-  const userName = localStorage.getItem("userName");
-  const navigate = useNavigate();
-  // const [services, setServices] = useState([]);
+const SearchPage = () => {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { logout } = useAuth();
+  const [hasSearched, setHasSearched] = useState(false); // Track if search has been performed
+  const [selectedArtist, setSelectedArtist] = useState(null);
+  const [showDialog, setShowDialog] = useState(false);
+  const [actionLoading, setActionLoading] = useState(false);
   const { showAlert } = useSnackbar();
+  const { handleAuthSuccess } = useAuth();
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true); // Start loader
-      try {
-        const [businessRes, appointmentsRes, customerRes] = await Promise.all([
-          businessUri ? getArtistById(businessUri) : Promise.resolve(null),
-          getAllAppointments(),
-          getAuthenticatedUser(),
-        ]);
-
-        if (businessUri && !businessRes?.artist) {
-          console.error("Error fetching artist, logging out...");
-          logout();
-          return;
-        }
-
-        // Update business name
-        if (businessRes?.artist?.businessName) {
-          localStorage.setItem("businessName", businessRes.artist.businessName);
-          setBusinessName(businessRes.artist.businessName);
-          localStorage.setItem("artistId", businessRes.artist.userId);
-        }
-
-        // Update appointments
-        const updatedAppointments = (appointmentsRes?.appointments || []).map(
-          (appointment) => ({
-            ...appointment,
-            filledFormsCount:
-              appointment?.filledForms?.filter(
-                (form) =>
-                  form.status === "completed" || form.status === "signed"
-              ).length || 0,
-          })
-        );
-        setAppointments(updatedAppointments);
-        const customerInfo = customerRes?.user?.info;
-        setShowPersonalInfo(!customerInfo);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        logout();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [businessUri, logout]);
-
-  const removeAppointment = async (appointmentId) => {
+  const handleSearch = async () => {
+    if (!query.trim()) return;
+    setLoading(true);
+    setHasSearched(true);
+    console.log("Loading started:", true); // Debug log
     try {
-      await deleteAppointment(appointmentId);
-
-      showAlert("success", "Appointment deleted successfully");
-      setAppointments((prev) =>
-        prev.filter((appt) => appt.id !== appointmentId)
-      );
+      const data = await searchArtist(query);
+      // Add minimum loading time to ensure spinner is visible
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      setResults(data.artists || []);
     } catch (error) {
-      showAlert("error", "Error deleting appointment");
+      console.error("Failed to search:", error);
+    } finally {
+      setLoading(false);
+      console.log("Loading finished:", false); // Debug log
     }
   };
 
-  if (showPersonalInfo) {
-    return (
-      <PersonalDetailsForm onSubmitClick={() => setShowPersonalInfo(false)} />
-    );
-  }
-  if (!businessUri) {
-    return <SearchPage />;
-  }
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
-  const hasIncompleteForms = appointments.some(
-    (appointment) => !appointment.allFormsCompleted
-  );
+  const confirmBooking = async () => {
+    if (!selectedArtist) return;
+    console.log("Selected artist:", selectedArtist);
+    setActionLoading(true);
+    try {
+      const res = await switchArtist(selectedArtist.userId);
+      console.log("Switched context:", res);
+      setShowDialog(false);
+      showAlert(
+        "success",
+        `You are now booking with ${selectedArtist.businessName}.`
+      );
+      localStorage.setItem("artistId", selectedArtist.userId);
+      localStorage.setItem("userId", res.customer?.id);
+      localStorage.setItem("accessToken", res.access_token);
+      handleAuthSuccess(res?.customer, res.access_token);
+      navigate(`/customer/dashboard/${selectedArtist.businessUri}`);
+    } catch (error) {
+      console.error("Failed to switch artist:", error);
+      showAlert("error", "Failed to switch artist. Please try again.");
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   return (
-    <div className="dashboard-page">
-      <div className="dashboard-container">
-        <header className="dashboard-header">
-          <h3>
-            Hello, <span>{user?.info?.client_name ?? userName}</span>
-          </h3>
-          <p>
-            Welcome to{" "}
-            <span
+    <div className="search-page">
+      <h1 className="title">Search Artists</h1>
+      <div className="search-bar">
+        <input
+          type="text"
+          placeholder="Type artist name..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={handleKeyPress}
+        />
+        <button onClick={handleSearch} disabled={loading}>
+          {loading ? "Searching..." : "Search"}
+        </button>
+      </div>
+
+      <div className="results">
+        {loading ? (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "3rem",
+              minHeight: "200px",
+            }}
+          >
+            <CircularProgress
+              size={60}
               style={{
-                fontWeight: "bold",
+                color: "#8e2d8e",
+                marginBottom: "1rem",
+              }}
+            />
+            <div style={{ color: "#8e2d8e", fontSize: "1rem" }}>
+              Searching for artists...
+            </div>
+          </div>
+        ) : hasSearched && results.length === 0 ? (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              padding: "2rem",
+              color: "#666",
+              fontSize: "1.1rem",
+            }}
+          >
+            No artists found for "{query}". Try searching with a different name.
+          </div>
+        ) : (
+          results.map((artist, idx) => (
+            <div
+              key={idx}
+              className="artist-item"
+              onClick={() => {
+                setSelectedArtist(artist);
+                setShowDialog(true);
               }}
             >
-              {businessName}
-            </span>
-          </p>
-          {appointments?.length > 0 && hasIncompleteForms && (
-            <div className="alert">
-              <WarningSvg />
-              <p>
-                Please complete all required forms for your upcoming appointment
-              </p>
+              {artist.businessName}
             </div>
-          )}
-        </header>
+          ))
+        )}
+      </div>
 
-        <div className="actions-section">
-          <div
-            className="action-card"
-            onClick={() => navigate(`/customer/book-appointments/${artistId}`)}
-          >
-            <BookAnAppointmentSvg />
-            <div>
-              <h5>Book an Appointment</h5>
-              <p>
-                Easily book your next appointment by selecting a service and
-                preferred time.
-              </p>
-            </div>
-          </div>
-          <div
-            className="action-card"
-            onClick={() => navigate("/customer/appointments")}
-          >
-            <ViewPastAppointmentsSvg />
-            <div>
-              <h5>View Past Appointments</h5>
-              <p>
-                Review your appointment history, access details of your previous
-                appointments.
-              </p>
-            </div>
-          </div>
-          <div
-            className="action-card"
-            onClick={() => setShowPersonalInfo(true)}
-          >
-            <EditPersonalInformationSvg />
-            <div>
-              <h5>Update Personal Information</h5>
-              <p>View and edit your personal information easily.</p>
+      {showDialog && selectedArtist && (
+        <div className="dialog-overlay">
+          <div className="dialog">
+            <p>
+              Are you booking with{" "}
+              <strong>{selectedArtist.businessName}</strong>?
+            </p>
+            <div className="dialog-actions">
+              <button
+                onClick={() => setShowDialog(false)}
+                disabled={actionLoading}
+              >
+                Cancel
+              </button>
+              <button onClick={confirmBooking} disabled={actionLoading}>
+                {actionLoading ? "Processing..." : "Yes"}
+              </button>
             </div>
           </div>
         </div>
-
-        <section className="appointments-section">
-          <h3>Upcoming Appointments</h3>
-          <div className="see-all-appointments">
-            <p onClick={() => navigate("/customer/appointments")}>
-              See All Appointments
-            </p>
-          </div>
-          <div className="appointments-list">
-            {loading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress size={100} color="#8e2d8e" />
-              </div>
-            ) : appointments?.length > 0 ? (
-              appointments
-                .reverse()
-                .slice(0, 3)
-                .map((appointment, index) => (
-                  <RenderAppointmentCard
-                    key={index}
-                    title={appointment?.serviceDetails
-                      .map((service) => service.service)
-                      .join(", ")}
-                    date={appointment?.date}
-                    signed={appointment?.signed}
-                    formsFilled={appointment?.filledFormsCount || 0}
-                    status={appointment?.allFormsCompleted}
-                    ViewClick={() =>
-                      navigate(`/customer/appointments/${appointment.id}`)
-                    }
-                    DeleteClick={() => removeAppointment(appointment.id)}
-                  />
-                ))
-            ) : (
-              <div className="no-appointments">
-                <NoAppointmentsSvg />
-                <p>You have no upcoming appointments</p>
-                <BookAnAppointmentButtonSvg
-                  onClick={() =>
-                    navigate(`/customer/book-appointments/${artistId}`)
-                  }
-                  style={{ cursor: "pointer", marginTop: "1rem" }}
-                />
-              </div>
-            )}
-          </div>
-        </section>
-      </div>
+      )}
     </div>
   );
 };
 
-export default Dashboard;
+export default SearchPage;

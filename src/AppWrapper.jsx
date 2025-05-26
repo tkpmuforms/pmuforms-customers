@@ -8,22 +8,42 @@ const AppWrapper = () => {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
 
+  // Define static routes that should NOT be treated as business URIs
+  const STATIC_ROUTES = [
+    "privacy-policy",
+    "support",
+    "terms-and-agreement",
+    "login",
+    "signup",
+    "forgot-password",
+    "reset-password",
+    "customer",
+  ];
+
   useEffect(() => {
-    const { hash } = location;
+    const { pathname } = location;
 
+    // Extract first path segment
+    const pathSegments = pathname.split("/").filter(Boolean);
+    const firstSegment = pathSegments[0];
+
+    // Only treat as business URI if it's NOT a static route
     let businessUri = null;
-    if (hash.startsWith("#/")) {
-      const raw = hash.substring(2).trim();
-      if (raw && raw !== "null" && raw !== "undefined") {
-        businessUri = raw;
-        localStorage.setItem("businessUri", businessUri);
-      }
+    if (
+      firstSegment &&
+      firstSegment !== "null" &&
+      firstSegment !== "undefined" &&
+      !STATIC_ROUTES.includes(firstSegment)
+    ) {
+      businessUri = firstSegment;
+      localStorage.setItem("businessUri", businessUri);
     }
 
-    if (businessUri && isAuthenticated && location.pathname === "/") {
-      navigate(`/customer/dashboard/${businessUri}`);
+    // Handle authenticated user navigation (only for actual business URIs)
+    if (businessUri && isAuthenticated && pathname === `/${businessUri}`) {
+      navigate(`/${businessUri}/customer/dashboard`);
     }
-  }, [location, isAuthenticated]);
+  }, [location, isAuthenticated, navigate]);
 
   return <RouteWrapper />;
 };

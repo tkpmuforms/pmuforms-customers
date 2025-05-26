@@ -20,7 +20,9 @@ const BookAppointment = () => {
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
-  const [appointmentDate, setAppointmentDate] = useState(null);
+  const [appointmentDate, setAppointmentDate] = useState(
+    dayjs().tz(dayjs.tz.guess()).startOf("day")
+  );
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
   const { showAlert } = useSnackbar();

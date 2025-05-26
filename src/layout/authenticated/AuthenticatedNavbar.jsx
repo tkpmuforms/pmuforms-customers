@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LogoSvg } from "../../assets/svgs/AuthSvg";
 import useAuth from "../../context/useAuth";
+import { ROUTE_PATHS } from "../../routes/routes";
 import "./AuthenticatedNavbar.scss";
 
 const AuthenticatedNavbar = () => {
@@ -13,6 +14,7 @@ const AuthenticatedNavbar = () => {
   const mobileMenuRef = useRef(null);
   const [anchorEl, setAnchorEl] = useState(null); // Avatar dropdown
   const isDropdownOpen = Boolean(anchorEl);
+  const businessUri = localStorage.getItem("businessUri");
   const businessName = localStorage.getItem("businessName");
 
   const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || true);
@@ -21,6 +23,7 @@ const AuthenticatedNavbar = () => {
     handleDropdownClose(); // close avatar menu if open
     setMobileMenuVisible(!mobileMenuVisible);
   };
+
   // Close menu on outside click
   const handleClickOutside = (event) => {
     if (
@@ -36,7 +39,7 @@ const AuthenticatedNavbar = () => {
 
   // Close menu when navigating
   const handleNavigation = (path) => {
-    navigate(path);
+    navigate(path.replace(":businessUri", businessUri));
     setMobileMenuVisible(false); // Close menu
   };
 
@@ -66,7 +69,8 @@ const AuthenticatedNavbar = () => {
       <div className="navlink">
         <div
           className="authLogo"
-          onClick={() => handleNavigation("/customer/dashboard")}
+          onClick={() => handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)}
+          style={{ cursor: "pointer" }}
         >
           {USE_COMPANY_LOGO ? (
             <LogoSvg />
@@ -87,22 +91,31 @@ const AuthenticatedNavbar = () => {
           <ul>
             <li>
               <Link
-                to="/customer/dashboard"
-                onClick={() => handleNavigation("/customer/dashboard")}
+                to={ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
+                  ":businessUri",
+                  businessUri
+                )}
+                onClick={() => handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)}
               >
                 Home
               </Link>
             </li>
             <li>
               <Link
-                to="/appointments"
-                onClick={() => handleNavigation("/appointments")}
+                to={ROUTE_PATHS.APPOINTMENTS.replace(
+                  ":businessUri",
+                  businessUri
+                )}
+                onClick={() => handleNavigation(ROUTE_PATHS.APPOINTMENTS)}
               >
                 Appointments
               </Link>
             </li>
             <li>
-              <Link to="/support" onClick={() => handleNavigation("/support")}>
+              <Link
+                to={ROUTE_PATHS.SUPPORT.replace(":businessUri", businessUri)}
+                onClick={() => handleNavigation(ROUTE_PATHS.SUPPORT)}
+              >
                 Contact Support
               </Link>
             </li>

@@ -11,6 +11,7 @@ import {
 } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { deleteAppointment, getAllAppointments } from "../../services/services";
+import { ROUTE_PATHS } from "../../routes/routes";
 import "./allappointments.scss";
 
 const RenderAppointmentCard = ({
@@ -149,7 +150,14 @@ const AllAppointments = () => {
     <div className="appointments">
       <div
         className="breadcrumb"
-        onClick={() => navigate("/customer/dashboard")}
+        onClick={() =>
+          navigate(
+            ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
+              ":businessUri",
+              localStorage.getItem("businessUri")
+            )
+          )
+        }
       >
         <GoBackSvg />
         <p>Go back to dashboard</p>
@@ -202,7 +210,15 @@ const AllAppointments = () => {
                 formsFilled={appointment.filledFormsCount || 0}
                 status={appointment.allFormsCompleted}
                 ViewClick={() =>
-                  navigate(`/customer/appointments/${appointment.id}`)
+                  navigate(
+                    ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
+                      ":id",
+                      appointment.id
+                    ).replace(
+                      ":businessUri",
+                      localStorage.getItem("businessUri")
+                    )
+                  )
                 }
                 DeleteClick={() => removeAppointment(appointment.id)}
               />
@@ -213,7 +229,15 @@ const AllAppointments = () => {
               <p>You have no upcoming appointments</p>
               <BookAnAppointmentButtonSvg
                 onClick={() =>
-                  navigate(`/customer/book-appointments/${artistId}`)
+                  navigate(
+                    ROUTE_PATHS.BOOK_APPOINTMENT.replace(
+                      ":id",
+                      artistId
+                    ).replace(
+                      ":businessUri",
+                      localStorage.getItem("businessUri")
+                    )
+                  )
                 }
               />
             </div>

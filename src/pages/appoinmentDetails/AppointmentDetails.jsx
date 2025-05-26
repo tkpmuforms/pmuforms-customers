@@ -8,6 +8,7 @@ import {
   getAppointmentById,
 } from "../../services/services";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
+import { ROUTE_PATHS } from "../../routes/routes";
 import "./appointmentsdetails.scss";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
@@ -42,6 +43,7 @@ const AppointmentDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [loading, setLoading] = useState(false);
+  const businessUri = localStorage.getItem("businessUri");
 
   useEffect(() => {
     setLoading(true);
@@ -116,7 +118,14 @@ const AppointmentDetails = () => {
       <div className="form">
         <div
           className="go-back"
-          onClick={() => navigate("/customer/dashboard")}
+          onClick={() =>
+            navigate(
+              ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
+                ":businessUri",
+                businessUri
+              )
+            )
+          }
         >
           <GoBackSvg />
           <p>Go back to dashboard</p>
@@ -156,7 +165,11 @@ const AppointmentDetails = () => {
                 onViewClick={() => handleViewForm(filledForm.formTemplate)}
                 onEditClick={() =>
                   navigate(
-                    `/customer/forms/appointment/${id}?formId=${filledForm.formTemplateId}`
+                    ROUTE_PATHS.DYNAMIC_FORMS.replace(
+                      ":appointmentId",
+                      id
+                    ).replace(":businessUri", businessUri) +
+                      `?formId=${filledForm.formTemplateId}`
                   )
                 }
               />
