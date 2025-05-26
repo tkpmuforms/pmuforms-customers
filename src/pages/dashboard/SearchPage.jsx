@@ -9,6 +9,7 @@ const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [hasSearched, setHasSearched] = useState(false); // Add this state
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -17,9 +18,14 @@ const SearchPage = () => {
   const navigate = useNavigate();
 
   const handleSearch = async () => {
-    if (!query.trim()) return;
+    if (!query.trim()) {
+      setResults([]);
+      setHasSearched(false); // Reset if empty query
+      return;
+    }
     setLoading(true);
     setResults([]); // Clear previous results
+    setHasSearched(true); // Set to true when search is performed
     try {
       const data = await searchArtist(query);
       setResults(data.artists || []);
@@ -52,8 +58,11 @@ const SearchPage = () => {
       localStorage.setItem("artistId", selectedArtist.userId);
       localStorage.setItem("userId", res.customer?.id);
       localStorage.setItem("accessToken", res.access_token);
+      localStorage.setItem("businessUri", selectedArtist.businessUri);
+      localStorage.setItem("businessName", selectedArtist.businessName);
+
       handleAuthSuccess(res?.customer, res.access_token);
-      navigate(`/customer/dashboard/${selectedArtist.businessUri}`);
+      // navigate(`${selectedArtist.businessUri}/customer/dashboard/`);
     } catch (error) {
       console.error("Failed to switch artist:", error);
       showAlert("error", "Failed to switch artist. Please try again.");
@@ -70,7 +79,10 @@ const SearchPage = () => {
           type="text"
           placeholder="Type artist name..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setHasSearched(false); // Reset when user starts typing
+          }}
           onKeyDown={handleKeyPress}
         />
         <button onClick={handleSearch} disabled={loading}>
@@ -93,7 +105,7 @@ const SearchPage = () => {
           </div>
         )}
 
-        {!loading && results.length === 0 && query.trim() && (
+        {!loading && results.length === 0 && hasSearched && (
           <div className="no-results">
             <p>No artists found for "{query}". Try a different search term.</p>
           </div>
