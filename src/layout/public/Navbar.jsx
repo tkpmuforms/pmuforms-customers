@@ -31,8 +31,20 @@ const Navbar = ({ CreatenewClick }) => {
     };
   }, []);
 
+  //c
   const handleHomeNavigate = () => {
-    navigate("/");
+    const rawUri = localStorage.getItem("businessUri");
+    const businessUri =
+      rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
+
+    localStorage.clear();
+
+    if (businessUri) {
+      localStorage.setItem("businessUri", businessUri); // restore valid URI after clearing
+      navigate(`/${businessUri}`);
+    } else {
+      navigate("/");
+    }
   };
 
   return (

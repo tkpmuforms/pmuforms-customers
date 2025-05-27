@@ -1,51 +1,51 @@
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import RouteWrapper from "./routes/RouteWrapper";
-import useAuth from "./context/useAuth";
+// import { useEffect } from "react";
+// import { useLocation, useNavigate } from "react-router-dom";
 
-const AppWrapper = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+// import useAuth from "./context/useAuth";
 
-  // Define static routes that should NOT be treated as business URIs
-  const STATIC_ROUTES = [
-    "privacy-policy",
-    "support",
-    "terms-and-agreement",
-    "login",
-    "signup",
-    "forgot-password",
-    "reset-password",
-    "customer",
-  ];
+// const AppWrapper = () => {
+//   const location = useLocation();
+//   const navigate = useNavigate();
+//   const { isAuthenticated } = useAuth();
 
-  useEffect(() => {
-    const { pathname } = location;
+//   // Define static routes that should NOT be treated as business URIs
+//   const STATIC_ROUTES = [
+//     "privacy-policy",
+//     "support",
+//     "terms-and-agreement",
+//     "login",
+//     "signup",
+//     "forgot-password",
+//     "reset-password",
+//     "customer",
+//   ];
 
-    // Extract first path segment
-    const pathSegments = pathname.split("/").filter(Boolean);
-    const firstSegment = pathSegments[0];
+//   useEffect(() => {
+//     const { pathname } = location;
 
-    // Only treat as business URI if it's NOT a static route
-    let businessUri = null;
-    if (
-      firstSegment &&
-      firstSegment !== "null" &&
-      firstSegment !== "undefined" &&
-      !STATIC_ROUTES.includes(firstSegment)
-    ) {
-      businessUri = firstSegment;
-      localStorage.setItem("businessUri", businessUri);
-    }
+//     // Extract first path segment
+//     const pathSegments = pathname.split("/").filter(Boolean);
+//     const firstSegment = pathSegments[0];
 
-    // Handle authenticated user navigation (only for actual business URIs)
-    if (businessUri && isAuthenticated && pathname === `/${businessUri}`) {
-      navigate(`/${businessUri}/customer/dashboard`);
-    }
-  }, [location, isAuthenticated, navigate]);
+//     // Only treat as business URI if it's NOT a static route
+//     let businessUri = null;
+//     if (
+//       firstSegment &&
+//       firstSegment !== "null" &&
+//       firstSegment !== "undefined" &&
+//       !STATIC_ROUTES.includes(firstSegment)
+//     ) {
+//       businessUri = firstSegment;
+//       localStorage.setItem("businessUri", businessUri);
+//     }
 
-  return <RouteWrapper />;
-};
+//     // Handle authenticated user navigation (only for actual business URIs)
+//     if (businessUri && isAuthenticated && pathname === `/${businessUri}`) {
+//       navigate(`/${businessUri}/customer/dashboard`);
+//     }
+//   }, [location, isAuthenticated, navigate]);
 
-export default AppWrapper;
+//   return <RouteWrapper />;
+// };
+
+// export default AppWrapper;

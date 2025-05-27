@@ -1,8 +1,8 @@
-import AppWrapper from "./AppWrapper";
-import "./index.css";
 import { HashRouter as Router } from "react-router-dom"; // Changed to HashRouter
 import { AuthProvider } from "./context/AuthContext";
 import { SnackbarProvider } from "./context/SnackbarContext";
+import "./index.css";
+import RouteWrapper from "./routes/RouteWrapper";
 
 function App() {
   return (
@@ -10,7 +10,7 @@ function App() {
       <Router>
         <SnackbarProvider>
           <AuthProvider>
-            <AppWrapper />
+            <RouteWrapper />
           </AuthProvider>
         </SnackbarProvider>
       </Router>
