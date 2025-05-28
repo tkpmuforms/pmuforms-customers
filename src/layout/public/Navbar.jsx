@@ -40,7 +40,7 @@ const Navbar = ({ CreatenewClick }) => {
     localStorage.clear();
 
     if (businessUri) {
-      localStorage.setItem("businessUri", businessUri); // restore valid URI after clearing
+      localStorage.setItem("businessUri", businessUri);
       navigate(`/${businessUri}`);
     } else {
       navigate("/");
