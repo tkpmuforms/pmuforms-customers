@@ -35,7 +35,6 @@ const AuthPage = () => {
     const businessUri = location.pathname === "/" ? "" : pathSegments[0] || "";
     if (location.pathname === "/") {
       localStorage.removeItem("businessUri");
-      console.log("Removed businessUri from localStorage");
       return;
     }
     if (businessUri) {

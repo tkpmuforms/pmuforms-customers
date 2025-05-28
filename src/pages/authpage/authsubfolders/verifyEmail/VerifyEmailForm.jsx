@@ -17,7 +17,6 @@ const VerifyEmailForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const codeString = code.join("");
-    console.log("Code submitted:", codeString);
   };
 
   // Handle resend code logic

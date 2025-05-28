@@ -74,9 +74,9 @@ const RenderAppointmentCard = ({
 };
 
 const Dashboard = () => {
-  const params = useParams();
   const artistId = localStorage.getItem("artistId");
-  const businessUri = params.businessUri || localStorage.getItem("businessUri");
+  const businessUri = localStorage.getItem("businessUri");
+
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
@@ -85,7 +85,6 @@ const Dashboard = () => {
   );
   const userName = localStorage.getItem("userName");
   const navigate = useNavigate();
-  // const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
   const { showAlert } = useSnackbar();
@@ -126,7 +125,15 @@ const Dashboard = () => {
         );
         setAppointments(updatedAppointments);
         const customerInfo = customerRes?.user?.info;
-        setShowPersonalInfo(!customerInfo);
+
+        // Check if essential customer info exists (client_name, phone, and date_of_birth)
+        const hasRequiredInfo =
+          customerInfo &&
+          customerInfo.client_name &&
+          (customerInfo.home_phone || customerInfo.cell_phone) &&
+          customerInfo.date_of_birth;
+
+        setShowPersonalInfo(!hasRequiredInfo);
       } catch (error) {
         console.error("Error fetching data:", error);
         logout();

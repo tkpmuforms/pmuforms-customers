@@ -45,11 +45,10 @@ const SearchPage = () => {
 
   const confirmBooking = async () => {
     if (!selectedArtist) return;
-    console.log("Selected artist:", selectedArtist);
+
     setActionLoading(true);
     try {
       const res = await switchArtist(selectedArtist.userId);
-      console.log("Switched context:", res);
       setShowDialog(false);
       showAlert(
         "success",
