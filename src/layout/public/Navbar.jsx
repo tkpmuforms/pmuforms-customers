@@ -36,9 +36,6 @@ const Navbar = ({ CreatenewClick }) => {
     const rawUri = localStorage.getItem("businessUri");
     const businessUri =
       rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
-
-    localStorage.clear();
-
     if (businessUri) {
       localStorage.setItem("businessUri", businessUri);
       navigate(`/${businessUri}`);
