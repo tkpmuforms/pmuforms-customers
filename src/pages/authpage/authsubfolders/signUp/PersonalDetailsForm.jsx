@@ -2,7 +2,7 @@ import { Avatar, CircularProgress } from "@mui/material";
 import imageCompression from "browser-image-compression";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as Yup from "yup";
 import { GoBackSvg } from "../../../../assets/svgs/DashboardSvg";

@@ -1,7 +1,6 @@
-import React from "react";
-import "./privacyPolicy.scss";
-import Navbar from "../../layout/public/Navbar";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../layout/public/Navbar";
+import "./privacyPolicy.scss";
 
 const PrivacyPolicy = () => {
   const navigate = useNavigate();

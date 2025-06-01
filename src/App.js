@@ -1,4 +1,4 @@
-import { HashRouter as Router } from "react-router-dom"; // Changed to HashRouter
+import { HashRouter as Router } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import { SnackbarProvider } from "./context/SnackbarContext";
 import "./index.css";

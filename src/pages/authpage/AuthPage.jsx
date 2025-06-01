@@ -1,15 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { GoogleLoginSvg } from "../../assets/svgs/AuthSvg";
-import Navbar from "../../layout/public/Navbar";
-import "./authpage.scss";
-import { HandleSocialLogin } from "./authUtils";
-import { googleProvider } from "../../firebase/firebase";
+import { useSnackbar } from "../../context/SnackbarContext";
 import useAuth from "../../context/useAuth";
+import { googleProvider } from "../../firebase/firebase";
+import Navbar from "../../layout/public/Navbar";
+import { ROUTE_PATHS } from "../../routes/routes";
+import "./authpage.scss";
 import LoginPage from "./authsubfolders/login/Login";
 import SignupPage from "./authsubfolders/signUp/SignUp";
-import { useSnackbar } from "../../context/SnackbarContext";
-import { ROUTE_PATHS } from "../../routes/routes";
+import { HandleSocialLogin } from "./authUtils";
 
 const AuthPage = () => {
   const [page, setPage] = useState("login");

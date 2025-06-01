@@ -4,13 +4,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
+import { ROUTE_PATHS } from "../../routes/routes";
 import { bookAppointment, getArtistServices } from "../../services/services";
 import "./bookAppointment.scss";
-import { ROUTE_PATHS } from "../../routes/routes";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);

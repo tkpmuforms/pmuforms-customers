@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { Dialog, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { EditFormSvg } from "../../assets/svgs/DashboardSvg";
 import { FIlledFormsSvg } from "../../assets/svgs/filledFormsSvg";
-import { getAllFilledFormsForAppointment } from "../../services/services";
-import "./filledForms.scss";
-import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
-import { Dialog, Typography } from "@mui/material";
 import { ROUTE_PATHS } from "../../routes/routes";
+import { getAllFilledFormsForAppointment } from "../../services/services";
+import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
+import "./filledForms.scss";
 
 const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (

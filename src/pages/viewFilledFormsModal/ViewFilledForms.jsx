@@ -1,5 +1,4 @@
-// ViewFilledForm.jsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getAllFilledFormsForAppointment } from "../../services/services";
 import "./viewFilledForms.scss";
 
