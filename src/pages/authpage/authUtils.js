@@ -33,7 +33,7 @@ export const HandleSocialLogin = async (
     localStorage.setItem("userId", res.data?.customer?.id);
     localStorage.setItem("accessToken", res.data?.access_token);
     handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-
+    console.log(businessUri);
     if (businessUri) {
       navigate(`${businessUri}/customer/dashboard/`);
     } else {
@@ -89,4 +89,3 @@ export const SignInSuccessWithAuthResult = async (
     );
   }
 };
-
