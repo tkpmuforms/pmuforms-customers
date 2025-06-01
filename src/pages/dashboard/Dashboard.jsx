@@ -126,12 +126,11 @@ const Dashboard = () => {
         setAppointments(updatedAppointments);
         const customerInfo = customerRes?.user?.info;
 
-        // Check if essential customer info exists (client_name, phone, and date_of_birth)
+        // Check if essential customer info exists - for new customers, only check if client_name is empty or "New Customer"
         const hasRequiredInfo =
           customerInfo &&
           customerInfo.client_name &&
-          (customerInfo.home_phone || customerInfo.cell_phone) &&
-          customerInfo.date_of_birth;
+          customerInfo.client_name !== "New Customer";
 
         setShowPersonalInfo(!hasRequiredInfo);
       } catch (error) {

@@ -33,6 +33,10 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   });
   const [loading, setLoading] = useState(true);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [isFirstTimeUser, setIsFirstTimeUser] = useState(false);
+  const [showWarningModal, setShowWarningModal] = useState(false);
+  const [hasSubmittedSuccessfully, setHasSubmittedSuccessfully] =
+    useState(false);
 
   const validationSchema = Yup.object({
     firstName: Yup.string().required("Required"),
@@ -63,9 +67,27 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             avatar_url = "",
           } = customer.user.info;
 
+          // Don't prefill name if it's "New Customer"
+          const shouldPrefillName =
+            client_name && client_name !== "New Customer";
+          const firstNameValue = shouldPrefillName
+            ? client_name.split(" ")[0] || ""
+            : "";
+          const lastNameValue = shouldPrefillName
+            ? client_name.split(" ")[1] || ""
+            : "";
+
+          // Check if this is a first-time user (missing key information)
+          const isFirstTime =
+            !shouldPrefillName ||
+            !date_of_birth ||
+            !home_address ||
+            !cell_phone;
+          setIsFirstTimeUser(isFirstTime);
+
           setInitialValues({
-            firstName: client_name.split(" ")[0] || "",
-            lastName: client_name.split(" ")[1] || "",
+            firstName: firstNameValue,
+            lastName: lastNameValue,
             email: user?.email || "", // Set email from user object
             dob: date_of_birth.split("T")[0] || "",
             homeAddress: home_address || "",
@@ -101,7 +123,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
       const storageRef = ref(storage, `dps/${file.name}-${Date.now()}`); // Create a storage reference
       const snapshot = await uploadBytes(storageRef, compressedFile); // Upload compressed file
       const downloadUrl = await getDownloadURL(snapshot.ref); // Get download URL
-      setAvatarUrl(downloadUrl); // Update the avatar URL state
+      setAvatarUrl(downloadUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
       showAlert("error", "Failed to upload profile picture.");
@@ -126,12 +148,37 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
       SavePersonalInformation(data).then((res) => {
         setSubmitting(false);
         dispatch(setUser(res?.customer));
+        setHasSubmittedSuccessfully(true); // Mark as successfully submitted
         onSubmitClick();
       });
     } catch (error) {
       console.error("Error updating customer info:", error);
       setSubmitting(false);
       showAlert("error", "Error updating personal information");
+    }
+  };
+
+  // Check if required fields are filled for first-time users
+  const isFormValid = (values) => {
+    if (!isFirstTimeUser) return true; // Allow existing users to go back anytime
+
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "dob",
+      "homeAddress",
+      "primaryPhone",
+    ];
+    return requiredFields.every(
+      (field) => values && values[field] && values[field].trim() !== ""
+    );
+  };
+
+  const handleGoBack = (values = {}) => {
+    if (isFirstTimeUser && !hasSubmittedSuccessfully && !isFormValid(values)) {
+      setShowWarningModal(true);
+    } else {
+      onSubmitClick();
     }
   };
 
@@ -161,10 +208,28 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   return (
     <div>
-      <div onClick={() => onSubmitClick()} className="go-back">
-        <GoBackSvg />
-        <p>Go back to dashboard</p>
-      </div>
+      {/* Warning Modal */}
+      {showWarningModal && (
+        <div className="warning-modal-overlay">
+          <div className="warning-modal">
+            <h3>Complete Your Profile</h3>
+            <p>
+              Please fill out all required fields (First Name, Last Name, Date
+              of Birth, Home Address, and Primary Phone) before going back to
+              the dashboard.
+            </p>
+            <div className="warning-modal-buttons">
+              <button
+                onClick={() => setShowWarningModal(false)}
+                className="warning-modal-btn"
+              >
+                Continue Filling Form
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div
           style={{
@@ -179,146 +244,181 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
       ) : (
         <div className="personal-details-page">
           <div className="personal-details-container">
-            <div className="avatar-section">
-              <label
-                htmlFor="avatar-upload"
-                style={{ cursor: "pointer", position: "relative" }}
-              >
-                {uploadingAvatar ? (
-                  <div
-                    style={{ position: "relative", width: 100, height: 100 }}
-                  >
-                    <Avatar
-                      src={avatarUrl || ""}
-                      alt="Profile Avatar"
-                      sx={{ width: 100, height: 100, opacity: 0.5 }}
-                    >
-                      {user?.displayName
-                        ? user.displayName.slice(0, 2).toUpperCase()
-                        : ""}
-                    </Avatar>
-                    <div
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <CircularProgress size={40} sx={{ color: "#8e2d8e" }} />
-                    </div>
-                  </div>
-                ) : (
-                  <Avatar
-                    src={avatarUrl || ""}
-                    alt="Profile Avatar"
-                    sx={{ width: 100, height: 100 }}
-                  >
-                    {user?.displayName
-                      ? user.displayName.slice(0, 2).toUpperCase()
-                      : ""}
-                  </Avatar>
-                )}
-              </label>
-              <input
-                type="file"
-                id="avatar-upload"
-                accept="image/*"
-                onChange={handleAvatarChange}
-                style={{ display: "none" }}
-                disabled={uploadingAvatar}
-              />
-            </div>
-            <h2>We would like to know a little about you</h2>
-            <p className="subtext">
-              Important: Fill out this information a few days before your
-              appointment.
-            </p>
-
             <Formik
               enableReinitialize
               initialValues={initialValues}
               validationSchema={validationSchema}
               onSubmit={handleSubmit}
             >
-              {({ isSubmitting }) => (
-                <Form className="personal-details-form">
-                  <div className="grid-container">
-                    <CustomField
-                      label="First Name"
-                      name="firstName"
-                      type="text"
-                      placeholder="Enter your first name"
-                    />
-                    <CustomField
-                      label="Last Name"
-                      name="lastName"
-                      type="text"
-                      placeholder="Enter your last name"
-                    />
-                  </div>
+              {({ isSubmitting, values }) => {
+                const canGoBack =
+                  !isFirstTimeUser ||
+                  hasSubmittedSuccessfully ||
+                  isFormValid(values);
 
-                  {/* Email field - disabled and styled to indicate it's not editable */}
-                  <CustomField
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    placeholder="Your email address"
-                    disabled={true}
-                  />
+                return (
+                  <>
+                    {/* Go back button with conditional styling */}
+                    <div
+                      onClick={
+                        canGoBack
+                          ? () => handleGoBack(values)
+                          : () => setShowWarningModal(true)
+                      }
+                      className={`go-back ${
+                        !canGoBack ? "go-back-disabled" : ""
+                      }`}
+                    >
+                      <GoBackSvg />
+                      <p>
+                        {canGoBack
+                          ? "Go back to dashboard"
+                          : "Complete required fields to go back"}
+                      </p>
+                    </div>
 
-                  <CustomField
-                    label="Date of Birth"
-                    name="dob"
-                    type="date"
-                    placeholder="DD/MM/YYYY"
-                  />
-                  <CustomField
-                    label="Home Address"
-                    name="homeAddress"
-                    type="text"
-                    placeholder="Enter your home address"
-                  />
-                  <CustomField
-                    label="Primary Phone Number"
-                    name="primaryPhone"
-                    type="tel"
-                    placeholder="Enter your primary phone number"
-                  />
-                  <CustomField
-                    label="Referral Source"
-                    name="referralSource"
-                    type="text"
-                    placeholder="How did you hear about us?"
-                  />
-                  <CustomField
-                    label="Emergency Contact Name"
-                    name="emergencyContactName"
-                    type="text"
-                    placeholder="Enter Emergency Contact Name"
-                    optional
-                  />
-                  <CustomField
-                    label="Emergency Contact Phone Number"
-                    name="emergencyContactPhone"
-                    type="tel"
-                    placeholder="Enter Contact Phone Number"
-                    optional
-                  />
+                    <div className="avatar-section">
+                      <label
+                        htmlFor="avatar-upload"
+                        style={{ cursor: "pointer", position: "relative" }}
+                      >
+                        {uploadingAvatar ? (
+                          <div
+                            style={{
+                              position: "relative",
+                              width: 100,
+                              height: 100,
+                            }}
+                          >
+                            <Avatar
+                              src={avatarUrl || ""}
+                              alt="Profile Avatar"
+                              sx={{ width: 100, height: 100, opacity: 0.5 }}
+                            >
+                              {user?.displayName
+                                ? user.displayName.slice(0, 2).toUpperCase()
+                                : ""}
+                            </Avatar>
+                            <div
+                              style={{
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                            >
+                              <CircularProgress
+                                size={40}
+                                sx={{ color: "#8e2d8e" }}
+                              />
+                            </div>
+                          </div>
+                        ) : (
+                          <Avatar
+                            src={avatarUrl || ""}
+                            alt="Profile Avatar"
+                            sx={{ width: 100, height: 100 }}
+                          >
+                            {user?.displayName
+                              ? user.displayName.slice(0, 2).toUpperCase()
+                              : ""}
+                          </Avatar>
+                        )}
+                      </label>
+                      <input
+                        type="file"
+                        id="avatar-upload"
+                        accept="image/*"
+                        onChange={handleAvatarChange}
+                        style={{ display: "none" }}
+                        disabled={uploadingAvatar}
+                      />
+                    </div>
+                    <h2>We would like to know a little about you</h2>
+                    <p className="subtext">
+                      Important: Fill out this information a few days before
+                      your appointment.
+                    </p>
 
-                  <button
-                    type="submit"
-                    className="submit-button"
-                    disabled={isSubmitting || uploadingAvatar}
-                  >
-                    Save Personal Details
-                  </button>
-                </Form>
-              )}
+                    <Form className="personal-details-form">
+                      <div className="grid-container">
+                        <CustomField
+                          label="First Name"
+                          name="firstName"
+                          type="text"
+                          placeholder="Enter your first name"
+                        />
+                        <CustomField
+                          label="Last Name"
+                          name="lastName"
+                          type="text"
+                          placeholder="Enter your last name"
+                        />
+                      </div>
+
+                      {/* Email field - disabled and styled to indicate it's not editable */}
+                      <CustomField
+                        label="Email Address"
+                        name="email"
+                        type="email"
+                        placeholder="Your email address"
+                        disabled={true}
+                      />
+
+                      <CustomField
+                        label="Date of Birth"
+                        name="dob"
+                        type="date"
+                        placeholder="DD/MM/YYYY"
+                      />
+                      <CustomField
+                        label="Home Address"
+                        name="homeAddress"
+                        type="text"
+                        placeholder="Enter your home address"
+                      />
+                      <CustomField
+                        label="Primary Phone Number"
+                        name="primaryPhone"
+                        type="tel"
+                        placeholder="Enter your primary phone number"
+                      />
+                      <CustomField
+                        label="Referral Source"
+                        name="referralSource"
+                        type="text"
+                        placeholder="How did you hear about us?"
+                      />
+                      <CustomField
+                        label="Emergency Contact Name"
+                        name="emergencyContactName"
+                        type="text"
+                        placeholder="Enter Emergency Contact Name"
+                        optional
+                      />
+                      <CustomField
+                        label="Emergency Contact Phone Number"
+                        name="emergencyContactPhone"
+                        type="tel"
+                        placeholder="Enter Contact Phone Number"
+                        optional
+                      />
+
+                      <button
+                        type="submit"
+                        className="submit-button"
+                        disabled={isSubmitting || uploadingAvatar}
+                      >
+                        Save Personal Details
+                      </button>
+                    </Form>
+                  </>
+                );
+              }}
             </Formik>
           </div>
         </div>
