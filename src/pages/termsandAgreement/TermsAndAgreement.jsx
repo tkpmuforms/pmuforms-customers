@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../../layout/public/Navbar";
 import "./index.scss";
@@ -156,7 +156,7 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
 17.2 Collateral agreements, changes and amendments are only valid if laid down in writing. The preceding clause can only be waived in writing.`,
     },
   ];
-  
+
   const toggleSection = (index) => {
     if (activeSection === index) {
       setActiveSection(null);
@@ -177,7 +177,9 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
         <div className="terms-intro">
           <p>
             PMU Forms is licensed to You (End-User) by Arojem Solutions LLC,
-            located at 909 Reinli Street Unit 116, Austin, TX, USA, 78751, (hereinafter: Licensor), for use only under the terms of this License Agreement.
+            located at 909 Reinli Street Unit 116, Austin, TX, USA, 78751,
+            (hereinafter: Licensor), for use only under the terms of this
+            License Agreement.
           </p>
           <p>
             By downloading the Application from the Apple AppStore, and any
@@ -190,65 +192,98 @@ In Accordance with Section 9 of the "Instructions for Minimum Terms of Developer
             The parties of this License Agreement acknowledge that Apple is not
             a Party to this License Agreement and is not bound by any provisions
             or obligations with regard to the Application, such as warranty,
-            liability, maintenance and support thereof. Arojem Solutions LLC, not
-            Apple, is solely responsible for the licensed Application and the
-            content thereof.
+            liability, maintenance and support thereof. Arojem Solutions LLC,
+            not Apple, is solely responsible for the licensed Application and
+            the content thereof.
           </p>
           <p>
             This License Agreement may not provide for usage rules for the
             Application that are in conflict with the latest App Store Terms of
-            Service. Arojem Solutions LLC acknowledges that it had the opportunity
-            to review said terms and this License Agreement is not conflicting
-            with them.
+            Service. Arojem Solutions LLC acknowledges that it had the
+            opportunity to review said terms and this License Agreement is not
+            conflicting with them.
           </p>
           <p>All rights not expressly granted to You are reserved.</p>
         </div>
-        
+
         <div className="terms-header">
           <h1>Messaging Terms & Conditions</h1>
         </div>
-        
-      <div className="terms-intro">
-        <h2>General</h2>
-        <p>
-          By downloading the Application from the Apple AppStore, and any
-          update thereto (as permitted by this License Agreement), you agree to receive recurring automated marketing and informational text messages from PMU Forms. Automated messages may be sent using an automatic telephone dialing system to the mobile telephone number you provided when signing up or any other number that you designate.
-        </p>
-        <p>
-          Message frequency varies, and additional mobile messages may be sent periodically based on your interaction with PMU Forms. PMU Forms reserves the right to alter the frequency of messages sent at any time to increase or decrease the total number of sent messages. PMU Forms also reserves the right to change the short code or phone number or alphanumeric sender where messages are sent
-        </p>
-        <p>
-          Your usual message and data rates may apply. If you have any questions about your text plan or data plan, it is best to contact your mobile provider. Your mobile provider is not liable for delayed or undelivered messages.
-        </p>
-        <p>
-          Your consent to receive marketing messages is not a condition of purchase.
-        </p>
-        <h2>Carriers</h2>
-        <p>
-          Carriers are not liable for delayed or undelivered messages.
-        </p>
-        <h2>Cancellation</h2>
-        <p>
-          Messages will provide instructions to unsubscribe either by texting STOP or through an included link. After you unsubscribe, we will send you a message to confirm that you have been unsubscribed and no more messages will be sent. If you would like to receive messages from PMU Forms again, just sign up as you did the first time and PMU Forms will start sending messages to you again.
-        </p>
-        <h2>Info</h2>
-        <p>
-          For support regarding our services, email us at contact@pmuforms.com or, if supported, text "HELP" to 5125211052 at any time and we will respond with instructions on how to unsubscribe. If we include a link in messages we send you from PMU Forms, you may also access instructions on how to unsubscribe and our company information by following that link.
-        </p>
-        <h2>Transfer of Number</h2>
-        <p>
-          You agree that before changing your mobile number or transferring your mobile number to another individual, you will either reply "STOP" from the original number or notify us of your old number at contact@pmuforms.com. The duty to inform us based on the above events is a condition of using this service to receive messages.
-        </p>
-        <h2>Privacy</h2>
-        <p>
-          If you have any questions about your data or our privacy practices, please visit our https://main.d399dszmqumyhd.amplifyapp.com/privacy-policy.
-        </p>
 
-        <h2>Messaging Terms Changes</h2>
-        <p>
-          We reserve the right to change or terminate our messaging program at any time. We also reserve the right to update these Messaging Terms at any time. Such changes will be effective immediately upon posting. If you do not agree to a change to these Messaging Terms, you should cancel your enrollment with our messaging program. Your continued enrollment following such changes shall constitute your acceptance of such changes.
-        </p>
-      </div>
+        <div className="terms-intro">
+          <h2>General</h2>
+          <p>
+            By downloading the Application from the Apple AppStore, and any
+            update thereto (as permitted by this License Agreement), you agree
+            to receive recurring automated marketing and informational text
+            messages from PMU Forms. Automated messages may be sent using an
+            automatic telephone dialing system to the mobile telephone number
+            you provided when signing up or any other number that you designate.
+          </p>
+          <p>
+            Message frequency varies, and additional mobile messages may be sent
+            periodically based on your interaction with PMU Forms. PMU Forms
+            reserves the right to alter the frequency of messages sent at any
+            time to increase or decrease the total number of sent messages. PMU
+            Forms also reserves the right to change the short code or phone
+            number or alphanumeric sender where messages are sent
+          </p>
+          <p>
+            Your usual message and data rates may apply. If you have any
+            questions about your text plan or data plan, it is best to contact
+            your mobile provider. Your mobile provider is not liable for delayed
+            or undelivered messages.
+          </p>
+          <p>
+            Your consent to receive marketing messages is not a condition of
+            purchase.
+          </p>
+          <h2>Carriers</h2>
+          <p>Carriers are not liable for delayed or undelivered messages.</p>
+          <h2>Cancellation</h2>
+          <p>
+            Messages will provide instructions to unsubscribe either by texting
+            STOP or through an included link. After you unsubscribe, we will
+            send you a message to confirm that you have been unsubscribed and no
+            more messages will be sent. If you would like to receive messages
+            from PMU Forms again, just sign up as you did the first time and PMU
+            Forms will start sending messages to you again.
+          </p>
+          <h2>Info</h2>
+          <p>
+            For support regarding our services, email us at contact@pmuforms.com
+            or, if supported, text "HELP" to 5125211052 at any time and we will
+            respond with instructions on how to unsubscribe. If we include a
+            link in messages we send you from PMU Forms, you may also access
+            instructions on how to unsubscribe and our company information by
+            following that link.
+          </p>
+          <h2>Transfer of Number</h2>
+          <p>
+            You agree that before changing your mobile number or transferring
+            your mobile number to another individual, you will either reply
+            "STOP" from the original number or notify us of your old number at
+            contact@pmuforms.com. The duty to inform us based on the above
+            events is a condition of using this service to receive messages.
+          </p>
+          <h2>Privacy</h2>
+          <p>
+            If you have any questions about your data or our privacy practices,
+            please visit our
+            https://main.d399dszmqumyhd.amplifyapp.com/privacy-policy.
+          </p>
+
+          <h2>Messaging Terms Changes</h2>
+          <p>
+            We reserve the right to change or terminate our messaging program at
+            any time. We also reserve the right to update these Messaging Terms
+            at any time. Such changes will be effective immediately upon
+            posting. If you do not agree to a change to these Messaging Terms,
+            you should cancel your enrollment with our messaging program. Your
+            continued enrollment following such changes shall constitute your
+            acceptance of such changes.
+          </p>
+        </div>
 
         <div className="terms-accordion">
           {sections.map((section, index) => (

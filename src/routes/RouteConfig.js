@@ -1,11 +1,11 @@
 import { lazy } from "react";
-import AuthPage from "../pages/authpage/AuthPage";
 import NotFound from "../components/not-found/NotFound";
-import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
-import ContactSupport from "../pages/contact-us/ContactUs";
-import TermsAndAgreement from "../pages/termsandAgreement/TermsAndAgreement";
+import AuthPage from "../pages/authpage/AuthPage";
 import VerifyEmailForm from "../pages/authpage/authsubfolders/verifyEmail/VerifyEmailForm";
-import { ROUTE_PATHS, BREADCRUMBS } from "./routes";
+import ContactSupport from "../pages/contact-us/ContactUs";
+import PrivacyPolicy from "../pages/privacy-policy/PrivacyPolicy";
+import TermsAndAgreement from "../pages/termsandAgreement/TermsAndAgreement";
+import { BREADCRUMBS, ROUTE_PATHS } from "./routes";
 
 const AllAppointments = lazy(() =>
   import("../pages/appointsments/AllAppointments")

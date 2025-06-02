@@ -6,6 +6,7 @@ import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFilledFormsForAppointment,
   getAppointmentById,
+  getFormsForAppointMentById,
 } from "../../services/services";
 import ViewFilledForm from "../viewFilledFormsModal/ViewFilledForms";
 import { ROUTE_PATHS } from "../../routes/routes";
@@ -23,7 +24,7 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
         </span>
       </div>
       <div className="form-actions">
-        {status === "completed" ? (
+        {status === "completed" || status === "signed" ? (
           <button className="view-form-button" onClick={onViewClick}>
             View Form
           </button>
@@ -40,6 +41,7 @@ const AppointmentDetails = () => {
   const navigate = useNavigate();
   const [appointMent, setAppointMent] = useState({});
   const [filledForms, setFilledForms] = useState([]);
+  const [allForms, setAllForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,13 +51,27 @@ const AppointmentDetails = () => {
     setLoading(true);
     const fetchAppointmentAndForms = async () => {
       try {
+        // Always fetch appointment and filled forms
         const [appointmentRes, filledFormsRes] = await Promise.all([
           getAppointmentById(id),
           getAllFilledFormsForAppointment(id),
         ]);
 
-        setAppointMent(appointmentRes?.appointment || {});
-        setFilledForms(filledFormsRes?.filledForms || []);
+        const appointment = appointmentRes?.appointment || {};
+        const filledFormsList = filledFormsRes?.filledForms || [];
+
+        setAppointMent(appointment);
+        setFilledForms(filledFormsList);
+
+        // Conditionally fetch all forms if not all forms are completed
+        if (!appointment.allFormsCompleted) {
+          const formsRes = await getFormsForAppointMentById(id);
+          const updatedForms = formsRes?.forms.filter((form) =>
+            form.sections.some((section) => !section.skip)
+          );
+          setAllForms(updatedForms || []);
+        }
+
         setLoading(false);
       } catch (error) {
         console.error("Error fetching appointment or forms:", error);
@@ -97,6 +113,13 @@ const AppointmentDetails = () => {
     if (sectionWithTitle) return sectionWithTitle.title;
 
     return "N/A";
+  };
+
+  const getFormStatus = (formId) => {
+    const filledForm = filledForms.find(
+      (filledForm) => filledForm.formTemplateId === formId
+    );
+    return filledForm?.status || "incomplete";
   };
 
   if (loading) {
@@ -151,30 +174,61 @@ const AppointmentDetails = () => {
         </div>
 
         <div className="form-list">
-        <span className="info-title">Filled Forms:</span>
-          {filledForms.length > 0 &&
-            filledForms.map((filledForm) => (
-              <RenderFormsCard
-                key={filledForm.id}
-                title={getFormTitle(filledForm)}
-                status={
-                  filledForm.status === "completed" ||
-                  filledForm.status === "signed"
-                    ? "completed"
-                    : "incomplete"
-                }
-                onViewClick={() => handleViewForm(filledForm.formTemplate)}
-                onEditClick={() =>
-                  navigate(
-                    ROUTE_PATHS.DYNAMIC_FORMS.replace(
-                      ":appointmentId",
-                      id
-                    ).replace(":businessUri", businessUri) +
-                      `?formId=${filledForm.formTemplateId}`
-                  )
-                }
-              />
-            ))}
+          {appointMent.allFormsCompleted ? (
+            // Show filled forms when all forms are completed
+            <>
+              <span className="info-title">Filled Forms:</span>
+              {filledForms.length > 0 &&
+                filledForms.map((filledForm) => (
+                  <RenderFormsCard
+                    key={filledForm.id}
+                    title={getFormTitle(filledForm)}
+                    status={
+                      filledForm.status === "completed" ||
+                      filledForm.status === "signed"
+                        ? "completed"
+                        : "incomplete"
+                    }
+                    onViewClick={() => handleViewForm(filledForm.formTemplate)}
+                    onEditClick={() =>
+                      navigate(
+                        ROUTE_PATHS.DYNAMIC_FORMS.replace(
+                          ":appointmentId",
+                          id
+                        ).replace(":businessUri", businessUri) +
+                          `?formId=${filledForm.formTemplateId}`
+                      )
+                    }
+                  />
+                ))}
+            </>
+          ) : (
+            // Show all forms with status when forms are not completed
+            <>
+              <span className="info-title">Forms:</span>
+              {allForms.length > 0 ? (
+                allForms.map((form) => (
+                  <RenderFormsCard
+                    key={form.id}
+                    title={form.title || "Untitled Form"}
+                    status={getFormStatus(form.id)}
+                    onEditClick={() =>
+                      navigate(
+                        ROUTE_PATHS.DYNAMIC_FORMS.replace(
+                          ":appointmentId",
+                          id
+                        ).replace(":businessUri", businessUri) +
+                          `?formId=${form.id}`
+                      )
+                    }
+                    onViewClick={() => handleViewForm(form)}
+                  />
+                ))
+              ) : (
+                <p>No appointment details available.</p>
+              )}
+            </>
+          )}
         </div>
       </div>
 

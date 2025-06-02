@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../../../context/SnackbarContext";
 import useAuth from "../../../../context/useAuth";
@@ -13,6 +14,7 @@ import "./login.scss";
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { handleAuthSuccess } = useAuth();
   const [forgetpassword, setForgotPassword] = useState(false);
   const { showAlert } = useSnackbar();
@@ -31,7 +33,12 @@ const LoginPage = () => {
       );
     } catch (error) {
       console.error("LoginFailed:", error);
-      showAlert("error", error.message.includes('user-not-found') ? 'Account not found, Please signup and try again.' : error?.message || "Login failed! Try again later.");
+      showAlert(
+        "error",
+        error.message.includes("user-not-found")
+          ? "Account not found, Please signup and try again."
+          : error?.message || "Login failed! Try again later."
+      );
     }
   };
 
@@ -66,14 +73,23 @@ const LoginPage = () => {
 
               <div className="form-group">
                 <label htmlFor="password">Password</label>
-                <input
-                  type="password"
-                  id="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter Password"
-                  required
-                />
+                <div className="password-input-container">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter Password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="password-toggle-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </button>
+                </div>
               </div>
 
               <div className="forgot-password">

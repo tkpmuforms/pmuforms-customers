@@ -1,10 +1,10 @@
-import React, { useState } from "react";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import "./forgotPasswordForm.scss"; // Import the CSS file for styling
+import { useState } from "react";
+import "./forgotPasswordForm.scss";
 
 const ForgotPasswordForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");
-  const auth = getAuth(); // Get Firebase Auth instance
+  const auth = getAuth();
 
   const handleInputChange = (e) => {
     setEmail(e.target.value);
@@ -13,10 +13,9 @@ const ForgotPasswordForm = ({ onCancel }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send password reset email
       await sendPasswordResetEmail(auth, email);
       alert(`Reset link sent to: ${email}`);
-      onCancel(); // Call the callback to switch back to the login form
+      onCancel();
     } catch (error) {
       console.error("Error sending password reset email:", error.message);
       alert("Failed to send reset link. Please try again.");
@@ -28,7 +27,8 @@ const ForgotPasswordForm = ({ onCancel }) => {
       <div className="forgot-password-container">
         <h2>Forgot Password</h2>
         <p className="subtext">
-          Provide us with your registered email so we can send you reset instructions.
+          Provide us with your registered email so we can send you reset
+          instructions.
         </p>
 
         <form onSubmit={handleSubmit} className="forgot-password-form">
@@ -45,10 +45,7 @@ const ForgotPasswordForm = ({ onCancel }) => {
           </div>
 
           <div className="switch-auth">
-            <button
-              onClick={onCancel}
-              className="switch-auth-button"
-            >
+            <button onClick={onCancel} className="switch-auth-button">
               Back to Login
             </button>
           </div>
@@ -56,13 +53,11 @@ const ForgotPasswordForm = ({ onCancel }) => {
             Send Reset Link
           </button>
         </form>
-       
 
         <div className="terms-text">
-          By proceeding, you agree to our <a href="/">Terms and conditions</a> and our <a href="/">Privacy policy</a>.
+          By proceeding, you agree to our <a href="/">Terms and conditions</a>{" "}
+          and our <a href="/">Privacy policy</a>.
         </div>
-
-     
       </div>
     </div>
   );

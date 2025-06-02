@@ -1,9 +1,9 @@
-import React, { useState } from "react";
-import "./searchpage.scss";
-import { searchArtist, switchArtist } from "../../services/services";
-import { useSnackbar } from "../../context/SnackbarContext";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSnackbar } from "../../context/SnackbarContext";
 import useAuth from "../../context/useAuth";
+import { searchArtist, switchArtist } from "../../services/services";
+import "./searchpage.scss";
 
 const SearchPage = () => {
   const [query, setQuery] = useState("");
@@ -45,11 +45,10 @@ const SearchPage = () => {
 
   const confirmBooking = async () => {
     if (!selectedArtist) return;
-    console.log("Selected artist:", selectedArtist);
+
     setActionLoading(true);
     try {
       const res = await switchArtist(selectedArtist.userId);
-      console.log("Switched context:", res);
       setShowDialog(false);
       showAlert(
         "success",

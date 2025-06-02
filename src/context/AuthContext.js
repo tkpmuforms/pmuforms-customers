@@ -39,28 +39,25 @@ export const AuthProvider = ({ children }) => {
     if (token && isValidToken(token)) {
       setAuthHeader(token);
     } else {
-      const rawUri = localStorage.getItem("businessUri");
-      const businessUri =
-        rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
-
-      dispatch(setLoading(false));
-      dispatch(setAuthenticated(false));
-      dispatch(setUser(null));
-
-      const currentPath = window.location.pathname;
-      const publicPaths = [
-        "/privacy-policy",
-        "/support",
-        "/terms-and-agreement",
-      ];
-
-      if (publicPaths.includes(currentPath)) {
-        navigate(currentPath);
-      } else if (businessUri) {
-        navigate(`/${businessUri}`);
-      } else {
-        navigate("/");
-      }
+      // const rawUri = localStorage.getItem("businessUri");
+      // const businessUri =
+      //   rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
+      // dispatch(setLoading(false));
+      // dispatch(setAuthenticated(false));
+      // dispatch(setUser(null));
+      // const currentPath = window.location.pathname;
+      // const publicPaths = [
+      //   "/privacy-policy",
+      //   "/support",
+      //   "/terms-and-agreement",
+      // ];
+      // if (publicPaths.includes(currentPath)) {
+      //   navigate(currentPath);
+      // } else if (businessUri) {
+      //   navigate(`/${businessUri}`);
+      // } else {
+      //   navigate("/");
+      // }
     }
   }, [dispatch]);
 

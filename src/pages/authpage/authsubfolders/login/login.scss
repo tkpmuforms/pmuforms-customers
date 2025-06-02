@@ -39,6 +39,42 @@
           border-radius: 10px;
           font-size: 14px;
         }
+
+        .password-input-container {
+          position: relative;
+          display: flex;
+          align-items: center;
+
+          input {
+            width: calc(100% - 17px);
+            padding: 10px 40px 10px 10px;
+            border: 1px solid #ddd;
+            background-color: #bcbbc133;
+            border-radius: 10px;
+            font-size: 14px;
+          }
+
+          .password-toggle-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 5px;
+
+            &:hover {
+              color: #800080;
+            }
+
+            &:focus {
+              outline: none;
+            }
+          }
+        }
       }
 
       .forgot-password {

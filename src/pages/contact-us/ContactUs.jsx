@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";

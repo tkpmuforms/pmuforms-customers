@@ -1,22 +1,22 @@
 import imageCompression from "browser-image-compression";
 import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
 import useAuth from "../../context/useAuth";
 import { storage } from "../../firebase/firebase";
+import { ROUTE_PATHS } from "../../routes/routes";
 import {
   createFilledForm,
   getAllFilledFormsForAppointment,
   getFormsForAppointMentById,
 } from "../../services/services";
 import "./dynamicForms.scss";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
 import { renderFormFields } from "./RenderFormFields";
-import { ROUTE_PATHS } from "../../routes/routes";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
