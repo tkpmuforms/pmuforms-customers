@@ -73,8 +73,8 @@ const AuthenticatedNavbar = () => {
           className="authLogo"
           onClick={() => handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)}
           style={{
-            cursor: isArtist ? "default" : "pointer",
-            opacity: isArtist ? 0.5 : 1,
+            cursor: "pointer",
+            opacity: 1,
           }}
         >
           {USE_COMPANY_LOGO ? (
@@ -89,25 +89,24 @@ const AuthenticatedNavbar = () => {
         </div>
 
         {/* Mobile Menu - Only show if not an artist */}
-        {!isArtist && (
-          <div
-            ref={mobileMenuRef}
-            className={`authlinks ${mobileMenuVisible ? "visible" : ""}`}
-          >
-            <ul>
-              <li>
-                <Link
-                  to={ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
-                    ":businessUri",
-                    businessUri
-                  )}
-                  onClick={() =>
-                    handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)
-                  }
-                >
-                  Home
-                </Link>
-              </li>
+
+        <div
+          ref={mobileMenuRef}
+          className={`authlinks ${mobileMenuVisible ? "visible" : ""}`}
+        >
+          <ul>
+            <li>
+              <Link
+                to={ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
+                  ":businessUri",
+                  businessUri
+                )}
+                onClick={() => handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)}
+              >
+                Home
+              </Link>
+            </li>
+            {!isArtist && (
               <li>
                 <Link
                   to={ROUTE_PATHS.APPOINTMENTS.replace(
@@ -119,22 +118,22 @@ const AuthenticatedNavbar = () => {
                   Appointment Forms
                 </Link>
               </li>
-              <li>
-                <Link
-                  to={ROUTE_PATHS.SUPPORT.replace(":businessUri", businessUri)}
-                  onClick={() => handleNavigation(ROUTE_PATHS.SUPPORT)}
-                >
-                  Contact Support
-                </Link>
+            )}
+            <li>
+              <Link
+                to={ROUTE_PATHS.SUPPORT.replace(":businessUri", businessUri)}
+                onClick={() => handleNavigation(ROUTE_PATHS.SUPPORT)}
+              >
+                Contact Support
+              </Link>
+            </li>
+            {mobileMenuVisible && (
+              <li className="mobile-logout">
+                <span onClick={handleLogout}>Logout</span>
               </li>
-              {mobileMenuVisible && (
-                <li className="mobile-logout">
-                  <span onClick={handleLogout}>Logout</span>
-                </li>
-              )}
-            </ul>
-          </div>
-        )}
+            )}
+          </ul>
+        </div>
       </div>
 
       {/* Avatar & Hamburger Menu */}

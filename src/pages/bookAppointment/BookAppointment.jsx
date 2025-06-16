@@ -128,7 +128,7 @@ const BookAppointment = () => {
       if (result && result.customer) {
         setCustomers((prevCustomers) => [result.customer, ...prevCustomers]);
         setSelectedCustomer(result.customer);
-        showAlert("success", "Customer created successfully");
+        showAlert("success", "Client created successfully");
         handleCloseCreateModal();
       }
     } catch (error) {
