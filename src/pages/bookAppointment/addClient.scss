@@ -1,0 +1,176 @@
+.search-page {
+  font-family: sans-serif;
+  padding: 2rem;
+  background: #fff;
+  height: 100%;
+  color: var(--pmu-grey-text);
+
+  .title {
+    color: var(--pmu-primary-dark);
+    margin-bottom: 1rem;
+  }
+
+  .search-bar {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+
+    input {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--pmu-primary-light);
+      border-radius: 4px;
+      font-size: 1rem;
+      color: var(--pmu-primary-dark);
+    }
+
+    button {
+      background-color: var(--pmu-primary);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      &:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+      }
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+  }
+
+  .results {
+    height: calc(100% - 200px);
+    .loading-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      color: var(--pmu-grey-text);
+
+      .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid var(--pmu-primary);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 1rem;
+      }
+
+      p {
+        font-size: 1rem;
+        margin: 0;
+      }
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 2rem;
+      color: var(--pmu-grey-text);
+
+      p {
+        font-size: 1rem;
+        margin: 0;
+      }
+    }
+
+    .artist-item {
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+      font-weight: bold;
+      color: black;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+    }
+  }
+}
+
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.dialog {
+  background-color: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+  color: var(--pmu-primary-dark);
+
+  p {
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+
+  .dialog-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+
+    button {
+      flex: 1;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+
+      .spinner {
+        width: 16px;
+        height: 16px;
+        border: 2px solid transparent;
+        border-top: 2px solid #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+      }
+    }
+
+    button:first-of-type {
+      background-color: #ccc;
+    }
+
+    button:last-of-type {
+      background-color: var(--pmu-primary);
+      color: white;
+    }
+  }
+}
+
+// Spinner animation
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}

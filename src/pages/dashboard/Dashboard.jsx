@@ -1,6 +1,6 @@
 import { CircularProgress, Tooltip } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   BookAnAppointmentButtonSvg,
   BookAnAppointmentSvg,
@@ -80,6 +80,7 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
+  const [isArtist, setIsArtist] = useState(false);
   const [businessName, setBusinessName] = useState(
     localStorage.getItem("businessName")
   );
@@ -88,6 +89,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
   const { showAlert } = useSnackbar();
+  const location = useLocation();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,6 +112,11 @@ const Dashboard = () => {
           localStorage.setItem("businessName", businessRes.artist.businessName);
           setBusinessName(businessRes.artist.businessName);
           localStorage.setItem("artistId", businessRes.artist.userId);
+
+          if (customerRes?.user?.artistUri && location.pathname.split("/")[1] === customerRes?.user?.artistUri) {
+            localStorage.setItem("isArtist", true);
+            setIsArtist(true);
+          }
         }
 
         // Update appointments
@@ -187,7 +194,7 @@ const Dashboard = () => {
               {businessName}
             </span>
           </p>
-          {appointments?.length > 0 && hasIncompleteForms && (
+          {appointments?.length > 0 && hasIncompleteForms && !isArtist && (
             <div className="alert">
               <WarningSvg />
               <p>
@@ -196,7 +203,6 @@ const Dashboard = () => {
             </div>
           )}
         </header>
-
         <div className="actions-section">
           <div
             className="action-card"
@@ -211,107 +217,121 @@ const Dashboard = () => {
           >
             <BookAnAppointmentSvg />
             <div>
-              <h5>Fill Out a New Form</h5>
+              <h5>Fill Out a New Form {isArtist && "for an Client"}</h5>
               <p>
                 Fill out a new form for your next appointment by choosing your
                 preferred appointment date and service.
               </p>
             </div>
           </div>
-          <div
-            className="action-card"
-            onClick={() =>
-              navigate(
-                ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
-              )
-            }
-          >
-            <ViewPastAppointmentsSvg />
-            <div>
-              <h5>View All Appointment Forms</h5>
-              <p>
-                Review your previous forms, access details of your previous
-                appointments.
-              </p>
-            </div>
-          </div>
-          <div
-            className="action-card"
-            onClick={() => setShowPersonalInfo(true)}
-          >
-            <EditPersonalInformationSvg />
-            <div>
-              <h5>Update Personal Information</h5>
-              <p>View and edit your personal information easily.</p>
-            </div>
-          </div>
-        </div>
-
-        <section className="appointments-section">
-          <h3>Recent Appointment Forms</h3>
-          <div className="see-all-appointments">
-            <p
-              onClick={() =>
-                navigate(
-                  ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
-                )
-              }
-            >
-              View All
-            </p>
-          </div>
-          <div className="appointments-list">
-            {loading ? (
+          {
+            isArtist ? <></> :
+            (
+              <>
               <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <CircularProgress size={100} color="#8e2d8e" />
-              </div>
-            ) : appointments?.length > 0 ? (
-              appointments
-                .reverse()
-                .slice(0, 3)
-                .map((appointment, index) => (
-                  <RenderAppointmentCard
-                    key={index}
-                    title={appointment?.serviceDetails
-                      .map((service) => service.service)
-                      .join(", ")}
-                    date={appointment?.date}
-                    signed={appointment?.signed}
-                    formsFilled={appointment?.filledFormsCount || 0}
-                    status={appointment?.allFormsCompleted}
-                    ViewClick={() =>
-                      navigate(
-                        ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
-                          ":id",
-                          appointment.id
-                        ).replace(":businessUri", businessUri)
-                      )
-                    }
-                    DeleteClick={() => removeAppointment(appointment.id)}
-                  />
-                ))
-            ) : (
-              <div className="no-appointments">
-                <NoAppointmentsSvg />
-                <p>You have no upcoming appointments</p>
-                <BookAnAppointmentButtonSvg
+                  className="action-card"
                   onClick={() =>
                     navigate(
-                      ROUTE_PATHS.BOOK_APPOINTMENT.replace(":id", artistId)
+                      ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
                     )
                   }
-                  style={{ cursor: "pointer", marginTop: "1rem" }}
-                />
+                >
+                  <ViewPastAppointmentsSvg />
+                  <div>
+                    <h5>View All Appointment Forms</h5>
+                    <p>
+                      Review your previous forms, access details of your previous
+                      appointments.
+                    </p>
+                  </div>
+                </div>
+                <div
+                  className="action-card"
+                  onClick={() => setShowPersonalInfo(true)}
+                >
+                  <EditPersonalInformationSvg />
+                  <div>
+                    <h5>Update Personal Information</h5>
+                    <p>View and edit your personal information easily.</p>
+                  </div>
+                </div>
+              </>
+            )
+          }
+          
+        </div>
+        {
+          isArtist ? 
+          <></> :
+          (
+            <section className="appointments-section">
+              <h3>Recent Appointment Forms</h3>
+              <div className="see-all-appointments">
+                <p
+                  onClick={() =>
+                    navigate(
+                      ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
+                    )
+                  }
+                >
+                  View All
+                </p>
               </div>
-            )}
-          </div>
-        </section>
+              <div className="appointments-list">
+                {loading ? (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <CircularProgress size={100} color="#8e2d8e" />
+                  </div>
+                ) : appointments?.length > 0 ? (
+                  appointments
+                    .reverse()
+                    .slice(0, 3)
+                    .map((appointment, index) => (
+                      <RenderAppointmentCard
+                        key={index}
+                        title={appointment?.serviceDetails
+                          .map((service) => service.service)
+                          .join(", ")}
+                        date={appointment?.date}
+                        signed={appointment?.signed}
+                        formsFilled={appointment?.filledFormsCount || 0}
+                        status={appointment?.allFormsCompleted}
+                        ViewClick={() =>
+                          navigate(
+                            ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
+                              ":id",
+                              appointment.id
+                            ).replace(":businessUri", businessUri)
+                          )
+                        }
+                        DeleteClick={() => removeAppointment(appointment.id)}
+                      />
+                    ))
+                ) : (
+                  <div className="no-appointments">
+                    <NoAppointmentsSvg />
+                    <p>You have no upcoming appointments</p>
+                    <BookAnAppointmentButtonSvg
+                      onClick={() =>
+                        navigate(
+                          ROUTE_PATHS.BOOK_APPOINTMENT.replace(":id", artistId)
+                        )
+                      }
+                      style={{ cursor: "pointer", marginTop: "1rem" }}
+                    />
+                  </div>
+                )}
+              </div>
+            </section>
+          )
+        }
+        
       </div>
     </div>
   );

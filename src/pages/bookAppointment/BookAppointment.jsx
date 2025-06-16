@@ -11,6 +11,7 @@ import { useSnackbar } from "../../context/SnackbarContext";
 import { ROUTE_PATHS } from "../../routes/routes";
 import { bookAppointment, getArtistServices } from "../../services/services";
 import "./bookAppointment.scss";
+import CustomerSelector from "./CustomerSelector";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,11 +29,42 @@ const BookAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
   const { showAlert } = useSnackbar();
-
+  const isArtist = localStorage.getItem("isArtist");
+  const [selectedCustomer, setCustomerId] = useState(null);
+const customers = [
+  {
+  "id": "p7Z6JuFiU1bsvhkTkrF8fFrsybY2",
+  "name": "Taofeek Alagbada",
+  "email": "taolakllc@gmail.com",
+  "lastLoggedIn": {
+    "$date": "2025-06-16T12:09:37.522Z"
+  },
+  "info": {
+    "client_name": "Taofeek Alagbada",
+    "_id": {
+      "$oid": "6850079050c94bad5b793dc8"
+    }
+  },
+  "notes": [],
+  "createdAt": {
+    "$date": "2025-06-16T12:01:20.196Z"
+  },
+  "updatedAt": {
+    "$date": "2025-06-16T12:09:37.524Z"
+  },
+  "artistUri": "luxe-beauty-bar"
+}
+]
   // Get user's timezone
   const userTimezone = dayjs.tz.guess();
 
   useEffect(() => {
+
+    if (isArtist) {
+      // If the user is an artist, fetch their client list
+
+    }
+
     // Fetch artist and services
     setFetchingServices(true);
     getArtistServices(artistId)
@@ -110,10 +142,11 @@ const BookAppointment = () => {
           <p>Go back to dashboard</p>
         </div>
         <div className="book-appointment-page">
-          <h1>Fill Out a New Form</h1>
+          <h1>Fill Out a New Form { isArtist && "for a Client"}</h1>
           <p className="description">
-            Important: Don’t wait until the day of your appointment. Some of
-            this information must be filled out a few days in advance.
+          {
+            isArtist ? "Complete an appointment form for a client and review with them on your app." : "Important: Don’t wait until the day of your appointment. Some of this information must be filled out a few days in advance."
+          }
           </p>
 
           {fetchingServices ? (
@@ -128,6 +161,18 @@ const BookAppointment = () => {
             </div>
           ) : (
             <>
+            {
+              isArtist && (
+                <div className="form-group">
+                  <p htmlFor="appointment-date">
+                    Choose a client*
+                  </p>
+                  <div className="date-picker">
+                    <CustomerSelector customers={customers} onSelect={setCustomerId} value={selectedCustomer?.id} />
+                  </div>
+                </div>
+              )
+            }
               <div className="form-group">
                 <p htmlFor="appointment-date">
                   What's the date of your upcoming appointment(s)?*
