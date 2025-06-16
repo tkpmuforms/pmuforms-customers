@@ -38,14 +38,31 @@ export const deleteAppointment = async (appointmentId) => {
 
 export const bookAppointment = async (data) => {
   try {
-    const response = await axiosInstance.post(
-      "api/appointments/customer/book-appointment",
-      data
-    );
+    // Determine if we're booking as an artist for a customer
+    const isArtist = localStorage.getItem("isArtist");
+    let endpoint = "api/appointments/customer/book-appointment";
+    if (isArtist && data.customerId) {
+      endpoint = `api/appointments/customer/book-appointment?customerId=${data.customerId}`;
+    }
+    const response = await axiosInstance.post(endpoint, data);
     return response.data; // Return the response data
   } catch (error) {
     console.error("Error booking appointment:", error);
     throw error; // Rethrow error for the caller to handle
+  }
+};
+export const createFilledForm = async (data) => {
+  try {
+    const isArtist = localStorage.getItem("isArtist");
+    let endpoint = "/api/filled-forms/submit";
+    if (isArtist && data.customerId) {
+      endpoint = `/api/filled-forms/submit?customerId=${data.customerId}`;
+    }
+    const response = await axiosInstance.post(endpoint, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating filled form:", error);
+    throw error;
   }
 };
 
@@ -153,16 +170,6 @@ export const getAllFilledFormsForAppointment = async (appointmentId) => {
   }
 };
 
-export const createFilledForm = async (data) => {
-  try {
-    const response = await axiosInstance.post("/api/filled-forms/submit", data);
-    return response.data;
-  } catch (error) {
-    console.error("Error creating filled form:", error);
-    throw error;
-  }
-};
-
 export const getRootTemplateForm = () => {
   return axiosInstance.get("/api/forms/root-templates");
 };
@@ -200,6 +207,53 @@ export const switchArtist = async (artistId) => {
     return response.data;
   } catch (error) {
     console.error("Error switching artist:", error);
+    throw error;
+  }
+};
+
+export const getMyCustomers = async (page = 1, limit = 5) => {
+  try {
+    const response = await axiosInstance.get("/api/customers/my-customers", {
+      params: {
+        page,
+        limit,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching my customers:", error);
+    throw error;
+  }
+};
+
+export const searchMyCustomers = async (name, page = 1, limit = 10) => {
+  try {
+    const response = await axiosInstance.get(
+      "/api/customers/my-customers/search",
+      {
+        params: {
+          name,
+          page,
+          limit,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error searching my customers:", error);
+    throw error;
+  }
+};
+
+export const artistCreateCustomer = async (data) => {
+  try {
+    const response = await axiosInstance.post(
+      "/api/customers/my-customers/create-customer",
+      data
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error creating customer as artist:", error);
     throw error;
   }
 };
