@@ -1,17 +1,19 @@
 import { useState } from "react";
 import { Modal, TextField, Box, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import "./createCustomerModal.scss";
+import "./createClientModal.scss";
 
-const CreateCustomerModal = ({ open, onClose, onCreateCustomer, loading }) => {
+const CreateClientModal = ({ open, onClose, onCreateClient, loading }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
 
   const handleSubmit = () => {
     if (!name.trim()) return;
-    onCreateCustomer({
+    onCreateClient({
       name: name.trim(),
       email: email.trim() || null,
+      phone: phone.trim() || null,
     });
   };
 
@@ -69,7 +71,7 @@ const CreateCustomerModal = ({ open, onClose, onCreateCustomer, loading }) => {
             variant="outlined"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            sx={{ mb: 3 }}
+            sx={{ mb: 2 }}
           />
           <TextField
             margin="dense"
@@ -80,7 +82,18 @@ const CreateCustomerModal = ({ open, onClose, onCreateCustomer, loading }) => {
             variant="outlined"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            sx={{ mb: 3 }}
+            sx={{ mb: 2 }}
+          />
+          <TextField
+            margin="dense"
+            id="customer-phone"
+            label="Customer Phone Number (Optional)"
+            type="phone"
+            fullWidth
+            variant="outlined"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            sx={{ mb: 2 }}
           />
           <div className="modal-footer">
             <button
@@ -106,4 +119,4 @@ const CreateCustomerModal = ({ open, onClose, onCreateCustomer, loading }) => {
   );
 };
 
-export default CreateCustomerModal;
+export default CreateClientModal;

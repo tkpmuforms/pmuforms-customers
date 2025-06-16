@@ -16,6 +16,7 @@ const AuthenticatedNavbar = () => {
   const isDropdownOpen = Boolean(anchorEl);
   const businessUri = localStorage.getItem("businessUri");
   const businessName = localStorage.getItem("businessName");
+  const isArtist = localStorage.getItem("isArtist");
 
   const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || true);
 
@@ -39,6 +40,7 @@ const AuthenticatedNavbar = () => {
 
   // Close menu when navigating
   const handleNavigation = (path) => {
+    if (isArtist) return; // Prevent navigation if user is an artist
     navigate(path.replace(":businessUri", businessUri));
     setMobileMenuVisible(false); // Close menu
   };
@@ -70,7 +72,10 @@ const AuthenticatedNavbar = () => {
         <div
           className="authLogo"
           onClick={() => handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)}
-          style={{ cursor: "pointer" }}
+          style={{
+            cursor: isArtist ? "default" : "pointer",
+            opacity: isArtist ? 0.5 : 1,
+          }}
         >
           {USE_COMPANY_LOGO ? (
             <LogoSvg />
@@ -83,49 +88,53 @@ const AuthenticatedNavbar = () => {
           )}
         </div>
 
-        {/* Mobile Menu */}
-        <div
-          ref={mobileMenuRef}
-          className={`authlinks ${mobileMenuVisible ? "visible" : ""}`}
-        >
-          <ul>
-            <li>
-              <Link
-                to={ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
-                  ":businessUri",
-                  businessUri
-                )}
-                onClick={() => handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)}
-              >
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTE_PATHS.APPOINTMENTS.replace(
-                  ":businessUri",
-                  businessUri
-                )}
-                onClick={() => handleNavigation(ROUTE_PATHS.APPOINTMENTS)}
-              >
-                Appointment Forms
-              </Link>
-            </li>
-            <li>
-              <Link
-                to={ROUTE_PATHS.SUPPORT.replace(":businessUri", businessUri)}
-                onClick={() => handleNavigation(ROUTE_PATHS.SUPPORT)}
-              >
-                Contact Support
-              </Link>
-            </li>
-            {mobileMenuVisible && (
-              <li className="mobile-logout">
-                <span onClick={handleLogout}>Logout</span>
+        {/* Mobile Menu - Only show if not an artist */}
+        {!isArtist && (
+          <div
+            ref={mobileMenuRef}
+            className={`authlinks ${mobileMenuVisible ? "visible" : ""}`}
+          >
+            <ul>
+              <li>
+                <Link
+                  to={ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(
+                    ":businessUri",
+                    businessUri
+                  )}
+                  onClick={() =>
+                    handleNavigation(ROUTE_PATHS.CUSTOMER_DASHBOARD)
+                  }
+                >
+                  Home
+                </Link>
               </li>
-            )}
-          </ul>
-        </div>
+              <li>
+                <Link
+                  to={ROUTE_PATHS.APPOINTMENTS.replace(
+                    ":businessUri",
+                    businessUri
+                  )}
+                  onClick={() => handleNavigation(ROUTE_PATHS.APPOINTMENTS)}
+                >
+                  Appointment Forms
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to={ROUTE_PATHS.SUPPORT.replace(":businessUri", businessUri)}
+                  onClick={() => handleNavigation(ROUTE_PATHS.SUPPORT)}
+                >
+                  Contact Support
+                </Link>
+              </li>
+              {mobileMenuVisible && (
+                <li className="mobile-logout">
+                  <span onClick={handleLogout}>Logout</span>
+                </li>
+              )}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Avatar & Hamburger Menu */}
