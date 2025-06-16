@@ -91,6 +91,48 @@ const Dashboard = () => {
   const { showAlert } = useSnackbar();
   const location = useLocation();
 
+  const isSubscriptionError = (error) => {
+    console.error("Checking for subscription error:", error);
+
+    // Check direct error structure (when error is the response itself)
+    if (
+      error?.statusCode === 403 &&
+      error?.message?.includes("Artist Subscription Inactive")
+    ) {
+      return true;
+    }
+
+    // Check nested response structure (when error has response property)
+    if (
+      error?.response?.status === 403 &&
+      (error?.response?.data?.message?.includes(
+        "Artist Subscription Inactive"
+      ) ||
+        error?.response?.data?.error === "Forbidden")
+    ) {
+      return true;
+    }
+
+    // Check if error.response.data is the direct error object
+    if (
+      error?.response?.data?.statusCode === 403 &&
+      error?.response?.data?.message?.includes("Artist Subscription Inactive")
+    ) {
+      return true;
+    }
+
+    return false;
+  };
+
+  // Helper function to handle subscription error
+  const handleSubscriptionError = () => {
+    showAlert("error", "Artist Subscription Inactive. Please Subscribe");
+    // Optional: Add a delay before logout to ensure user sees the message
+    setTimeout(() => {
+      logout();
+    }, 2000);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true); // Start loader
@@ -113,7 +155,10 @@ const Dashboard = () => {
           setBusinessName(businessRes.artist.businessName);
           localStorage.setItem("artistId", businessRes.artist.userId);
 
-          if (customerRes?.user?.artistUri && location.pathname.split("/")[1] === customerRes?.user?.artistUri) {
+          if (
+            customerRes?.user?.artistUri &&
+            location.pathname.split("/")[1] === customerRes?.user?.artistUri
+          ) {
             localStorage.setItem("isArtist", true);
             setIsArtist(true);
           }
@@ -142,6 +187,10 @@ const Dashboard = () => {
         setShowPersonalInfo(!hasRequiredInfo);
       } catch (error) {
         console.error("Error fetching data:", error);
+        if (isSubscriptionError(error)) {
+          handleSubscriptionError();
+          return;
+        }
         logout();
       } finally {
         setLoading(false);
@@ -224,114 +273,115 @@ const Dashboard = () => {
               </p>
             </div>
           </div>
-          {
-            isArtist ? <></> :
-            (
-              <>
+          {isArtist ? (
+            <></>
+          ) : (
+            <>
               <div
-                  className="action-card"
-                  onClick={() =>
-                    navigate(
-                      ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
+                className="action-card"
+                onClick={() =>
+                  navigate(
+                    ROUTE_PATHS.APPOINTMENTS.replace(
+                      ":businessUri",
+                      businessUri
                     )
-                  }
-                >
-                  <ViewPastAppointmentsSvg />
-                  <div>
-                    <h5>View All Appointment Forms</h5>
-                    <p>
-                      Review your previous forms, access details of your previous
-                      appointments.
-                    </p>
-                  </div>
+                  )
+                }
+              >
+                <ViewPastAppointmentsSvg />
+                <div>
+                  <h5>View All Appointment Forms</h5>
+                  <p>
+                    Review your previous forms, access details of your previous
+                    appointments.
+                  </p>
                 </div>
-                <div
-                  className="action-card"
-                  onClick={() => setShowPersonalInfo(true)}
-                >
-                  <EditPersonalInformationSvg />
-                  <div>
-                    <h5>Update Personal Information</h5>
-                    <p>View and edit your personal information easily.</p>
-                  </div>
-                </div>
-              </>
-            )
-          }
-          
-        </div>
-        {
-          isArtist ? 
-          <></> :
-          (
-            <section className="appointments-section">
-              <h3>Recent Appointment Forms</h3>
-              <div className="see-all-appointments">
-                <p
-                  onClick={() =>
-                    navigate(
-                      ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)
-                    )
-                  }
-                >
-                  View All
-                </p>
               </div>
-              <div className="appointments-list">
-                {loading ? (
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <CircularProgress size={100} color="#8e2d8e" />
-                  </div>
-                ) : appointments?.length > 0 ? (
-                  appointments
-                    .reverse()
-                    .slice(0, 3)
-                    .map((appointment, index) => (
-                      <RenderAppointmentCard
-                        key={index}
-                        title={appointment?.serviceDetails
-                          .map((service) => service.service)
-                          .join(", ")}
-                        date={appointment?.date}
-                        signed={appointment?.signed}
-                        formsFilled={appointment?.filledFormsCount || 0}
-                        status={appointment?.allFormsCompleted}
-                        ViewClick={() =>
-                          navigate(
-                            ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
-                              ":id",
-                              appointment.id
-                            ).replace(":businessUri", businessUri)
-                          )
-                        }
-                        DeleteClick={() => removeAppointment(appointment.id)}
-                      />
-                    ))
-                ) : (
-                  <div className="no-appointments">
-                    <NoAppointmentsSvg />
-                    <p>You have no upcoming appointments</p>
-                    <BookAnAppointmentButtonSvg
-                      onClick={() =>
+              <div
+                className="action-card"
+                onClick={() => setShowPersonalInfo(true)}
+              >
+                <EditPersonalInformationSvg />
+                <div>
+                  <h5>Update Personal Information</h5>
+                  <p>View and edit your personal information easily.</p>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+        {isArtist ? (
+          <></>
+        ) : (
+          <section className="appointments-section">
+            <h3>Recent Appointment Forms</h3>
+            <div className="see-all-appointments">
+              <p
+                onClick={() =>
+                  navigate(
+                    ROUTE_PATHS.APPOINTMENTS.replace(
+                      ":businessUri",
+                      businessUri
+                    )
+                  )
+                }
+              >
+                View All
+              </p>
+            </div>
+            <div className="appointments-list">
+              {loading ? (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <CircularProgress size={100} color="#8e2d8e" />
+                </div>
+              ) : appointments?.length > 0 ? (
+                appointments
+                  .reverse()
+                  .slice(0, 3)
+                  .map((appointment, index) => (
+                    <RenderAppointmentCard
+                      key={index}
+                      title={appointment?.serviceDetails
+                        .map((service) => service.service)
+                        .join(", ")}
+                      date={appointment?.date}
+                      signed={appointment?.signed}
+                      formsFilled={appointment?.filledFormsCount || 0}
+                      status={appointment?.allFormsCompleted}
+                      ViewClick={() =>
                         navigate(
-                          ROUTE_PATHS.BOOK_APPOINTMENT.replace(":id", artistId)
+                          ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
+                            ":id",
+                            appointment.id
+                          ).replace(":businessUri", businessUri)
                         )
                       }
-                      style={{ cursor: "pointer", marginTop: "1rem" }}
+                      DeleteClick={() => removeAppointment(appointment.id)}
                     />
-                  </div>
-                )}
-              </div>
-            </section>
-          )
-        }
-        
+                  ))
+              ) : (
+                <div className="no-appointments">
+                  <NoAppointmentsSvg />
+                  <p>You have no upcoming appointments</p>
+                  <BookAnAppointmentButtonSvg
+                    onClick={() =>
+                      navigate(
+                        ROUTE_PATHS.BOOK_APPOINTMENT.replace(":id", artistId)
+                      )
+                    }
+                    style={{ cursor: "pointer", marginTop: "1rem" }}
+                  />
+                </div>
+              )}
+            </div>
+          </section>
+        )}
       </div>
     </div>
   );

@@ -245,7 +245,7 @@ export const searchMyCustomers = async (name, page = 1, limit = 10) => {
   }
 };
 
-export const artistCreateCustomer = async (data) => {
+export const createClient = async (data) => {
   try {
     const response = await axiosInstance.post(
       "/api/customers/my-customers/create-customer",

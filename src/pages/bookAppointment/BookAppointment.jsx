@@ -11,13 +11,13 @@ import { useSnackbar } from "../../context/SnackbarContext";
 import { ROUTE_PATHS } from "../../routes/routes";
 import {
   bookAppointment,
+  createClient,
   getArtistServices,
   getMyCustomers,
-  artistCreateCustomer,
 } from "../../services/services";
 import "./bookAppointment.scss";
+import CreateClientModal from "./CreateClientModal";
 import CustomerSelector from "./CustomerSelector";
-import CreateCustomerModal from "./CreateCustomerModal";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -122,7 +122,7 @@ const BookAppointment = () => {
 
     setCreatingCustomer(true);
     try {
-      const result = await artistCreateCustomer(customerData);
+      const result = await createClient(customerData);
 
       // Add the new customer to the list and select it
       if (result && result.customer) {
@@ -361,10 +361,10 @@ const BookAppointment = () => {
         </div>
 
         {/* Create Customer Modal Component */}
-        <CreateCustomerModal
+        <CreateClientModal
           open={openCreateModal}
           onClose={handleCloseCreateModal}
-          onCreateCustomer={handleCreateCustomer}
+          onCreateClient={handleCreateCustomer}
           loading={creatingCustomer}
         />
       </div>
