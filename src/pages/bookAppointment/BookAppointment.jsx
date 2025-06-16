@@ -9,9 +9,15 @@ import { useNavigate, useParams } from "react-router-dom";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { ROUTE_PATHS } from "../../routes/routes";
-import { bookAppointment, getArtistServices } from "../../services/services";
+import {
+  bookAppointment,
+  getArtistServices,
+  getMyCustomers,
+  artistCreateCustomer,
+} from "../../services/services";
 import "./bookAppointment.scss";
 import CustomerSelector from "./CustomerSelector";
+import CreateCustomerModal from "./CreateCustomerModal";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -30,55 +36,57 @@ const BookAppointment = () => {
   const [fetchingServices, setFetchingServices] = useState(true);
   const { showAlert } = useSnackbar();
   const isArtist = localStorage.getItem("isArtist");
-  const [selectedCustomer, setCustomerId] = useState(null);
-const customers = [
-  {
-  "id": "p7Z6JuFiU1bsvhkTkrF8fFrsybY2",
-  "name": "Taofeek Alagbada",
-  "email": "taolakllc@gmail.com",
-  "lastLoggedIn": {
-    "$date": "2025-06-16T12:09:37.522Z"
-  },
-  "info": {
-    "client_name": "Taofeek Alagbada",
-    "_id": {
-      "$oid": "6850079050c94bad5b793dc8"
-    }
-  },
-  "notes": [],
-  "createdAt": {
-    "$date": "2025-06-16T12:01:20.196Z"
-  },
-  "updatedAt": {
-    "$date": "2025-06-16T12:09:37.524Z"
-  },
-  "artistUri": "luxe-beauty-bar"
-}
-]
+
+  // Customer state management
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [customers, setCustomers] = useState([]);
+  const [loadingCustomers, setLoadingCustomers] = useState(false);
+
+  // Create Customer Modal state
+  const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [creatingCustomer, setCreatingCustomer] = useState(false);
+
   // Get user's timezone
   const userTimezone = dayjs.tz.guess();
 
   useEffect(() => {
+    // Fetch data only once when component mounts
+    const fetchInitialData = async () => {
+      // Fetch artist's customers if user is an artist
+      if (isArtist === "true") {
+        setLoadingCustomers(true);
+        try {
+          const res = await getMyCustomers(1, 5); // Fetch first 5 customers initially
+          if (res && res.customers) {
+            setCustomers(res.customers);
+          }
+        } catch (error) {
+          console.error("Error fetching customers:", error);
+          // Use a callback for showAlert to avoid dependency issues
+          if (showAlert) showAlert("error", "Failed to load customers");
+        } finally {
+          setLoadingCustomers(false);
+        }
+      }
 
-    if (isArtist) {
-      // If the user is an artist, fetch their client list
-
-    }
-
-    // Fetch artist and services
-    setFetchingServices(true);
-    getArtistServices(artistId)
-      .then((res) => {
-        setServices(res?.services);
-      })
-      .catch((error) => {
-        showAlert("error", "Failed to load services");
+      // Fetch artist services
+      setFetchingServices(true);
+      try {
+        const res = await getArtistServices(artistId);
+        if (res?.services) {
+          setServices(res.services);
+        }
+      } catch (error) {
         console.error("Error fetching services:", error);
-      })
-      .finally(() => {
+        if (showAlert) showAlert("error", "Failed to load services");
+      } finally {
         setFetchingServices(false);
-      });
-  }, [artistId, showAlert]);
+      }
+    };
+
+    fetchInitialData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Toggle service selection
   const handleServiceChange = (service) => {
@@ -89,8 +97,53 @@ const customers = [
     );
   };
 
+  // Handle customer selection
+  const handleCustomerSelect = (customer) => {
+    // Prevent form refreshes
+    setSelectedCustomer(customer);
+  };
+
+  // Open create customer modal
+  const handleOpenCreateModal = () => {
+    setOpenCreateModal(true);
+  };
+
+  // Close create customer modal
+  const handleCloseCreateModal = () => {
+    setOpenCreateModal(false);
+  };
+
+  // Handle creating a new customer
+  const handleCreateCustomer = async (customerData) => {
+    if (!customerData.name) {
+      showAlert("error", "Customer name is required");
+      return;
+    }
+
+    setCreatingCustomer(true);
+    try {
+      const result = await artistCreateCustomer(customerData);
+
+      // Add the new customer to the list and select it
+      if (result && result.customer) {
+        setCustomers((prevCustomers) => [result.customer, ...prevCustomers]);
+        setSelectedCustomer(result.customer);
+        showAlert("success", "Customer created successfully");
+        handleCloseCreateModal();
+      }
+    } catch (error) {
+      console.error("Error creating customer:", error);
+      showAlert("error", "Failed to create customer");
+    } finally {
+      setCreatingCustomer(false);
+    }
+  };
+
   // Continue button handler
-  const handleContinue = async () => {
+  const handleContinue = async (e) => {
+    // Prevent default form submission
+    if (e) e.preventDefault();
+
     // Validate input
     if (!appointmentDate) {
       showAlert("error", "Please select an appointment date.");
@@ -98,6 +151,10 @@ const customers = [
     }
     if (selectedServices.length === 0) {
       showAlert("error", "Please select at least one service.");
+      return;
+    }
+    if (isArtist === "true" && !selectedCustomer) {
+      showAlert("error", "Please select a client.");
       return;
     }
 
@@ -111,6 +168,11 @@ const customers = [
       appointmentDate: utcAppointmentDate,
       artistId: artistId,
       services: selectedServices.map((service) => service.id),
+      // Add customer ID if an artist is creating the appointment for a customer
+      ...(isArtist === "true" &&
+        selectedCustomer && {
+          customerId: selectedCustomer?.customerId ?? selectedCustomer?.id,
+        }),
     };
 
     try {
@@ -123,8 +185,6 @@ const customers = [
             businessUri
           ).replace(":appointmentId", res.appointment.id)
         );
-        // // Redirect to the appointment form page
-        // navigate(`/customer/forms/appointment/${res?.appointment?.id}`);
       });
     } catch (error) {
       showAlert("error", "Error creating the appointment");
@@ -137,16 +197,34 @@ const customers = [
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div>
-        <div className="go-back" onClick={() => navigate(-1)}>
-          <GoBackSvg />
-          <p>Go back to dashboard</p>
+        <div className="header-container">
+          <div
+            className="go-back"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate(-1);
+            }}
+          >
+            <GoBackSvg />
+            <p>Go back to dashboard</p>
+          </div>
+
+          {isArtist && (
+            <button
+              className="create-customer-button"
+              onClick={handleOpenCreateModal}
+            >
+              Create Customer
+            </button>
+          )}
         </div>
+
         <div className="book-appointment-page">
-          <h1>Fill Out a New Form { isArtist && "for a Client"}</h1>
+          <h1>Fill Out a New Form {isArtist === "true" && "for a Client"}</h1>
           <p className="description">
-          {
-            isArtist ? "Complete an appointment form for a client and review with them on your app." : "Important: Don’t wait until the day of your appointment. Some of this information must be filled out a few days in advance."
-          }
+            {isArtist === "true"
+              ? "Complete an appointment form for a client and review with them on your app."
+              : "Important: Don't wait until the day of your appointment. Some of this information must be filled out a few days in advance."}
           </p>
 
           {fetchingServices ? (
@@ -157,25 +235,34 @@ const customers = [
                 alignItems: "center",
               }}
             >
-              <CircularProgress size={50} color="#8e2d8e" />
+              <CircularProgress size={50} style={{ color: "#8e2d8e" }} />
             </div>
           ) : (
-            <>
-            {
-              isArtist && (
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleContinue(e);
+              }}
+            >
+              {isArtist === "true" && (
                 <div className="form-group">
-                  <p htmlFor="appointment-date">
-                    Choose a client*
-                  </p>
-                  <div className="date-picker">
-                    <CustomerSelector customers={customers} onSelect={setCustomerId} value={selectedCustomer?.id} />
+                  <p htmlFor="client-selector">Choose a client*</p>
+                  <div className="customer-selector">
+                    <CustomerSelector
+                      customers={customers}
+                      onSelect={handleCustomerSelect}
+                      value={selectedCustomer}
+                      loading={loadingCustomers}
+                    />
                   </div>
                 </div>
-              )
-            }
+              )}
               <div className="form-group">
                 <p htmlFor="appointment-date">
-                  What's the date of your upcoming appointment(s)?*
+                  {isArtist
+                    ? "Appointment Date"
+                    : `* What's
+                  the date of your upcoming appointment(s)?*`}
                 </p>
                 <div className="date-picker">
                   <DatePicker
@@ -242,29 +329,44 @@ const customers = [
                   ))}
                 </div>
               </div>
-            </>
+
+              <div className="alert-box">
+                <p>
+                  If you have multiple appointments on the same day, select all
+                  the services for the appointments on that day.
+                </p>
+              </div>
+
+              <div className="button-group">
+                <button
+                  type="button"
+                  className="go-back-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigate(-1);
+                  }}
+                >
+                  Go Back
+                </button>
+                <button
+                  type="submit"
+                  className="continue-button"
+                  disabled={loading}
+                >
+                  {loading ? "Processing..." : "Continue"}
+                </button>
+              </div>
+            </form>
           )}
-
-          <div className="alert-box">
-            <p>
-              If you have multiple appointments on the same day, select all the
-              services for the appointments on that day.
-            </p>
-          </div>
-
-          <div className="button-group">
-            <button className="go-back-button" onClick={() => navigate(-1)}>
-              Go Back
-            </button>
-            <button
-              className="continue-button"
-              onClick={handleContinue}
-              disabled={loading}
-            >
-              {loading ? "Processing..." : "Continue"}
-            </button>
-          </div>
         </div>
+
+        {/* Create Customer Modal Component */}
+        <CreateCustomerModal
+          open={openCreateModal}
+          onClose={handleCloseCreateModal}
+          onCreateCustomer={handleCreateCustomer}
+          loading={creatingCustomer}
+        />
       </div>
     </LocalizationProvider>
   );

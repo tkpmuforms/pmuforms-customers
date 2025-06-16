@@ -58,6 +58,8 @@ const DynamicForms = () => {
   const { showAlert } = useSnackbar();
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
+  const [artistcustomerId, setArtistCustomerId] = useState(null);
+  const isArtist = localStorage.getItem("isArtist");
 
   useEffect(() => {
     const fetchFilledForms = async () => {
@@ -66,6 +68,11 @@ const DynamicForms = () => {
           appointmentId
         );
         setFilledForms(fetchedFilledForms?.filledForms || []);
+        if (isArtist) {
+          setArtistCustomerId(
+            fetchedFilledForms?.filledForms?.[0]?.clientId || null
+          );
+        }
 
         // Store each form's data under its own formTemplateId
         const formattedResponses = {};
@@ -262,7 +269,8 @@ const DynamicForms = () => {
       await createFilledForm({
         appointmentId,
         formTemplateId: currentForm.id,
-        data: formResponse[currentForm.id] || {}, // Send only the fields for the current form
+        data: formResponse[currentForm.id] || {},
+        customerId: isArtist ? artistcustomerId : null,
       });
 
       setSaving(false);
