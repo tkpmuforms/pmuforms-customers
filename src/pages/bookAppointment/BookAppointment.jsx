@@ -53,7 +53,7 @@ const BookAppointment = () => {
     // Fetch data only once when component mounts
     const fetchInitialData = async () => {
       // Fetch artist's customers if user is an artist
-      if (isArtist === "true") {
+      if (isArtist) {
         setLoadingCustomers(true);
         try {
           const res = await getMyCustomers(1, 5); // Fetch first 5 customers initially
@@ -153,7 +153,7 @@ const BookAppointment = () => {
       showAlert("error", "Please select at least one service.");
       return;
     }
-    if (isArtist === "true" && !selectedCustomer) {
+    if (isArtist && !selectedCustomer) {
       showAlert("error", "Please select a client.");
       return;
     }
@@ -169,7 +169,7 @@ const BookAppointment = () => {
       artistId: artistId,
       services: selectedServices.map((service) => service.id),
       // Add customer ID if an artist is creating the appointment for a customer
-      ...(isArtist === "true" &&
+      ...(isArtist &&
         selectedCustomer && {
           customerId: selectedCustomer?.customerId ?? selectedCustomer?.id,
         }),
@@ -220,9 +220,9 @@ const BookAppointment = () => {
         </div>
 
         <div className="book-appointment-page">
-          <h1>Fill Out a New Form {isArtist === "true" && "for a Client"}</h1>
+          <h1>Fill Out a New Form {isArtist && "for a Client"}</h1>
           <p className="description">
-            {isArtist === "true"
+            {isArtist
               ? "Complete an appointment form for a client and review with them on your app."
               : "Important: Don't wait until the day of your appointment. Some of this information must be filled out a few days in advance."}
           </p>
@@ -244,7 +244,7 @@ const BookAppointment = () => {
                 handleContinue(e);
               }}
             >
-              {isArtist === "true" && (
+              {isArtist && (
                 <div className="form-group">
                   <p htmlFor="client-selector">Choose a client*</p>
                   <div className="customer-selector">
