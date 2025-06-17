@@ -280,9 +280,9 @@ const Dashboard = () => {
               >
                 <BookAnAppointmentSvg />
                 <div>
-                  <h5>Fill Out a New Form {isArtist && "for an Client"}</h5>
+                  <h5>{isArtist ? 'Start a New Form for a Client' : "Fill Out a New Form"}</h5>
                   <p>
-                    Fill out a new form for your next appointment by choosing
+                    {isArtist ? 'Start' : 'Fill out'} a new form for {isArtist ? "a client's" : 'your'} next appointment by choosing
                     your preferred appointment date and service.
                   </p>
                 </div>
