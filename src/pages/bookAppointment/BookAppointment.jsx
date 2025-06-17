@@ -220,7 +220,9 @@ const BookAppointment = () => {
         </div>
 
         <div className="book-appointment-page">
-          <h1>Fill Out a New Form {isArtist && "for a Client"}</h1>
+          <h1>
+            {isArtist ? "Start a New Form for a Client" : "Fill Out a New Form"}
+          </h1>
           <p className="description">
             {isArtist
               ? "Complete an appointment form for a client and review with them on your app."
