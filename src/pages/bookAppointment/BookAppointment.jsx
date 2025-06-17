@@ -223,6 +223,7 @@ const BookAppointment = () => {
           <h1>
             {isArtist ? "Start a New Form for a Client" : "Fill Out a New Form"}
           </h1>
+
           <p className="description">
             {isArtist
               ? "Complete an appointment form for a client and review with them on your app."
