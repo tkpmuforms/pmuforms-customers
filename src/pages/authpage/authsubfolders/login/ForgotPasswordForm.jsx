@@ -1,9 +1,12 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 import { useState } from "react";
 import "./forgotPasswordForm.scss";
+import { useSnackbar } from "../../../../context/SnackbarContext";
 
 const ForgotPasswordForm = ({ onCancel }) => {
   const [email, setEmail] = useState("");
+  const { showAlert } = useSnackbar();
+
   const auth = getAuth();
 
   const handleInputChange = (e) => {
@@ -14,11 +17,11 @@ const ForgotPasswordForm = ({ onCancel }) => {
     e.preventDefault();
     try {
       await sendPasswordResetEmail(auth, email);
-      alert(`Reset link sent to: ${email}`);
+      showAlert(`Reset link sent to: ${email}`, "success");
       onCancel();
     } catch (error) {
       console.error("Error sending password reset email:", error.message);
-      alert("Failed to send reset link. Please try again.");
+      showAlert("Failed to send reset link. Please try again.", "error");
     }
   };
 
