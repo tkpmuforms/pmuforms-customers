@@ -37,6 +37,12 @@ const CreateClientModal = ({ open, onClose, onCreateClient, loading }) => {
       email: email.trim() || null,
       phone: phone || null, // Already in E.164 format
     });
+
+    // Clear fields after submitting
+    setName("");
+    setEmail("");
+    setPhone("");
+    setPhoneError("");
   };
 
   const handleClose = () => {

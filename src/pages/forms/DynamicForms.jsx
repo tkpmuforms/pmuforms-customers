@@ -48,6 +48,7 @@ const DynamicForms = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  console.log("user", user);
   const businessName = localStorage.getItem("businessName");
   const businessUri = localStorage.getItem("businessUri");
   const [forms, setForms] = useState([]);
@@ -227,7 +228,7 @@ const DynamicForms = () => {
     const compressedFile = await imageCompression(file, options);
 
     try {
-      const storageRef = ref(storage, `images/${user.uid}/${file.name}`);
+      const storageRef = ref(storage, `images/${user.id}/${file.name}`);
       const snapshot = await uploadBytes(storageRef, compressedFile);
       const downloadUrl = await getDownloadURL(snapshot.ref);
       setFormResponse((prev) => ({
