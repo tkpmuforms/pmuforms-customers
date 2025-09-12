@@ -111,7 +111,7 @@ const DynamicForms = () => {
     fetchFilledForms();
   }, [appointmentId, businessName]);
 
-  // Updated useEffect for handling auto-filling forms
+  // Updated useEffect for handling auto-filling forms - skip for artists
   useEffect(() => {
     if (!forms.length) return;
 
@@ -127,6 +127,11 @@ const DynamicForms = () => {
         ...prev,
         [currentForm.id]: filledForm.data,
       }));
+      return;
+    }
+
+    // Skip auto-filling if user is an artist
+    if (isArtist === "true") {
       return;
     }
 
@@ -168,6 +173,7 @@ const DynamicForms = () => {
           });
         }
       });
+
       const dob =
         autofillResponse["date-of-birth"] || autofillResponse["date_of_birth"];
       if (dob) {
@@ -175,6 +181,7 @@ const DynamicForms = () => {
         autofillResponse["age"] = age.toString();
         autofilledFieldIds.add("age");
       }
+
       if (
         currentForm.sections.some((section) =>
           section.data.some((f) => f.id === "date_of_signing")
@@ -203,7 +210,6 @@ const DynamicForms = () => {
       }
     }
   }, [forms, filledForms, currentTab, user]);
-
   const handleInputChange = (currentForm, fieldId, value) => {
     if (!currentForm) return;
 
