@@ -22,7 +22,6 @@ export const HandleSocialLogin = async (
     const businessUri = localStorage.getItem("businessUri");
 
     localStorage.setItem("userEmail", user.email);
-    localStorage.setItem("userName", user.displayName);
 
     const payload = businessUri
       ? { accessToken: userToken, artistId: businessUri }
@@ -61,7 +60,6 @@ export const SignInSuccessWithAuthResult = async (
 
   try {
     localStorage.setItem("userEmail", user.email);
-    localStorage.setItem("userName", user.displayName);
 
     const payload = businessUri
       ? { accessToken: userToken, artistId: businessUri }
