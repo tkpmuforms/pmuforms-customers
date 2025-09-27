@@ -10,14 +10,14 @@ export const getAllAppointments = async (page, itemsPerPage) => {
   try {
     const response = await axiosInstance.get("/api/appointments/customer", {
       params: {
-        page, // Current page number
-        perPage: itemsPerPage, // Number of items per page
+        page,
+        perPage: itemsPerPage,
       },
     });
-    return response.data; // Return the response data
+    return response?.data;
   } catch (error) {
     console.error("Error fetching appointments:", error);
-    throw error; // Rethrow error for the caller to handle
+    throw error;
   }
 };
 
@@ -26,40 +26,40 @@ export const deleteAppointment = async (appointmentId) => {
     const response = await axiosInstance.delete(
       `/api/appointments/${appointmentId}`
     );
-    return response.data; // Return the response data
+    return response?.data;
   } catch (error) {
     console.error(
       `Error deleting appointment with ID ${appointmentId}:`,
       error
     );
-    throw error; // Rethrow error for the caller to handle
+    throw error;
   }
 };
 
 export const bookAppointment = async (data) => {
   try {
-    // Determine if we're booking as an artist for a customer
-    const isArtist = localStorage.getItem("isArtist");
+    const isArtist = localStorage?.getItem("isArtist");
     let endpoint = "api/appointments/customer/book-appointment";
-    if (isArtist && data.customerId) {
+    if (isArtist && data?.customerId) {
       endpoint = `api/appointments/customer/book-appointment?customerId=${data.customerId}`;
     }
     const response = await axiosInstance.post(endpoint, data);
-    return response.data; // Return the response data
+    return response?.data;
   } catch (error) {
     console.error("Error booking appointment:", error);
-    throw error; // Rethrow error for the caller to handle
+    throw error;
   }
 };
+
 export const createFilledForm = async (data) => {
   try {
-    const isArtist = localStorage.getItem("isArtist");
+    const isArtist = localStorage?.getItem("isArtist");
     let endpoint = "/api/filled-forms/submit";
-    if (isArtist && data.customerId) {
+    if (isArtist && data?.customerId) {
       endpoint = `/api/filled-forms/submit?customerId=${data.customerId}`;
     }
     const response = await axiosInstance.post(endpoint, data);
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error creating filled form:", error);
     throw error;
@@ -71,7 +71,7 @@ export const getAppointmentById = async (appointmentId) => {
     const response = await axiosInstance.get(
       `/api/appointments/${appointmentId}`
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error(
       `Error fetching appointment with ID ${appointmentId}:`,
@@ -84,7 +84,7 @@ export const getAppointmentById = async (appointmentId) => {
 export const getAuthenticatedUser = async () => {
   try {
     const response = await axiosInstance.get("/api/auth/me");
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error fetching authenticated user details:", error);
     throw error;
@@ -96,7 +96,7 @@ export const getArtistServices = async (artistId) => {
     const response = await axiosInstance.get(
       `/api/services/artist-services/${artistId}`
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error(
       `Error fetching services for artist with ID ${artistId}:`,
@@ -106,11 +106,10 @@ export const getArtistServices = async (artistId) => {
   }
 };
 
-// Get details of a specific service
 export const getServiceById = async (serviceId) => {
   try {
     const response = await axiosInstance.get(`/api/services/${serviceId}`);
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error(`Error fetching service with ID ${serviceId}:`, error);
     throw error;
@@ -123,7 +122,7 @@ export const SavePersonalInformation = async (data) => {
       "/api/customers/personal-details",
       data
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error saving personal information:", error);
     throw error;
@@ -133,7 +132,7 @@ export const SavePersonalInformation = async (data) => {
 export const getArtistById = async (artistId) => {
   try {
     const response = await axiosInstance.get(`/api/artists/${artistId}`);
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error(`Error fetching artist with ID ${artistId}:`, error);
     throw error;
@@ -145,7 +144,7 @@ export const getFormsForAppointMentById = async (appointmentId) => {
     const response = await axiosInstance.get(
       `/api/forms/appointment/${appointmentId}`
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error(
       `Error fetching forms for appointment with ID ${appointmentId}:`,
@@ -160,7 +159,7 @@ export const getAllFilledFormsForAppointment = async (appointmentId) => {
     const response = await axiosInstance.get(
       `/api/filled-forms/appointment/${appointmentId}`
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error(
       `Error fetching filled forms for appointment with ID ${appointmentId}:`,
@@ -177,7 +176,7 @@ export const getRootTemplateForm = () => {
 export const sendMessage = async (data) => {
   try {
     const response = await axiosInstance.post("/api/messages", data);
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error sending message:", error);
     throw error;
@@ -189,7 +188,7 @@ export const searchArtist = async (name) => {
     const response = await axiosInstance.get("/api/artists/search", {
       params: { name },
     });
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error searching for artists:", error);
     throw error;
@@ -204,7 +203,7 @@ export const switchArtist = async (artistId) => {
         artistId,
       }
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error switching artist:", error);
     throw error;
@@ -219,7 +218,7 @@ export const getMyCustomers = async (page = 1, limit = 5) => {
         limit,
       },
     });
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error fetching my customers:", error);
     throw error;
@@ -238,7 +237,7 @@ export const searchMyCustomers = async (name, page = 1, limit = 10) => {
         },
       }
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error searching my customers:", error);
     throw error;
@@ -251,7 +250,7 @@ export const createClient = async (data) => {
       "/api/customers/my-customers/create-customer",
       data
     );
-    return response.data;
+    return response?.data;
   } catch (error) {
     console.error("Error creating customer as artist:", error);
     throw error;

@@ -16,14 +16,14 @@ import {
 import "./personalDetailsForm.scss";
 
 const PersonalDetailsForm = ({ onSubmitClick }) => {
-  const { user } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state?.auth);
   const dispatch = useDispatch();
   const [avatarUrl, setAvatarUrl] = useState("");
   const { showAlert } = useSnackbar();
   const [initialValues, setInitialValues] = useState({
     firstName: "",
     lastName: "",
-    email: "", // Added email field to initial values
+    email: user?.email || "",
     dob: "",
     homeAddress: "",
     primaryPhone: "",
@@ -47,12 +47,11 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     referralSource: Yup.string(),
     emergencyContactName: Yup.string(),
     emergencyContactPhone: Yup.string(),
-    // Email is not part of validation schema as it's disabled
   });
 
   useEffect(() => {
     const fetchInfo = async () => {
-      setLoading(true); // Start loading
+      setLoading(true);
       try {
         const customer = await getAuthenticatedUser();
         if (customer?.user?.info) {
@@ -67,7 +66,6 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             avatar_url = "",
           } = customer.user.info;
 
-          // Don't prefill name if it's "New Customer"
           const shouldPrefillName =
             client_name && client_name !== "New Customer";
           const firstNameValue = shouldPrefillName
@@ -77,7 +75,6 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             ? client_name.split(" ")[1] || ""
             : "";
 
-          // Check if this is a first-time user (missing key information)
           const isFirstTime =
             !shouldPrefillName ||
             !date_of_birth ||
@@ -88,8 +85,8 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
           setInitialValues({
             firstName: firstNameValue,
             lastName: lastNameValue,
-            email: user?.email || "", // Set email from user object
-            dob: date_of_birth.split("T")[0] || "",
+            email: user?.email || "",
+            dob: date_of_birth ? date_of_birth.split("T")[0] : "",
             homeAddress: home_address || "",
             primaryPhone: cell_phone || "",
             referralSource: referred || "",
@@ -104,7 +101,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
         console.error("Error fetching customer info:", error);
         showAlert("error", "Failed to load personal details.");
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
@@ -115,14 +112,14 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     try {
       setUploadingAvatar(true);
       const options = {
-        maxSizeMB: 0.1, // 100KB
+        maxSizeMB: 0.1,
         maxWidthOrHeight: 500,
         useWebWorker: true,
       };
       const compressedFile = await imageCompression(file, options);
-      const storageRef = ref(storage, `dps/${file.name}-${Date.now()}`); // Create a storage reference
-      const snapshot = await uploadBytes(storageRef, compressedFile); // Upload compressed file
-      const downloadUrl = await getDownloadURL(snapshot.ref); // Get download URL
+      const storageRef = ref(storage, `dps/${file.name}-${Date.now()}`);
+      const snapshot = await uploadBytes(storageRef, compressedFile);
+      const downloadUrl = await getDownloadURL(snapshot.ref);
       setAvatarUrl(downloadUrl);
     } catch (error) {
       console.error("Error uploading image:", error);
@@ -133,7 +130,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   };
 
   const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
+    const file = e?.target?.files?.[0];
     if (file) {
       handleImageUpload(file);
     }
@@ -141,14 +138,13 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      // Filter out email field from values to exclude it from backend update
       const { email, ...dataToSubmit } = values;
 
-      const data = { ...dataToSubmit, avatarUrl }; // Include avatarUrl in the form data, but exclude email
+      const data = { ...dataToSubmit, avatarUrl };
       SavePersonalInformation(data).then((res) => {
         setSubmitting(false);
         dispatch(setUser(res?.customer));
-        setHasSubmittedSuccessfully(true); // Mark as successfully submitted
+        setHasSubmittedSuccessfully(true);
         onSubmitClick();
       });
     } catch (error) {
@@ -158,9 +154,8 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
     }
   };
 
-  // Check if required fields are filled for first-time users
   const isFormValid = (values) => {
-    if (!isFirstTimeUser) return true; // Allow existing users to go back anytime
+    if (!isFirstTimeUser) return true;
 
     const requiredFields = [
       "firstName",
@@ -192,7 +187,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
   }) => (
     <div className="form-group">
       <label htmlFor={name}>
-        {label} {optional && <span className="optional">(Optional)</span>}
+        {label} {optional ? <span className="optional">(Optional)</span> : null}
       </label>
       <Field
         type={type}
@@ -208,8 +203,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
   return (
     <div>
-      {/* Warning Modal */}
-      {showWarningModal && (
+      {showWarningModal ? (
         <div className="warning-modal-overlay">
           <div className="warning-modal">
             <h3>Complete Your Profile</h3>
@@ -228,7 +222,7 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
 
       {loading ? (
         <div
@@ -258,7 +252,6 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
 
                 return (
                   <>
-                    {/* Go back button with conditional styling */}
                     <div
                       onClick={
                         canGoBack
@@ -360,7 +353,6 @@ const PersonalDetailsForm = ({ onSubmitClick }) => {
                         />
                       </div>
 
-                      {/* Email field - disabled and styled to indicate it's not editable */}
                       <CustomField
                         label="Email Address"
                         name="email"

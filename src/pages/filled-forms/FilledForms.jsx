@@ -12,18 +12,21 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
   return (
     <div className="form-card">
       <div className="form-info">
-        <h4>{title}</h4>
-        <span className={`status ${status}`}>
+        <h4>{title || "Form"}</h4>
+        <span className={`status ${status || ""}`}>
           {status === "completed" ? "Completed" : "Pending"}
         </span>
       </div>
       <div className="form-actions">
         {status === "completed" ? (
-          <button className="view-form-button" onClick={onViewClick}>
+          <button
+            className="view-form-button"
+            onClick={onViewClick ? onViewClick : () => {}}
+          >
             View Form
           </button>
         ) : (
-          <EditFormSvg onClick={onEditClick} />
+          <EditFormSvg onClick={onEditClick ? onEditClick : () => {}} />
         )}
       </div>
     </div>
@@ -36,8 +39,8 @@ const FilledForms = () => {
   const [filledForms, setFilledForms] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
-  const businessUri = localStorage.getItem("businessUri");
-  const isArtist = localStorage.getItem("isArtist");
+  const businessUri = localStorage?.getItem("businessUri");
+  const isArtist = localStorage?.getItem("isArtist");
 
   useEffect(() => {
     const fetchAllFilledFormsForAppointment = async () => {
@@ -48,20 +51,22 @@ const FilledForms = () => {
         console.error("Error fetching filled appointment:", error);
       }
     };
-    fetchAllFilledFormsForAppointment();
+
+    if (id) {
+      fetchAllFilledFormsForAppointment();
+    }
   }, [id]);
 
-  const handleCompleteForm = () => {
+  const handleCompleteForm = () =>
     navigate(ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri));
-  };
-  const handleGoToDashboard = () => {
+
+  const handleGoToDashboard = () =>
     navigate(
       ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(":businessUri", businessUri)
     );
-  };
-  const handleFillAnotherForm = () => {
+
+  const handleFillAnotherForm = () =>
     navigate(ROUTE_PATHS.BOOK_APPOINTMENT.replace(":businessUri", businessUri));
-  };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -80,19 +85,22 @@ const FilledForms = () => {
       </div>
 
       <div className="form-list">
-        {filledForms.length > 0 ? (
-          filledForms.map((form) => (
-            <RenderFormsCard
-              key={form.id}
-              title={form.title || ""}
-              status={form.status}
-              onViewClick={() => handleViewForm(form)}
-            />
-          ))
+        {(filledForms?.length || 0) > 0 ? (
+          filledForms?.map((form) =>
+            form ? (
+              <RenderFormsCard
+                key={form?.id || Math.random()}
+                title={form?.title || ""}
+                status={form?.status}
+                onViewClick={() => handleViewForm(form)}
+              />
+            ) : null
+          )
         ) : (
           <p>No appointment details available.</p>
         )}
       </div>
+
       {isArtist ? (
         <div
           style={{
@@ -139,7 +147,8 @@ const FilledForms = () => {
           View Appointment Forms
         </button>
       )}
-      {isModalOpen && selectedForm && (
+
+      {isModalOpen && selectedForm ? (
         <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>
           <div
             style={{
@@ -157,7 +166,7 @@ const FilledForms = () => {
           </div>
           {selectedForm ? (
             <ViewFilledForm
-              formTemplateId={selectedForm.formTemplateId}
+              formTemplateId={selectedForm?.formTemplateId}
               appointmentId={id}
             />
           ) : (
@@ -166,7 +175,7 @@ const FilledForms = () => {
             </Typography>
           )}
         </Dialog>
-      )}
+      ) : null}
     </div>
   );
 };

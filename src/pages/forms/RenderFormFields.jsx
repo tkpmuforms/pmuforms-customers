@@ -23,43 +23,52 @@ export const renderFormFields = (
   handleInputChange,
   handleImageChange
 ) =>
-  fields.map((field) => {
-    if (!field || !field.id) return null;
-    const fieldValue = formResponse?.[formTemplateId]?.[field.id] || ""; // Retrieve field value using formTemplateId
-    const filesValue = formResponse?.[formTemplateId]?.[field.id]?.files || ""; // Retrieve files value using formTemplateId
+  fields?.map((field) => {
+    if (!field?.id) return null;
+
+    const fieldValue = formResponse?.[formTemplateId]?.[field?.id] || "";
+    const filesValue = formResponse?.[formTemplateId]?.[field?.id]?.files || "";
 
     const isRequired = field?.required;
     const isFieldInvalid =
-      !fieldValue && requiredFieldsOnSubmit?.includes(field.id);
-    const isAutofilled = autofilledFields?.has(field.id);
+      !fieldValue && requiredFieldsOnSubmit?.includes(field?.id);
+    const isAutofilled = autofilledFields?.has(field?.id);
 
     const commonProps = {
       className: isFieldInvalid ? "invalid-field" : "",
       onChange: (e) =>
-        handleInputChange(formTemplateId, field.id, e.target.value), // Pass formTemplateId
+        handleInputChange
+          ? handleInputChange(formTemplateId, field?.id, e?.target?.value)
+          : null,
       required: isRequired,
       readOnly: isAutofilled,
     };
 
-    if (!field.type) {
+    if (!field?.type) {
       return (
-        <div key={field.id} className="read-only-field">
-          <label>{field.title}</label>
+        <div key={field?.id} className="read-only-field">
+          <label>{field?.title || ""}</label>
         </div>
       );
     }
 
-    if (field.id === "signature") {
+    if (field?.id === "signature") {
       return (
-        <div key={field.id}>
+        <div key={field?.id}>
           <label>
-            {field.title}
-            {isRequired && <span className="required-star">*</span>}
+            {field?.title || ""}
+            {isRequired ? <span className="required-star">*</span> : null}
             <input
               type="text"
               value={fieldValue}
               onChange={(e) =>
-                handleInputChange(formTemplateId, field.id, e.target.value)
+                handleInputChange
+                  ? handleInputChange(
+                      formTemplateId,
+                      field?.id,
+                      e?.target?.value
+                    )
+                  : null
               }
               {...commonProps}
               placeholder="Type your full name"
@@ -69,41 +78,52 @@ export const renderFormFields = (
       );
     }
 
-    switch (field.type) {
+    switch (field?.type) {
       case FormInputTypes.CHECKBOX:
         return (
-          <div className="checkbox-group" key={field.id}>
+          <div className="checkbox-group" key={field?.id}>
             <label>
               <input
                 type="checkbox"
                 checked={!!fieldValue}
                 onChange={(e) =>
-                  handleInputChange(formTemplateId, field.id, e.target.checked)
+                  handleInputChange
+                    ? handleInputChange(
+                        formTemplateId,
+                        field?.id,
+                        e?.target?.checked
+                      )
+                    : null
                 }
-                // disabled={isAutofilled}
               />
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
+              {field?.title || ""}
+              {isRequired ? <span className="required-star">*</span> : null}
             </label>
           </div>
         );
       case FormInputTypes.DATE:
-        const userTimezone = dayjs.tz.guess(); // Get user's timezone
+        const userTimezone = dayjs.tz.guess();
         const todayLocal = dayjs().tz(userTimezone).format("YYYY-MM-DD");
 
-        if (field.id === "todays_date" || field.id === "date_of_signing") {
+        if (field?.id === "todays_date" || field?.id === "date_of_signing") {
           return (
-            <div key={field.id}>
+            <div key={field?.id}>
               <label>
-                {field.title}
-                {isRequired && <span className="required-star">*</span>}
+                {field?.title || ""}
+                {isRequired ? <span className="required-star">*</span> : null}
                 <input
                   type="date"
                   min={todayLocal}
                   max={todayLocal}
                   value={fieldValue}
                   onChange={(e) =>
-                    handleInputChange(formTemplateId, field.id, e.target.value)
+                    handleInputChange
+                      ? handleInputChange(
+                          formTemplateId,
+                          field?.id,
+                          e?.target?.value
+                        )
+                      : null
                   }
                 />
               </label>
@@ -112,28 +132,34 @@ export const renderFormFields = (
         }
 
         return (
-          <div key={field.id}>
+          <div key={field?.id}>
             <label>
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
+              {field?.title || ""}
+              {isRequired ? <span className="required-star">*</span> : null}
               <input
                 type="date"
                 value={fieldValue}
                 onChange={(e) =>
-                  handleInputChange(formTemplateId, field.id, e.target.value)
+                  handleInputChange
+                    ? handleInputChange(
+                        formTemplateId,
+                        field?.id,
+                        e?.target?.value
+                      )
+                    : null
                 }
               />
             </label>
           </div>
         );
       case FormInputTypes.IMAGE:
-        const imageInputKey = `${formTemplateId}_${field.id}_${Date.now()}`;
+        const imageInputKey = `${formTemplateId}_${field?.id}_${Date.now()}`;
         const imageUploaded = !!fieldValue;
         return (
-          <div key={field.id}>
+          <div key={field?.id}>
             <label>
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
+              {field?.title || ""}
+              {isRequired ? <span className="required-star">*</span> : null}
             </label>
 
             {imageUploaded ? (
@@ -153,7 +179,9 @@ export const renderFormFields = (
                 <button
                   type="button"
                   onClick={() =>
-                    handleInputChange(formTemplateId, field.id, "")
+                    handleInputChange
+                      ? handleInputChange(formTemplateId, field?.id, "")
+                      : null
                   }
                   style={{
                     marginTop: "10px",
@@ -170,7 +198,13 @@ export const renderFormFields = (
                 type="file"
                 accept="image/*"
                 onChange={(e) =>
-                  handleImageChange(formTemplateId, field.id, e.target.files[0])
+                  handleImageChange
+                    ? handleImageChange(
+                        formTemplateId,
+                        field?.id,
+                        e?.target?.files?.[0]
+                      )
+                    : null
                 }
               />
             )}
@@ -178,33 +212,23 @@ export const renderFormFields = (
         );
       case FormInputTypes.NUMBER:
         return (
-          <div key={field.id}>
+          <div key={field?.id}>
             <label>
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
-              <input
-                type="number"
-                value={fieldValue}
-                {...commonProps}
-                // disabled={isAutofilled}
-              />
+              {field?.title || ""}
+              {isRequired ? <span className="required-star">*</span> : null}
+              <input type="number" value={fieldValue} {...commonProps} />
             </label>
           </div>
         );
       default:
         return (
-          <div key={field.id}>
+          <div key={field?.id}>
             <label>
-              {field.title}
-              {isRequired && <span className="required-star">*</span>}
-              <input
-                type="text"
-                value={fieldValue}
-                {...commonProps}
-                // disabled={isAutofilled}
-              />
+              {field?.title || ""}
+              {isRequired ? <span className="required-star">*</span> : null}
+              <input type="text" value={fieldValue} {...commonProps} />
             </label>
           </div>
         );
     }
-  });
+  }) || [];
