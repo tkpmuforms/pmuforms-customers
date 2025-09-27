@@ -24,8 +24,8 @@ dayjs.extend(timezone);
 
 const BookAppointment = () => {
   const param = useParams();
-  const artistId = param.artistId || localStorage.getItem("artistId");
-  const businessUri = localStorage.getItem("businessUri");
+  const artistId = param?.artistId || localStorage?.getItem("artistId");
+  const businessUri = localStorage?.getItem("businessUri");
   const navigate = useNavigate();
   const [services, setServices] = useState([]);
   const [selectedServices, setSelectedServices] = useState([]);
@@ -35,41 +35,34 @@ const BookAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
   const { showAlert } = useSnackbar();
-  const isArtist = localStorage.getItem("isArtist");
+  const isArtist = localStorage?.getItem("isArtist");
 
-  // Customer state management
   const [selectedCustomer, setSelectedCustomer] = useState(null);
   const [customers, setCustomers] = useState([]);
   const [loadingCustomers, setLoadingCustomers] = useState(false);
 
-  // Create Customer Modal state
   const [openCreateModal, setOpenCreateModal] = useState(false);
   const [creatingCustomer, setCreatingCustomer] = useState(false);
 
-  // Get user's timezone
   const userTimezone = dayjs.tz.guess();
 
   useEffect(() => {
-    // Fetch data only once when component mounts
     const fetchInitialData = async () => {
-      // Fetch artist's customers if user is an artist
       if (isArtist) {
         setLoadingCustomers(true);
         try {
-          const res = await getMyCustomers(1, 5); // Fetch first 5 customers initially
-          if (res && res.customers) {
+          const res = await getMyCustomers(1, 5);
+          if (res?.customers) {
             setCustomers(res.customers);
           }
         } catch (error) {
           console.error("Error fetching customers:", error);
-          // Use a callback for showAlert to avoid dependency issues
           if (showAlert) showAlert("error", "Failed to load customers");
         } finally {
           setLoadingCustomers(false);
         }
       }
 
-      // Fetch artist services
       setFetchingServices(true);
       try {
         const res = await getArtistServices(artistId);
@@ -85,37 +78,32 @@ const BookAppointment = () => {
     };
 
     fetchInitialData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Toggle service selection
   const handleServiceChange = (service) => {
+    if (!service) return;
+
     setSelectedServices((prevSelected) =>
-      prevSelected.includes(service)
+      prevSelected?.includes(service)
         ? prevSelected.filter((s) => s !== service)
-        : [...prevSelected, service]
+        : [...(prevSelected || []), service]
     );
   };
 
-  // Handle customer selection
   const handleCustomerSelect = (customer) => {
-    // Prevent form refreshes
     setSelectedCustomer(customer);
   };
 
-  // Open create customer modal
   const handleOpenCreateModal = () => {
     setOpenCreateModal(true);
   };
 
-  // Close create customer modal
   const handleCloseCreateModal = () => {
     setOpenCreateModal(false);
   };
 
-  // Handle creating a new customer
   const handleCreateCustomer = async (customerData) => {
-    if (!customerData.name) {
+    if (!customerData?.name) {
       showAlert("error", "Customer name is required");
       return;
     }
@@ -124,9 +112,11 @@ const BookAppointment = () => {
     try {
       const result = await createClient(customerData);
 
-      // Add the new customer to the list and select it
-      if (result && result.customer) {
-        setCustomers((prevCustomers) => [result.customer, ...prevCustomers]);
+      if (result?.customer) {
+        setCustomers((prevCustomers) => [
+          result.customer,
+          ...(prevCustomers || []),
+        ]);
         setSelectedCustomer(result.customer);
         showAlert("success", "Client created successfully");
         handleCloseCreateModal();
@@ -139,17 +129,14 @@ const BookAppointment = () => {
     }
   };
 
-  // Continue button handler
   const handleContinue = async (e) => {
-    // Prevent default form submission
     if (e) e.preventDefault();
 
-    // Validate input
     if (!appointmentDate) {
       showAlert("error", "Please select an appointment date.");
       return;
     }
-    if (selectedServices.length === 0) {
+    if ((selectedServices?.length || 0) === 0) {
       showAlert("error", "Please select at least one service.");
       return;
     }
@@ -158,7 +145,6 @@ const BookAppointment = () => {
       return;
     }
 
-    // Convert selected date to UTC
     const utcAppointmentDate = dayjs(appointmentDate)
       .tz(userTimezone)
       .utc()
@@ -167,8 +153,7 @@ const BookAppointment = () => {
     const appointment = {
       appointmentDate: utcAppointmentDate,
       artistId: artistId,
-      services: selectedServices.map((service) => service.id),
-      // Add customer ID if an artist is creating the appointment for a customer
+      services: selectedServices?.map((service) => service?.id) || [],
       ...(isArtist &&
         selectedCustomer && {
           customerId: selectedCustomer?.customerId ?? selectedCustomer?.id,
@@ -177,13 +162,12 @@ const BookAppointment = () => {
 
     try {
       setLoading(true);
-      // Save appointment to the backend
       await bookAppointment(appointment).then((res) => {
         navigate(
           ROUTE_PATHS.DYNAMIC_FORMS.replace(
             ":businessUri",
             businessUri
-          ).replace(":appointmentId", res.appointment.id)
+          ).replace(":appointmentId", res?.appointment?.id)
         );
       });
     } catch (error) {
@@ -201,7 +185,7 @@ const BookAppointment = () => {
           <div
             className="go-back"
             onClick={(e) => {
-              e.preventDefault();
+              if (e) e.preventDefault();
               navigate(-1);
             }}
           >
@@ -209,14 +193,14 @@ const BookAppointment = () => {
             <p>Go back to dashboard</p>
           </div>
 
-          {isArtist && (
+          {isArtist ? (
             <button
               className="create-customer-button"
               onClick={handleOpenCreateModal}
             >
               Create Customer
             </button>
-          )}
+          ) : null}
         </div>
 
         <div className="book-appointment-page">
@@ -242,23 +226,24 @@ const BookAppointment = () => {
           ) : (
             <form
               onSubmit={(e) => {
-                e.preventDefault();
+                if (e) e.preventDefault();
                 handleContinue(e);
               }}
             >
-              {isArtist && (
+              {isArtist ? (
                 <div className="form-group">
                   <p htmlFor="client-selector">Choose a client*</p>
                   <div className="customer-selector">
                     <CustomerSelector
-                      customers={customers}
+                      customers={customers || []}
                       onSelect={handleCustomerSelect}
                       value={selectedCustomer}
                       loading={loadingCustomers}
                     />
                   </div>
                 </div>
-              )}
+              ) : null}
+
               <div className="form-group">
                 <p htmlFor="appointment-date">
                   {isArtist
@@ -271,8 +256,8 @@ const BookAppointment = () => {
                     value={appointmentDate}
                     shouldDisableDate={(date) =>
                       date
-                        .startOf("day")
-                        .isBefore(dayjs().tz(userTimezone).startOf("day"))
+                        ?.startOf("day")
+                        ?.isBefore(dayjs().tz(userTimezone).startOf("day"))
                     }
                     onChange={(newValue) => setAppointmentDate(newValue)}
                     slotProps={{
@@ -308,27 +293,29 @@ const BookAppointment = () => {
                   appointment(s)*
                 </p>
                 <div className="services-list">
-                  {services.map((service) => (
-                    <div key={service?.id} className="checkbox-item">
-                      <Checkbox
-                        sx={{
-                          color: "#800080",
-                          "&.Mui-checked": {
+                  {services?.map((service) =>
+                    service ? (
+                      <div key={service?.id} className="checkbox-item">
+                        <Checkbox
+                          sx={{
                             color: "#800080",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            fontSize: 20,
-                            borderRadius: "4px",
-                          },
-                        }}
-                        checked={selectedServices.includes(service)}
-                        onChange={() => handleServiceChange(service)}
-                      />
-                      <label onClick={() => handleServiceChange(service)}>
-                        {service?.service}
-                      </label>
-                    </div>
-                  ))}
+                            "&.Mui-checked": {
+                              color: "#800080",
+                            },
+                            "& .MuiSvgIcon-root": {
+                              fontSize: 20,
+                              borderRadius: "4px",
+                            },
+                          }}
+                          checked={selectedServices?.includes(service) || false}
+                          onChange={() => handleServiceChange(service)}
+                        />
+                        <label onClick={() => handleServiceChange(service)}>
+                          {service?.service || "Service"}
+                        </label>
+                      </div>
+                    ) : null
+                  )}
                 </div>
               </div>
 
@@ -344,7 +331,7 @@ const BookAppointment = () => {
                   type="button"
                   className="go-back-button"
                   onClick={(e) => {
-                    e.preventDefault();
+                    if (e) e.preventDefault();
                     navigate(-1);
                   }}
                 >
@@ -362,7 +349,6 @@ const BookAppointment = () => {
           )}
         </div>
 
-        {/* Create Customer Modal Component */}
         <CreateClientModal
           open={openCreateModal}
           onClose={handleCloseCreateModal}

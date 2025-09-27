@@ -33,25 +33,26 @@ const RenderAppointmentCard = ({
   ViewClick,
   DeleteClick,
 }) => {
-  // Correctly parse the ISO date string
-  const formattedDate = new Date(date).toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+  const formattedDate = date
+    ? new Date(date).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : "Date not available";
 
   return (
     <div className="appointment-card">
       <div className="appointment-info">
-        <h4>{title}</h4>
+        <h4>{title || "Service not specified"}</h4>
         <p>Date of Appointment: {formattedDate}</p>
-        <p>Forms filled: {formsFilled}</p>
+        <p>Forms filled: {formsFilled || 0}</p>
         <span className={`status ${status}`}>
           {status === true ? "Forms Completed" : "Forms Not Completed"}
         </span>
       </div>
       <div className="appointment-actions">
-        <ViewFormButtonSvg onClick={ViewClick} />
+        <ViewFormButtonSvg onClick={ViewClick ? ViewClick : () => {}} />
         <Tooltip
           title={signed ? "Signed appointment" : "Delete"}
           placement="top"
@@ -59,7 +60,7 @@ const RenderAppointmentCard = ({
         >
           <span>
             <DeleteAppointmentButtonSvg
-              onClick={!signed ? DeleteClick : undefined}
+              onClick={!signed && DeleteClick ? DeleteClick : undefined}
               style={{
                 pointerEvents: signed ? "none" : "auto",
                 cursor: signed ? "not-allowed" : "pointer",
@@ -74,17 +75,17 @@ const RenderAppointmentCard = ({
 };
 
 const Dashboard = () => {
-  const artistId = localStorage.getItem("artistId");
-  const businessUri = localStorage.getItem("businessUri");
+  const artistId = localStorage?.getItem("artistId");
+  const businessUri = localStorage?.getItem("businessUri");
 
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
   const [isArtist, setIsArtist] = useState(false);
   const [businessName, setBusinessName] = useState(
-    localStorage.getItem("businessName")
+    localStorage?.getItem("businessName")
   );
-  const userName = localStorage.getItem("userName");
+  const userName = localStorage?.getItem("userName");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
@@ -94,7 +95,6 @@ const Dashboard = () => {
   const isSubscriptionError = (error) => {
     console.error("Checking for subscription error:", error);
 
-    // Check direct error structure (when error is the response itself)
     if (
       error?.statusCode === 403 &&
       error?.message?.includes("Artist Subscription Inactive")
@@ -102,7 +102,6 @@ const Dashboard = () => {
       return true;
     }
 
-    // Check nested response structure (when error has response property)
     if (
       error?.response?.status === 403 &&
       (error?.response?.data?.message?.includes(
@@ -113,7 +112,6 @@ const Dashboard = () => {
       return true;
     }
 
-    // Check if error.response.data is the direct error object
     if (
       error?.response?.data?.statusCode === 403 &&
       error?.response?.data?.message?.includes("Artist Subscription Inactive")
@@ -124,10 +122,8 @@ const Dashboard = () => {
     return false;
   };
 
-  // Helper function to handle subscription error
   const handleSubscriptionError = () => {
     showAlert("error", "Artist Subscription Inactive. Please Subscribe");
-    // Optional: Add a delay before logout to ensure user sees the message
     setTimeout(() => {
       logout();
     }, 2000);
@@ -135,7 +131,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true); // Start loader
+      setLoading(true);
       try {
         const [businessRes, appointmentsRes, customerRes] = await Promise.all([
           businessUri ? getArtistById(businessUri) : Promise.resolve(null),
@@ -149,36 +145,36 @@ const Dashboard = () => {
           return;
         }
 
-        // Update business name
         if (businessRes?.artist?.businessName) {
-          localStorage.setItem("businessName", businessRes.artist.businessName);
+          localStorage?.setItem(
+            "businessName",
+            businessRes.artist.businessName
+          );
           setBusinessName(businessRes.artist.businessName);
-          localStorage.setItem("artistId", businessRes.artist.userId);
+          localStorage?.setItem("artistId", businessRes.artist.userId);
 
           if (
             customerRes?.user?.artistUri &&
-            location.pathname.split("/")[1] === customerRes?.user?.artistUri
+            location?.pathname?.split("/")?.[1] === customerRes?.user?.artistUri
           ) {
-            localStorage.setItem("isArtist", true);
+            localStorage?.setItem("isArtist", true);
             setIsArtist(true);
           }
         }
 
-        // Update appointments
         const updatedAppointments = (appointmentsRes?.appointments || []).map(
           (appointment) => ({
             ...appointment,
             filledFormsCount:
               appointment?.filledForms?.filter(
                 (form) =>
-                  form.status === "completed" || form.status === "signed"
-              ).length || 0,
+                  form?.status === "completed" || form?.status === "signed"
+              )?.length || 0,
           })
         );
         setAppointments(updatedAppointments);
         const customerInfo = customerRes?.user?.info;
 
-        // Check if essential customer info exists - for new customers, only check if client_name is empty or "New Customer"
         const hasRequiredInfo =
           customerInfo &&
           customerInfo.client_name &&
@@ -205,8 +201,8 @@ const Dashboard = () => {
       await deleteAppointment(appointmentId);
 
       showAlert("success", "Appointment deleted successfully");
-      setAppointments((prev) =>
-        prev.filter((appt) => appt.id !== appointmentId)
+      setAppointments(
+        (prev) => prev?.filter((appt) => appt?.id !== appointmentId) || []
       );
     } catch (error) {
       showAlert("error", "Error deleting appointment");
@@ -222,8 +218,8 @@ const Dashboard = () => {
     return <SearchPage />;
   }
 
-  const hasIncompleteForms = appointments.some(
-    (appointment) => !appointment.allFormsCompleted
+  const hasIncompleteForms = appointments?.some(
+    (appointment) => !appointment?.allFormsCompleted
   );
 
   return (
@@ -244,7 +240,8 @@ const Dashboard = () => {
           <>
             <header className="dashboard-header">
               <h3>
-                Hello, <span>{user?.info?.client_name ?? userName}</span>
+                Hello,{" "}
+                <span>{user?.info?.client_name ?? userName ?? "User"}</span>
               </h3>
               <p>
                 Welcome to{" "}
@@ -253,10 +250,10 @@ const Dashboard = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  {businessName}
+                  {businessName || "Business"}
                 </span>
               </p>
-              {appointments?.length > 0 && hasIncompleteForms && !isArtist && (
+              {appointments?.length > 0 && hasIncompleteForms && !isArtist ? (
                 <div className="alert">
                   <WarningSvg />
                   <p>
@@ -264,42 +261,49 @@ const Dashboard = () => {
                     appointment
                   </p>
                 </div>
-              )}
+              ) : null}
             </header>
             <div className="actions-section">
               <div
                 className="action-card"
                 onClick={() =>
-                  navigate(
-                    ROUTE_PATHS.BOOK_APPOINTMENT.replace(
-                      ":id",
-                      artistId
-                    ).replace(":businessUri", businessUri)
-                  )
+                  navigate && artistId && businessUri
+                    ? navigate(
+                        ROUTE_PATHS.BOOK_APPOINTMENT.replace(
+                          ":id",
+                          artistId
+                        ).replace(":businessUri", businessUri)
+                      )
+                    : null
                 }
               >
                 <BookAnAppointmentSvg />
                 <div>
-                  <h5>{isArtist ? 'Start a New Form for a Client' : "Fill Out a New Form"}</h5>
+                  <h5>
+                    {isArtist
+                      ? "Start a New Form for a Client"
+                      : "Fill Out a New Form"}
+                  </h5>
                   <p>
-                    {isArtist ? 'Start' : 'Fill out'} a new form for {isArtist ? "a client's" : 'your'} next appointment by choosing
-                    your preferred appointment date and service.
+                    {isArtist ? "Start" : "Fill out"} a new form for{" "}
+                    {isArtist ? "a client's" : "your"} next appointment by
+                    choosing your preferred appointment date and service.
                   </p>
                 </div>
               </div>
-              {isArtist ? (
-                <></>
-              ) : (
+              {isArtist ? null : (
                 <>
                   <div
                     className="action-card"
                     onClick={() =>
-                      navigate(
-                        ROUTE_PATHS.APPOINTMENTS.replace(
-                          ":businessUri",
-                          businessUri
-                        )
-                      )
+                      navigate && businessUri
+                        ? navigate(
+                            ROUTE_PATHS.APPOINTMENTS.replace(
+                              ":businessUri",
+                              businessUri
+                            )
+                          )
+                        : null
                     }
                   >
                     <ViewPastAppointmentsSvg />
@@ -324,20 +328,20 @@ const Dashboard = () => {
                 </>
               )}
             </div>
-            {isArtist ? (
-              <></>
-            ) : (
+            {isArtist ? null : (
               <section className="appointments-section">
                 <h3>Recent Appointment Forms</h3>
                 <div className="see-all-appointments">
                   <p
                     onClick={() =>
-                      navigate(
-                        ROUTE_PATHS.APPOINTMENTS.replace(
-                          ":businessUri",
-                          businessUri
-                        )
-                      )
+                      navigate && businessUri
+                        ? navigate(
+                            ROUTE_PATHS.APPOINTMENTS.replace(
+                              ":businessUri",
+                              businessUri
+                            )
+                          )
+                        : null
                     }
                   >
                     View All
@@ -346,27 +350,29 @@ const Dashboard = () => {
                 <div className="appointments-list">
                   {appointments?.length > 0 ? (
                     appointments
-                      .reverse()
-                      .slice(0, 3)
-                      .map((appointment, index) => (
+                      ?.reverse()
+                      ?.slice(0, 3)
+                      ?.map((appointment, index) => (
                         <RenderAppointmentCard
                           key={index}
                           title={appointment?.serviceDetails
-                            .map((service) => service.service)
-                            .join(", ")}
+                            ?.map((service) => service?.service)
+                            ?.join(", ")}
                           date={appointment?.date}
                           signed={appointment?.signed}
                           formsFilled={appointment?.filledFormsCount || 0}
                           status={appointment?.allFormsCompleted}
                           ViewClick={() =>
-                            navigate(
-                              ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
-                                ":id",
-                                appointment.id
-                              ).replace(":businessUri", businessUri)
-                            )
+                            navigate && appointment?.id && businessUri
+                              ? navigate(
+                                  ROUTE_PATHS.APPOINTMENT_DETAILS.replace(
+                                    ":id",
+                                    appointment.id
+                                  ).replace(":businessUri", businessUri)
+                                )
+                              : null
                           }
-                          DeleteClick={() => removeAppointment(appointment.id)}
+                          DeleteClick={() => removeAppointment(appointment?.id)}
                         />
                       ))
                   ) : (
@@ -375,12 +381,14 @@ const Dashboard = () => {
                       <p>You have no upcoming appointments</p>
                       <BookAnAppointmentButtonSvg
                         onClick={() =>
-                          navigate(
-                            ROUTE_PATHS.BOOK_APPOINTMENT.replace(
-                              ":id",
-                              artistId
-                            )
-                          )
+                          navigate && artistId
+                            ? navigate(
+                                ROUTE_PATHS.BOOK_APPOINTMENT.replace(
+                                  ":id",
+                                  artistId
+                                )
+                              )
+                            : null
                         }
                         style={{ cursor: "pointer", marginTop: "1rem" }}
                       />

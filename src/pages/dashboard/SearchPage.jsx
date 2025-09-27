@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useSnackbar } from "../../context/SnackbarContext";
 import useAuth from "../../context/useAuth";
 import { searchArtist, switchArtist } from "../../services/services";
@@ -9,26 +8,25 @@ const SearchPage = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false); // Add this state
+  const [hasSearched, setHasSearched] = useState(false);
   const [selectedArtist, setSelectedArtist] = useState(null);
   const [showDialog, setShowDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
   const { showAlert } = useSnackbar();
   const { handleAuthSuccess } = useAuth();
-  const navigate = useNavigate();
 
   const handleSearch = async () => {
-    if (!query.trim()) {
+    if (!query?.trim()) {
       setResults([]);
-      setHasSearched(false); // Reset if empty query
+      setHasSearched(false);
       return;
     }
     setLoading(true);
-    setResults([]); // Clear previous results
-    setHasSearched(true); // Set to true when search is performed
+    setResults([]);
+    setHasSearched(true);
     try {
       const data = await searchArtist(query);
-      setResults(data.artists || []);
+      setResults(data?.artists || []);
     } catch (error) {
       console.error("Failed to search:", error);
       showAlert("error", "Failed to search artists. Please try again.");
@@ -38,7 +36,7 @@ const SearchPage = () => {
   };
 
   const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
+    if (event?.key === "Enter") {
       handleSearch();
     }
   };
@@ -48,20 +46,19 @@ const SearchPage = () => {
 
     setActionLoading(true);
     try {
-      const res = await switchArtist(selectedArtist.userId);
+      const res = await switchArtist(selectedArtist?.userId);
       setShowDialog(false);
       showAlert(
         "success",
-        `You are now booking with ${selectedArtist.businessName}.`
+        `You are now booking with ${selectedArtist?.businessName || "artist"}.`
       );
-      localStorage.setItem("artistId", selectedArtist.userId);
-      localStorage.setItem("userId", res.customer?.id);
-      localStorage.setItem("accessToken", res.access_token);
-      localStorage.setItem("businessUri", selectedArtist.businessUri);
-      localStorage.setItem("businessName", selectedArtist.businessName);
+      localStorage?.setItem("artistId", selectedArtist?.userId || "");
+      localStorage?.setItem("userId", res?.customer?.id || "");
+      localStorage?.setItem("accessToken", res?.access_token || "");
+      localStorage?.setItem("businessUri", selectedArtist?.businessUri || "");
+      localStorage?.setItem("businessName", selectedArtist?.businessName || "");
 
-      handleAuthSuccess(res?.customer, res.access_token);
-      // navigate(`${selectedArtist.businessUri}/customer/dashboard/`);
+      handleAuthSuccess(res?.customer, res?.access_token);
     } catch (error) {
       console.error("Failed to switch artist:", error);
       showAlert("error", "Failed to switch artist. Please try again.");
@@ -79,8 +76,8 @@ const SearchPage = () => {
           placeholder="Type artist name..."
           value={query}
           onChange={(e) => {
-            setQuery(e.target.value);
-            setHasSearched(false); // Reset when user starts typing
+            setQuery(e?.target?.value || "");
+            setHasSearched(false);
           }}
           onKeyDown={handleKeyPress}
         />
@@ -97,40 +94,43 @@ const SearchPage = () => {
       </div>
 
       <div className="results">
-        {loading && (
+        {loading ? (
           <div className="loading-container">
             <div className="loading-spinner"></div>
             <p>Searching for artists...</p>
           </div>
-        )}
+        ) : null}
 
-        {!loading && results.length === 0 && hasSearched && (
+        {!loading && (results?.length || 0) === 0 && hasSearched ? (
           <div className="no-results">
             <p>No artists found for "{query}". Try a different search term.</p>
           </div>
-        )}
+        ) : null}
 
-        {!loading &&
-          results.map((artist, idx) => (
-            <div
-              key={idx}
-              className="artist-item"
-              onClick={() => {
-                setSelectedArtist(artist);
-                setShowDialog(true);
-              }}
-            >
-              {artist.businessName}
-            </div>
-          ))}
+        {!loading
+          ? results?.map((artist, idx) =>
+              artist ? (
+                <div
+                  key={idx}
+                  className="artist-item"
+                  onClick={() => {
+                    setSelectedArtist(artist);
+                    setShowDialog(true);
+                  }}
+                >
+                  {artist?.businessName || "Artist"}
+                </div>
+              ) : null
+            )
+          : null}
       </div>
 
-      {showDialog && selectedArtist && (
+      {showDialog && selectedArtist ? (
         <div className="dialog-overlay">
           <div className="dialog">
             <p>
               Are you booking with{" "}
-              <strong>{selectedArtist.businessName}</strong>?
+              <strong>{selectedArtist?.businessName || "this artist"}</strong>?
             </p>
             <div className="dialog-actions">
               <button
@@ -152,7 +152,7 @@ const SearchPage = () => {
             </div>
           </div>
         </div>
-      )}
+      ) : null}
     </div>
   );
 };
