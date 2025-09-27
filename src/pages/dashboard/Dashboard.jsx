@@ -85,7 +85,6 @@ const Dashboard = () => {
   const [businessName, setBusinessName] = useState(
     localStorage?.getItem("businessName")
   );
-  const userName = localStorage?.getItem("userName");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
@@ -240,8 +239,7 @@ const Dashboard = () => {
           <>
             <header className="dashboard-header">
               <h3>
-                Hello,{" "}
-                <span>{user?.info?.client_name ?? userName ?? "User"}</span>
+                Hello, <span>{user?.info?.client_name ?? ""}</span>
               </h3>
               <p>
                 Welcome to{" "}
