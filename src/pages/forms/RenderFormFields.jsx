@@ -153,7 +153,7 @@ export const renderFormFields = (
           </div>
         );
       case FormInputTypes.IMAGE:
-        const imageInputKey = `${formTemplateId}_${field?.id}_${Date.now()}`;
+        const imageInputKey = `${formTemplateId}_${field?.id}`;
         const imageUploaded = !!fieldValue;
         return (
           <div key={field?.id}>

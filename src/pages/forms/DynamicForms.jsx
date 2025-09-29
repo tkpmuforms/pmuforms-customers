@@ -21,6 +21,7 @@ import { renderFormFields } from "./RenderFormFields";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+//calcualte age from date of birth
 const fieldToUserInfoMapping = {
   client_name: ["client_name"],
   "client-name": ["client_name"],
@@ -47,9 +48,8 @@ const DynamicForms = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  console.log("user", user);
-  const businessName = localStorage?.getItem("businessName");
-  const businessUri = localStorage?.getItem("businessUri");
+  const businessName = localStorage.getItem("businessName");
+  const businessUri = localStorage.getItem("businessUri");
   const [forms, setForms] = useState([]);
   const [filledForms, setFilledForms] = useState([]);
   const [currentTab, setCurrentTab] = useState(0);
@@ -59,7 +59,7 @@ const DynamicForms = () => {
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
   const [artistcustomerId, setArtistCustomerId] = useState(null);
-  const isArtist = localStorage?.getItem("isArtist");
+  const isArtist = localStorage.getItem("isArtist");
 
   useEffect(() => {
     const fetchFilledForms = async () => {
@@ -74,12 +74,10 @@ const DynamicForms = () => {
           );
         }
 
+        // Store each form's data under its own formTemplateId
         const formattedResponses = {};
-        fetchedFilledForms?.filledForms?.forEach((filledForm) => {
-          if (filledForm?.formTemplateId) {
-            formattedResponses[filledForm.formTemplateId] =
-              filledForm?.data || {};
-          }
+        fetchedFilledForms?.filledForms.forEach((filledForm) => {
+          formattedResponses[filledForm.formTemplateId] = filledForm.data || {};
         });
 
         setFormResponse(formattedResponses);
@@ -92,12 +90,12 @@ const DynamicForms = () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
         const updatedForms = fetchedForms?.forms
-          ?.filter((form) => form?.sections?.some((section) => !section?.skip))
-          ?.map((form) =>
+          .filter((form) => form.sections.some((section) => !section.skip))
+          .map((form) =>
             JSON.parse(
               JSON.stringify(form).replace(
                 /\(?\{\{user\.businessName\}\}\)?/g,
-                businessName || ""
+                businessName
               )
             )
           );
@@ -108,20 +106,21 @@ const DynamicForms = () => {
       }
     };
 
-    if (appointmentId) {
-      fetchForms();
-      fetchFilledForms();
-    }
+    fetchForms();
+    fetchFilledForms();
   }, [appointmentId, businessName]);
 
+  // Updated useEffect for handling auto-filling forms
   useEffect(() => {
-    if (!forms?.length) return;
-
+    if (!forms.length) return;
     const currentForm = forms[currentTab];
     if (!currentForm) return;
+    if (isArtist === "true" || isArtist === true) {
+      return;
+    }
 
-    const filledForm = filledForms?.find(
-      (f) => f?.formTemplateId === currentForm?.id
+    const filledForm = filledForms.find(
+      (f) => f?.formTemplateId === currentForm.id
     );
 
     if (filledForm && Object.keys(filledForm?.data || {}).length > 0) {
@@ -132,52 +131,44 @@ const DynamicForms = () => {
       return;
     }
 
-    if (isArtist === "true") {
-      return;
-    }
-
-    if (
-      currentForm?.sections?.some((section) => section?.isClientInformation)
-    ) {
+    if (currentForm?.sections.some((section) => section.isClientInformation)) {
       const autofillResponse = {};
       const autofilledFieldIds = new Set();
 
-      currentForm?.sections?.forEach((section) => {
-        if (section?.isClientInformation) {
-          section?.data?.forEach((field) => {
-            const userInfoKeys = fieldToUserInfoMapping[field?.id];
+      currentForm.sections.forEach((section) => {
+        if (section.isClientInformation) {
+          section.data.forEach((field) => {
+            const userInfoKeys = fieldToUserInfoMapping[field.id];
             if (userInfoKeys) {
               userInfoKeys.forEach((key) => {
                 if (user?.info?.[key]) {
                   let value = user.info[key];
 
+                  // Format date fields appropriately
                   if (
-                    field?.id === "date-of-birth" ||
-                    field?.id === "date_of_birth"
+                    field.id === "date-of-birth" ||
+                    field.id === "date_of_birth"
                   ) {
                     value = dayjs(value).format("YYYY-MM-DD");
                   }
 
                   if (
-                    field?.id === "todays-date" ||
-                    field?.id === "todays_date" ||
-                    field?.id === "date_of_signing" ||
-                    field?.id === "date-of-signing"
+                    field.id === "todays-date" ||
+                    field.id === "todays_date" ||
+                    field.id === "date_of_signing" ||
+                    field.id === "date-of-signing"
                   ) {
                     value = dayjs().format("YYYY-MM-DD");
                   }
 
-                  if (field?.id) {
-                    autofillResponse[field.id] = value;
-                    autofilledFieldIds.add(field.id);
-                  }
+                  autofillResponse[field.id] = value;
+                  autofilledFieldIds.add(field.id);
                 }
               });
             }
           });
         }
       });
-
       const dob =
         autofillResponse["date-of-birth"] || autofillResponse["date_of_birth"];
       if (dob) {
@@ -185,24 +176,23 @@ const DynamicForms = () => {
         autofillResponse["age"] = age.toString();
         autofilledFieldIds.add("age");
       }
-
       if (
-        currentForm?.sections?.some((section) =>
-          section?.data?.some((f) => f?.id === "date_of_signing")
+        currentForm.sections.some((section) =>
+          section.data.some((f) => f.id === "date_of_signing")
         )
       ) {
         autofillResponse["date_of_signing"] = dayjs().format("YYYY-MM-DD");
         autofilledFieldIds.add("date_of_signing");
       } else if (
-        currentForm?.sections?.some((section) =>
-          section?.data?.some((f) => f?.id === "date-of-signing")
+        currentForm.sections.some((section) =>
+          section.data.some((f) => f.id === "date-of-signing")
         )
       ) {
         autofillResponse["date-of-signing"] = dayjs().format("YYYY-MM-DD");
         autofilledFieldIds.add("date-of-signing");
       }
 
-      if (Object.keys(autofillResponse).length > 0 && currentForm?.id) {
+      if (Object.keys(autofillResponse).length > 0) {
         setFormResponse((prev) => ({
           ...prev,
           [currentForm.id]: {
@@ -216,7 +206,7 @@ const DynamicForms = () => {
   }, [forms, filledForms, currentTab, user]);
 
   const handleInputChange = (currentForm, fieldId, value) => {
-    if (!currentForm || !fieldId) return;
+    if (!currentForm) return;
 
     setFormResponse((prev) => ({
       ...prev,
@@ -228,10 +218,10 @@ const DynamicForms = () => {
   };
 
   const handleImageChange = async (currentForm, fieldId, file) => {
-    if (!file || !currentForm || !fieldId) return;
+    if (!file) return;
 
     const options = {
-      maxSizeMB: 0.4,
+      maxSizeMB: 0.4, // 400KB
       maxWidthOrHeight: 500,
       useWebWorker: true,
     };
@@ -239,10 +229,7 @@ const DynamicForms = () => {
     const compressedFile = await imageCompression(file, options);
 
     try {
-      const storageRef = ref(
-        storage,
-        `images/${user?.id || "anonymous"}/${file.name}`
-      );
+      const storageRef = ref(storage, `images/${user.uid}/${file.name}`);
       const snapshot = await uploadBytes(storageRef, compressedFile);
       const downloadUrl = await getDownloadURL(snapshot.ref);
       setFormResponse((prev) => ({
@@ -264,17 +251,15 @@ const DynamicForms = () => {
     const currentForm = forms[currentTab];
     if (!currentForm) return;
 
-    const requiredFields =
-      currentForm?.sections?.flatMap(
-        (section) => section?.data?.filter((field) => field?.required) || []
-      ) || [];
+    const requiredFields = currentForm?.sections.flatMap(
+      (section) => section.data?.filter((field) => field.required) || []
+    );
 
-    const missingFields =
-      requiredFields?.filter(
-        (field) => !formResponse[currentForm?.id]?.[field?.id]
-      ) || [];
+    const missingFields = requiredFields?.filter(
+      (field) => !formResponse[currentForm.id]?.[field?.id]
+    );
 
-    setRequiredFieldsOnSubmit(missingFields?.map((field) => field?.id) || []);
+    setRequiredFieldsOnSubmit(missingFields?.map((field) => field.id));
 
     if (missingFields.length > 0) {
       showAlert("error", "Please fill out all required fields");
@@ -285,8 +270,8 @@ const DynamicForms = () => {
     try {
       await createFilledForm({
         appointmentId,
-        formTemplateId: currentForm?.id,
-        data: formResponse[currentForm?.id] || {},
+        formTemplateId: currentForm.id,
+        data: formResponse[currentForm.id] || {},
         customerId: isArtist ? artistcustomerId : null,
       });
 
@@ -296,7 +281,7 @@ const DynamicForms = () => {
       );
       setFilledForms(fetchedFilledForms?.filledForms || []);
 
-      if (currentTab < (forms?.length || 0) - 1) {
+      if (currentTab < forms.length - 1) {
         setCurrentTab(currentTab + 1);
         window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -315,60 +300,56 @@ const DynamicForms = () => {
   };
 
   useEffect(() => {
-    const queryParams = new URLSearchParams(location?.search || "");
+    const queryParams = new URLSearchParams(location.search);
     const formId = queryParams.get("formId");
 
-    if (!forms?.length) return;
+    if (!forms.length) return;
 
-    const startTab = formId
-      ? forms.findIndex((form) => form?.id === formId)
-      : 0;
+    const startTab = formId ? forms.findIndex((form) => form.id === formId) : 0;
 
     if (startTab !== -1) {
       setCurrentTab(startTab);
     }
-  }, [forms, location?.search]);
+  }, [forms, location.search]);
 
   return (
     <div className="dynamic-forms">
-      <div className="go-back" onClick={() => (navigate ? navigate(-1) : null)}>
+      <div className="go-back" onClick={() => navigate(-1)}>
         <GoBackSvg />
         <p>Go back </p>
       </div>
       <div className="progress-container">
         <p className="progress-text">
-          Form {currentTab + 1} of {forms?.length || 0}
+          Form {currentTab + 1} of {forms.length}
         </p>
         <p>Carefully read and complete the form below, then click "Submit"</p>
         <div className="progress-bar">
           <div
             className="progress-fill"
             style={{
-              width: `${((currentTab + 1) / (forms?.length || 1)) * 100}%`,
+              width: `${((currentTab + 1) / forms.length) * 100}%`,
             }}
           ></div>
         </div>
       </div>
 
-      {forms[currentTab] ? (
+      {forms[currentTab] && (
         <div className="form-content">
-          <h2>{forms[currentTab]?.title || "Form"}</h2>
-          {forms[currentTab]?.sections?.map((section) =>
-            section ? (
-              <div key={section?._id || Math.random()}>
-                <h3>{section?.title || ""}</h3>
-                {renderFormFields(
-                  section?.data || [],
-                  forms[currentTab]?.id,
-                  formResponse,
-                  requiredFieldsOnSubmit,
-                  autofilledFields,
-                  handleInputChange,
-                  handleImageChange
-                )}
-              </div>
-            ) : null
-          )}
+          <h2>{forms[currentTab]?.title}</h2>
+          {forms[currentTab]?.sections.map((section) => (
+            <div key={section._id}>
+              <h3>{section.title}</h3>
+              {renderFormFields(
+                section.data,
+                forms[currentTab]?.id,
+                formResponse,
+                requiredFieldsOnSubmit,
+                autofilledFields,
+                handleInputChange,
+                handleImageChange
+              )}
+            </div>
+          ))}
           <div
             style={{
               display: "flex",
@@ -389,23 +370,24 @@ const DynamicForms = () => {
 
             <button
               onClick={
-                filledForms?.some(
-                  (f) => f?.formTemplateId === forms[currentTab]?.id
+                filledForms.some(
+                  (f) => f.formTemplateId === forms[currentTab]?.id
                 )
-                  ? handleSubmit
+                  ? // ? () => setCurrentTab(currentTab + 1)
+                    handleSubmit
                   : handleSubmit
               }
               disabled={saving}
             >
-              {filledForms?.some(
-                (f) => f?.formTemplateId === forms[currentTab]?.id
+              {filledForms.some(
+                (f) => f.formTemplateId === forms[currentTab]?.id
               )
                 ? "Next"
                 : "Submit Form"}
             </button>
           </div>
         </div>
-      ) : null}
+      )}
     </div>
   );
 };
