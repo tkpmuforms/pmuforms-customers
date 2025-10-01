@@ -41,7 +41,6 @@ export const renderFormFields = (
           ? handleInputChange(formTemplateId, field?.id, e?.target?.value)
           : null,
       required: isRequired,
-      readOnly: isAutofilled,
     };
 
     if (!field?.type) {
@@ -102,35 +101,9 @@ export const renderFormFields = (
           </div>
         );
       case FormInputTypes.DATE:
-        const userTimezone = dayjs.tz.guess();
-        const todayLocal = dayjs().tz(userTimezone).format("MM/DD/YYYY");
-
-        const formattedDateValue =
-          fieldValue && dayjs(fieldValue).isValid()
-            ? dayjs(fieldValue).format("MM/DD/YYYY")
-            : "";
-
         if (field?.id === "todays_date" || field?.id === "date_of_signing") {
-          return (
-            <div key={field?.id}>
-              <label>
-                {field?.title || ""}
-                {isRequired ? <span className="required-star">*</span> : null}
-                <input
-                  type="text"
-                  value={todayLocal}
-                  readOnly
-                  style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed" }}
-                />
-              </label>
-            </div>
-          );
+          return null;
         }
-
-        const isDateOfBirth =
-          field?.id === "date_of_birth" ||
-          field?.id === "date-of-birth" ||
-          field?.id === "AEA66A04-E";
 
         return (
           <div key={field?.id}>
@@ -138,35 +111,17 @@ export const renderFormFields = (
               {field?.title || ""}
               {isRequired ? <span className="required-star">*</span> : null}
               <input
-                type="text"
-                value={formattedDateValue}
-                placeholder="MM/DD/YYYY"
-                onChange={(e) => {
-                  if (handleInputChange) {
-                    const value = e.target.value;
-                    const dateObj = dayjs(value, "MM/DD/YYYY", true);
-
-                    if (dateObj.isValid()) {
-                      handleInputChange(
+                type="date"
+                value={fieldValue}
+                onChange={(e) =>
+                  handleInputChange
+                    ? handleInputChange(
                         formTemplateId,
                         field?.id,
-                        dateObj.toISOString()
-                      );
-
-                      if (isDateOfBirth) {
-                        const age = dayjs().diff(dateObj, "year");
-                        handleInputChange(
-                          formTemplateId,
-                          "age",
-                          age.toString()
-                        );
-                      }
-                    } else {
-                      handleInputChange(formTemplateId, field?.id, value);
-                    }
-                  }
-                }}
-                readOnly={isAutofilled}
+                        e?.target?.value
+                      )
+                    : null
+                }
               />
             </label>
           </div>
