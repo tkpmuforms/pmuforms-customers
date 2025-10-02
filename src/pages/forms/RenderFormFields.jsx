@@ -41,7 +41,6 @@ export const renderFormFields = (
           ? handleInputChange(formTemplateId, field?.id, e?.target?.value)
           : null,
       required: isRequired,
-      readOnly: isAutofilled,
     };
 
     if (!field?.type) {
@@ -102,33 +101,8 @@ export const renderFormFields = (
           </div>
         );
       case FormInputTypes.DATE:
-        const userTimezone = dayjs.tz.guess();
-        const todayLocal = dayjs().tz(userTimezone).format("YYYY-MM-DD");
-
         if (field?.id === "todays_date" || field?.id === "date_of_signing") {
-          return (
-            <div key={field?.id}>
-              <label>
-                {field?.title || ""}
-                {isRequired ? <span className="required-star">*</span> : null}
-                <input
-                  type="date"
-                  min={todayLocal}
-                  max={todayLocal}
-                  value={fieldValue}
-                  onChange={(e) =>
-                    handleInputChange
-                      ? handleInputChange(
-                          formTemplateId,
-                          field?.id,
-                          e?.target?.value
-                        )
-                      : null
-                  }
-                />
-              </label>
-            </div>
-          );
+          return null;
         }
 
         return (
