@@ -1,10 +1,33 @@
 import { CircularProgress } from "@mui/material";
-import { Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import NotFound from "../components/not-found/NotFound";
 import useAuth from "../context/useAuth";
 import AuthenticatedLayout from "../layout/authenticated/AuthenticatedLayout";
 import { authorizedRoutes, nonAuthRoutes } from "./RouteConfig";
+
+const SaveAndRedirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fullPath = location.pathname;
+    const pathSegments = fullPath.split("/").filter(Boolean);
+    const businessUri = pathSegments[0];
+
+    if (fullPath && fullPath !== "/") {
+      localStorage.setItem("redirectAfterLogin", fullPath);
+    }
+
+    if (businessUri) {
+      navigate(`/${businessUri}`, { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  }, []);
+
+  return null;
+};
 
 const RouteWrapper = () => {
   const { isAuthenticated } = useAuth();
@@ -51,7 +74,7 @@ const RouteWrapper = () => {
       {isAuthenticated ? (
         <Route key="not-found" path="*" element={<NotFound />} />
       ) : (
-        <Route key="auth-redirect" path="*" element={<Navigate to="/" />} />
+        <Route key="auth-redirect" path="*" element={<SaveAndRedirect />} />
       )}
     </Routes>
   );

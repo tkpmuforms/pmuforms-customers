@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import NotFound from "../components/not-found/NotFound";
 import AuthPage from "../pages/authpage/AuthPage";
 import VerifyEmailForm from "../pages/authpage/authsubfolders/verifyEmail/VerifyEmailForm";
 import ContactSupport from "../pages/contact-us/ContactUs";
@@ -51,12 +50,6 @@ export const nonAuthRoutes = [
     breadcrumbs: [],
   },
 
-  // Catch-all route last
-  {
-    path: "*",
-    element: <NotFound />,
-    breadcrumbs: [],
-  },
 ];
 
 export const authorizedRoutes = [
