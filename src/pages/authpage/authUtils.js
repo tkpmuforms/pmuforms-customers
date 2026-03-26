@@ -3,7 +3,7 @@ import { createCustomer } from "../../services/services";
 
 export const HandleSocialLogin = async (
   provider,
-  navigate,
+  _navigate,
   handleAuthSuccess,
   showAlert
 ) => {
@@ -31,13 +31,9 @@ export const HandleSocialLogin = async (
 
     localStorage.setItem("userId", res.data?.customer?.id);
     localStorage.setItem("accessToken", res.data?.access_token);
+
+    // AuthPage handles navigation after isAuthenticated becomes true
     handleAuthSuccess(res?.data?.customer, res.data?.access_token);
-    console.log(businessUri);
-    if (businessUri) {
-      navigate(`${businessUri}/customer/dashboard/`);
-    } else {
-      navigate("/customer/dashboard");
-    }
   } catch (error) {
     console.error("Social login error:", error);
     showAlert(
@@ -48,9 +44,10 @@ export const HandleSocialLogin = async (
     );
   }
 };
+
 export const SignInSuccessWithAuthResult = async (
   authResult,
-  navigate,
+  _navigate,
   handleAuthSuccess,
   showAlert
 ) => {
@@ -69,13 +66,9 @@ export const SignInSuccessWithAuthResult = async (
 
     localStorage.setItem("userId", res.data?.customer?.id);
     localStorage.setItem("accessToken", res.data?.access_token);
-    handleAuthSuccess(res?.data?.customer, res.data?.access_token);
 
-    if (businessUri) {
-      navigate(`${businessUri}/customer/dashboard/`);
-    } else {
-      navigate("/customer/dashboard");
-    }
+    // AuthPage handles navigation after isAuthenticated becomes true
+    handleAuthSuccess(res?.data?.customer, res.data?.access_token);
   } catch (error) {
     console.error("Error during login callback:", error);
 
