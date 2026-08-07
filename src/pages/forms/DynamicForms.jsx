@@ -42,6 +42,9 @@ const fieldToUserInfoMapping = {
   "home-phone": ["cell_phone"],
 };
 
+const todayFieldIds = new Set(["todays_date", "todays-date"]);
+const signingDateFieldIds = new Set(["date_of_signing", "date-of-signing"]);
+
 const DynamicForms = () => {
   const { appointmentId } = useParams();
   const location = useLocation();
@@ -63,13 +66,12 @@ const DynamicForms = () => {
   useEffect(() => {
     const fetchFilledForms = async () => {
       try {
-        const fetchedFilledForms = await getAllFilledFormsForAppointment(
-          appointmentId
-        );
+        const fetchedFilledForms =
+          await getAllFilledFormsForAppointment(appointmentId);
         setFilledForms(fetchedFilledForms?.filledForms || []);
         if (isArtist) {
           setArtistCustomerId(
-            fetchedFilledForms?.filledForms?.[0]?.clientId || null
+            fetchedFilledForms?.filledForms?.[0]?.clientId || null,
           );
         }
 
@@ -93,9 +95,9 @@ const DynamicForms = () => {
             JSON.parse(
               JSON.stringify(form).replace(
                 /\(?\{\{user\.businessName\}\}\)?/g,
-                businessName
-              )
-            )
+                businessName,
+              ),
+            ),
           );
 
         setForms(updatedForms || []);
@@ -112,12 +114,8 @@ const DynamicForms = () => {
     if (!forms.length) return;
     const currentForm = forms[currentTab];
     if (!currentForm) return;
-    if (isArtist === "true" || isArtist === true) {
-      return;
-    }
-
     const filledForm = filledForms.find(
-      (f) => f?.formTemplateId === currentForm.id
+      (f) => f?.formTemplateId === currentForm.id,
     );
 
     if (filledForm && Object.keys(filledForm?.data || {}).length > 0) {
@@ -128,10 +126,14 @@ const DynamicForms = () => {
       return;
     }
 
-    if (currentForm?.sections.some((section) => section.isClientInformation)) {
-      const autofillResponse = {};
-      const autofilledFieldIds = new Set();
+    const autofillResponse = {};
+    const autofilledFieldIds = new Set();
 
+    if (
+      isArtist !== "true" &&
+      isArtist !== true &&
+      currentForm?.sections.some((section) => section.isClientInformation)
+    ) {
       currentForm.sections.forEach((section) => {
         if (section.isClientInformation) {
           section.data.forEach((field) => {
@@ -165,43 +167,28 @@ const DynamicForms = () => {
         autofilledFieldIds.add("age");
       }
 
-      if (
-        currentForm.sections.some((section) =>
-          section.data.some((f) => f.id === "date_of_signing")
-        )
-      ) {
-        autofillResponse["date_of_signing"] = dayjs().format("YYYY-MM-DD");
-        autofilledFieldIds.add("date_of_signing");
-      } else if (
-        currentForm.sections.some((section) =>
-          section.data.some((f) => f.id === "date-of-signing")
-        )
-      ) {
-        autofillResponse["date-of-signing"] = dayjs().format("YYYY-MM-DD");
-        autofilledFieldIds.add("date-of-signing");
-      }
-
-      if (
-        currentForm.sections.some((section) =>
-          section.data.some((f) => f.id === "todays_date")
-        )
-      ) {
-        autofillResponse["todays_date"] = dayjs().format("YYYY-MM-DD");
-        autofilledFieldIds.add("todays_date");
-      }
-
-      if (Object.keys(autofillResponse).length > 0) {
-        setFormResponse((prev) => ({
-          ...prev,
-          [currentForm.id]: {
-            ...prev[currentForm.id],
-            ...autofillResponse,
-          },
-        }));
-        setAutofilledFields(autofilledFieldIds);
-      }
     }
-  }, [forms, filledForms, currentTab, user]);
+
+    currentForm.sections.forEach((section) => {
+      section.data?.forEach((field) => {
+        if (todayFieldIds.has(field.id) || signingDateFieldIds.has(field.id)) {
+          autofillResponse[field.id] = dayjs().format("YYYY-MM-DD");
+          autofilledFieldIds.add(field.id);
+        }
+      });
+    });
+
+    if (Object.keys(autofillResponse).length > 0) {
+      setFormResponse((prev) => ({
+        ...prev,
+        [currentForm.id]: {
+          ...prev[currentForm.id],
+          ...autofillResponse,
+        },
+      }));
+      setAutofilledFields(autofilledFieldIds);
+    }
+  }, [forms, filledForms, currentTab, user, isArtist]);
 
   const handleInputChange = (currentForm, fieldId, value) => {
     if (!currentForm) return;
@@ -267,16 +254,17 @@ const DynamicForms = () => {
     if (!currentForm) return;
 
     const requiredFields = currentForm?.sections.flatMap(
-      (section) => section.data?.filter((field) => field.required) || []
+      (section) => section.data?.filter((field) => field.required) || [],
     );
 
     const missingFields = requiredFields?.filter(
-      (field) => !formResponse[currentForm.id]?.[field?.id]
+      (field) => !formResponse[currentForm.id]?.[field?.id],
     );
 
     setRequiredFieldsOnSubmit(missingFields?.map((field) => field.id));
 
     if (missingFields.length > 0) {
+      console.warn("Missing required fields:", missingFields);
       showAlert("error", "Please fill out all required fields");
       return;
     }
@@ -291,9 +279,8 @@ const DynamicForms = () => {
       });
 
       setSaving(false);
-      const fetchedFilledForms = await getAllFilledFormsForAppointment(
-        appointmentId
-      );
+      const fetchedFilledForms =
+        await getAllFilledFormsForAppointment(appointmentId);
       setFilledForms(fetchedFilledForms?.filledForms || []);
 
       if (currentTab < forms.length - 1) {
@@ -303,8 +290,8 @@ const DynamicForms = () => {
         navigate(
           ROUTE_PATHS.FILLED_FORMS.replace(":id", appointmentId).replace(
             ":businessUri",
-            businessUri
-          )
+            businessUri,
+          ),
         );
       }
     } catch (error) {
@@ -361,7 +348,7 @@ const DynamicForms = () => {
                 requiredFieldsOnSubmit,
                 autofilledFields,
                 handleInputChange,
-                handleImageChange
+                handleImageChange,
               )}
             </div>
           ))}
@@ -386,7 +373,7 @@ const DynamicForms = () => {
             <button
               onClick={
                 filledForms.some(
-                  (f) => f.formTemplateId === forms[currentTab]?.id
+                  (f) => f.formTemplateId === forms[currentTab]?.id,
                 )
                   ? handleSubmit
                   : handleSubmit
@@ -394,7 +381,7 @@ const DynamicForms = () => {
               disabled={saving}
             >
               {filledForms.some(
-                (f) => f.formTemplateId === forms[currentTab]?.id
+                (f) => f.formTemplateId === forms[currentTab]?.id,
               )
                 ? "Next"
                 : "Submit Form"}
