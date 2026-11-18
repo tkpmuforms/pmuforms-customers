@@ -58,18 +58,28 @@
       color: #333;
       margin-bottom: 10px;
 
-      input {
+      input,
+      textarea {
         margin-top: 5px;
         width: 100%;
         padding: 8px 12px;
-        font-size: 14px;
+        // iOS Safari can zoom or lose reliable focus on controls below 16px.
+        font-size: 16px;
         border: 1px solid #ccc;
         border-radius: 5px;
+        box-sizing: border-box;
+
+        touch-action: manipulation;
 
         &:focus {
           outline: none;
           border-color: #6a0dad;
         }
+      }
+
+      textarea {
+        display: block;
+        resize: vertical;
       }
     }
 
@@ -178,18 +188,27 @@
         color: #333;
         margin-bottom: 10px;
 
-        input {
+        input,
+        textarea {
           margin-top: 5px;
           width: 100%;
           padding: 8px 12px;
-          font-size: 14px;
+          font-size: 16px;
           border: 1px solid #ccc;
           border-radius: 5px;
+          box-sizing: border-box;
+
+          touch-action: manipulation;
 
           &:focus {
             outline: none;
             border-color: #6a0dad;
           }
+        }
+
+        textarea {
+          display: block;
+          resize: vertical;
         }
       }
 

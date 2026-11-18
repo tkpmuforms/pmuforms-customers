@@ -43,6 +43,13 @@ export const renderFormFields = (
       required: isRequired,
     };
 
+    const textInputProps = {
+      ...commonProps,
+      autoCapitalize: "sentences",
+      autoComplete: "on",
+      inputMode: "text",
+    };
+
     if (!field?.type) {
       return (
         <div key={field?.id} className="read-only-field">
@@ -70,6 +77,8 @@ export const renderFormFields = (
                   : null
               }
               {...commonProps}
+              inputMode="text"
+              autoComplete="name"
               placeholder="Type your full name"
             />
           </label>
@@ -190,7 +199,22 @@ export const renderFormFields = (
             <label>
               {field?.title || ""}
               {isRequired ? <span className="required-star">*</span> : null}
-              <input type="number" value={fieldValue} {...commonProps} />
+              <input
+                type="number"
+                inputMode="decimal"
+                value={fieldValue}
+                {...commonProps}
+              />
+            </label>
+          </div>
+        );
+      case FormInputTypes.TEXTFIELD:
+        return (
+          <div key={field?.id}>
+            <label>
+              {field?.title || ""}
+              {isRequired ? <span className="required-star">*</span> : null}
+              <textarea value={fieldValue} rows={4} {...textInputProps} />
             </label>
           </div>
         );
@@ -200,7 +224,7 @@ export const renderFormFields = (
             <label>
               {field?.title || ""}
               {isRequired ? <span className="required-star">*</span> : null}
-              <input type="text" value={fieldValue} {...commonProps} />
+              <input type="text" value={fieldValue} {...textInputProps} />
             </label>
           </div>
         );
