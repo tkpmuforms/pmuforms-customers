@@ -1,7 +1,6 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 import { useSnackbar } from "../../../../context/SnackbarContext";
 import {
@@ -14,7 +13,6 @@ import "./signup.scss";
 const SignupPage = ({ handlePageChange }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = React.useState(false);
-  const navigate = useNavigate();
   const { showAlert } = useSnackbar();
 
   const initialValues = {
@@ -44,10 +42,12 @@ const SignupPage = ({ handlePageChange }) => {
 
       const user = userCredential.user;
 
-      await sendVerificationLink(user?.uid).then((res) => {
-        handlePageChange("login");
-        showAlert("success", "Account created. Please log in.");
-      });
+      await sendVerificationLink(user?.uid);
+      handlePageChange("login");
+      showAlert(
+        "success",
+        "Account created. Check your inbox (and spam folder) for the verification link, then log in after verifying your email."
+      );
     } catch (error) {
       console.error("Error creating user:", error);
       showAlert("error", error.message || "Signup failed! Try again later.");
