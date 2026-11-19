@@ -16,7 +16,6 @@ const AuthenticatedNavbar = () => {
   const isDropdownOpen = Boolean(anchorEl);
   const businessUri = localStorage.getItem("businessUri");
   const businessName = localStorage.getItem("businessName");
-  const isArtist = localStorage.getItem("isArtist");
 
   const USE_COMPANY_LOGO = Boolean(process.env?.USE_COMPANY_LOGO || true);
 
@@ -40,7 +39,6 @@ const AuthenticatedNavbar = () => {
 
   // Close menu when navigating
   const handleNavigation = (path) => {
-    if (isArtist) return; // Prevent navigation if user is an artist
     navigate(path.replace(":businessUri", businessUri));
     setMobileMenuVisible(false); // Close menu
   };
@@ -106,19 +104,14 @@ const AuthenticatedNavbar = () => {
                 Home
               </Link>
             </li>
-            {!isArtist && (
-              <li>
-                <Link
-                  to={ROUTE_PATHS.APPOINTMENTS.replace(
-                    ":businessUri",
-                    businessUri
-                  )}
-                  onClick={() => handleNavigation(ROUTE_PATHS.APPOINTMENTS)}
-                >
-                  Appointment Forms
-                </Link>
-              </li>
-            )}
+            <li>
+              <Link
+                to={ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri)}
+                onClick={() => handleNavigation(ROUTE_PATHS.APPOINTMENTS)}
+              >
+                Appointment Forms
+              </Link>
+            </li>
             <li>
               <Link
                 to={ROUTE_PATHS.SUPPORT.replace(":businessUri", businessUri)}

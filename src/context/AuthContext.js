@@ -35,6 +35,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
+    // left over from the old artist mode; artists now share form links instead
+    localStorage.removeItem("isArtist");
+
     const token = getAccessToken();
     if (token && isValidToken(token)) {
       setAuthHeader(token);

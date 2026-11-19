@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, Suspense } from "react";
 import NotFound from "../components/not-found/NotFound";
 import AuthPage from "../pages/authpage/AuthPage";
 import VerifyEmailForm from "../pages/authpage/authsubfolders/verifyEmail/VerifyEmailForm";
@@ -20,6 +20,7 @@ const Dashboard = lazy(() => import("../pages/dashboard/Dashboard"));
 const DynamicForms = lazy(() => import("../pages/forms/DynamicForms"));
 const ContactSupportAuth = lazy(() => import("../pages/contact-us/ContactUs"));
 const FilledForms = lazy(() => import("../pages/filled-forms/FilledForms"));
+const FormLinkPage = lazy(() => import("../pages/formLink/FormLinkPage"));
 
 export const nonAuthRoutes = [
   // Static routes first
@@ -37,6 +38,17 @@ export const nonAuthRoutes = [
     path: ROUTE_PATHS.TERMS_AND_AGREEMENT,
     element: <TermsAndAgreement />,
     breadcrumbs: BREADCRUMBS.TERMS_AND_AGREEMENT,
+  },
+  // No-login link an artist shares for one appointment's forms. Rendered
+  // without the app layout so there is no menu to wander off through.
+  {
+    path: ROUTE_PATHS.FORM_LINK,
+    element: (
+      <Suspense fallback={null}>
+        <FormLinkPage />
+      </Suspense>
+    ),
+    breadcrumbs: [],
   },
   // Dynamic business URI route comes after static routes
   {

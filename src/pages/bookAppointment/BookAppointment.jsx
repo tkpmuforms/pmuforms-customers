@@ -9,15 +9,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import { useSnackbar } from "../../context/SnackbarContext";
 import { ROUTE_PATHS } from "../../routes/routes";
-import {
-  bookAppointment,
-  createClient,
-  getArtistServices,
-  getMyCustomers,
-} from "../../services/services";
+import { bookAppointment, getArtistServices } from "../../services/services";
 import "./bookAppointment.scss";
-import CreateClientModal from "./CreateClientModal";
-import CustomerSelector from "./CustomerSelector";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -35,34 +28,11 @@ const BookAppointment = () => {
   const [loading, setLoading] = useState(false);
   const [fetchingServices, setFetchingServices] = useState(true);
   const { showAlert } = useSnackbar();
-  const isArtist = localStorage?.getItem("isArtist");
-
-  const [selectedCustomer, setSelectedCustomer] = useState(null);
-  const [customers, setCustomers] = useState([]);
-  const [loadingCustomers, setLoadingCustomers] = useState(false);
-
-  const [openCreateModal, setOpenCreateModal] = useState(false);
-  const [creatingCustomer, setCreatingCustomer] = useState(false);
 
   const userTimezone = dayjs.tz.guess();
 
   useEffect(() => {
     const fetchInitialData = async () => {
-      if (isArtist) {
-        setLoadingCustomers(true);
-        try {
-          const res = await getMyCustomers(1, 5);
-          if (res?.customers) {
-            setCustomers(res.customers);
-          }
-        } catch (error) {
-          console.error("Error fetching customers:", error);
-          if (showAlert) showAlert("error", "Failed to load customers");
-        } finally {
-          setLoadingCustomers(false);
-        }
-      }
-
       setFetchingServices(true);
       try {
         const res = await getArtistServices(artistId);
@@ -90,45 +60,6 @@ const BookAppointment = () => {
     );
   };
 
-  const handleCustomerSelect = (customer) => {
-    setSelectedCustomer(customer);
-  };
-
-  const handleOpenCreateModal = () => {
-    setOpenCreateModal(true);
-  };
-
-  const handleCloseCreateModal = () => {
-    setOpenCreateModal(false);
-  };
-
-  const handleCreateCustomer = async (customerData) => {
-    if (!customerData?.name) {
-      showAlert("error", "Customer name is required");
-      return;
-    }
-
-    setCreatingCustomer(true);
-    try {
-      const result = await createClient(customerData);
-
-      if (result?.customer) {
-        setCustomers((prevCustomers) => [
-          result.customer,
-          ...(prevCustomers || []),
-        ]);
-        setSelectedCustomer(result.customer);
-        showAlert("success", "Client created successfully");
-        handleCloseCreateModal();
-      }
-    } catch (error) {
-      console.error("Error creating customer:", error);
-      showAlert("error", "Failed to create customer");
-    } finally {
-      setCreatingCustomer(false);
-    }
-  };
-
   const handleContinue = async (e) => {
     if (e) e.preventDefault();
 
@@ -138,10 +69,6 @@ const BookAppointment = () => {
     }
     if ((selectedServices?.length || 0) === 0) {
       showAlert("error", "Please select at least one service.");
-      return;
-    }
-    if (isArtist && !selectedCustomer) {
-      showAlert("error", "Please select a client.");
       return;
     }
 
@@ -154,10 +81,6 @@ const BookAppointment = () => {
       appointmentDate: utcAppointmentDate,
       artistId: artistId,
       services: selectedServices?.map((service) => service?.id) || [],
-      ...(isArtist &&
-        selectedCustomer && {
-          customerId: selectedCustomer?.customerId ?? selectedCustomer?.id,
-        }),
     };
 
     try {
@@ -192,25 +115,13 @@ const BookAppointment = () => {
             <GoBackSvg />
             <p>Go back to dashboard</p>
           </div>
-
-          {isArtist ? (
-            <button
-              className="create-customer-button"
-              onClick={handleOpenCreateModal}
-            >
-              Create Customer
-            </button>
-          ) : null}
         </div>
 
         <div className="book-appointment-page">
-          <h1>
-            {isArtist ? "Start a New Form for a Client" : "Fill Out a New Form"}
-          </h1>
+          <h1>Fill Out a New Form</h1>
           <p className="description">
-            {isArtist
-              ? "Complete an appointment form for a client and review with them on your app."
-              : "Important: Don't wait until the day of your appointment. Some of this information must be filled out a few days in advance."}
+            Important: Don't wait until the day of your appointment. Some of
+            this information must be filled out a few days in advance.
           </p>
 
           {fetchingServices ? (
@@ -230,26 +141,9 @@ const BookAppointment = () => {
                 handleContinue(e);
               }}
             >
-              {isArtist ? (
-                <div className="form-group">
-                  <p htmlFor="client-selector">Choose a client*</p>
-                  <div className="customer-selector">
-                    <CustomerSelector
-                      customers={customers || []}
-                      onSelect={handleCustomerSelect}
-                      value={selectedCustomer}
-                      loading={loadingCustomers}
-                    />
-                  </div>
-                </div>
-              ) : null}
-
               <div className="form-group">
                 <p htmlFor="appointment-date">
-                  {isArtist
-                    ? "Appointment Date"
-                    : `* What's
-                  the date of your upcoming appointment(s)?*`}
+                  What's the date of your upcoming appointment(s)?*
                 </p>
                 <div className="date-picker">
                   <DatePicker
@@ -348,13 +242,6 @@ const BookAppointment = () => {
             </form>
           )}
         </div>
-
-        <CreateClientModal
-          open={openCreateModal}
-          onClose={handleCloseCreateModal}
-          onCreateClient={handleCreateCustomer}
-          loading={creatingCustomer}
-        />
       </div>
     </LocalizationProvider>
   );

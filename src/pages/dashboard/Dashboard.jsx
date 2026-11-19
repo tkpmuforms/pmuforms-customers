@@ -1,6 +1,6 @@
 import { CircularProgress, Tooltip } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   BookAnAppointmentButtonSvg,
   BookAnAppointmentSvg,
@@ -81,7 +81,6 @@ const Dashboard = () => {
   const { user } = useAuth();
   const [appointments, setAppointments] = useState([]);
   const [showPersonalInfo, setShowPersonalInfo] = useState(false);
-  const [isArtist, setIsArtist] = useState(false);
   const [businessName, setBusinessName] = useState(
     localStorage?.getItem("businessName")
   );
@@ -89,7 +88,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const { logout } = useAuth();
   const { showAlert } = useSnackbar();
-  const location = useLocation();
 
   const isSubscriptionError = (error) => {
     console.error("Checking for subscription error:", error);
@@ -151,14 +149,6 @@ const Dashboard = () => {
           );
           setBusinessName(businessRes.artist.businessName);
           localStorage?.setItem("artistId", businessRes.artist.userId);
-
-          if (
-            customerRes?.user?.artistUri &&
-            location?.pathname?.split("/")?.[1] === customerRes?.user?.artistUri
-          ) {
-            localStorage?.setItem("isArtist", true);
-            setIsArtist(true);
-          }
         }
 
         const updatedAppointments = (appointmentsRes?.appointments || []).map(
@@ -251,7 +241,7 @@ const Dashboard = () => {
                   {businessName || "Business"}
                 </span>
               </p>
-              {appointments?.length > 0 && hasIncompleteForms && !isArtist ? (
+              {appointments?.length > 0 && hasIncompleteForms ? (
                 <div className="alert">
                   <WarningSvg />
                   <p>
@@ -277,20 +267,13 @@ const Dashboard = () => {
               >
                 <BookAnAppointmentSvg />
                 <div>
-                  <h5>
-                    {isArtist
-                      ? "Start a New Form for a Client"
-                      : "Fill Out a New Form"}
-                  </h5>
+                  <h5>Fill Out a New Form</h5>
                   <p>
-                    {isArtist ? "Start" : "Fill out"} a new form for{" "}
-                    {isArtist ? "a client's" : "your"} next appointment by
-                    choosing your preferred appointment date and service.
+                    Fill out a new form for your next appointment by choosing
+                    your preferred appointment date and service.
                   </p>
                 </div>
               </div>
-              {isArtist ? null : (
-                <>
                   <div
                     className="action-card"
                     onClick={() =>
@@ -323,10 +306,7 @@ const Dashboard = () => {
                       <p>View and edit your personal information easily.</p>
                     </div>
                   </div>
-                </>
-              )}
             </div>
-            {isArtist ? null : (
               <section className="appointments-section">
                 <h3>Recent Appointment Forms</h3>
                 <div className="see-all-appointments">
@@ -394,7 +374,6 @@ const Dashboard = () => {
                   )}
                 </div>
               </section>
-            )}
           </>
         )}
       </div>

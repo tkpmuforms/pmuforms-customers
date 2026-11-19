@@ -16,31 +16,16 @@ import {
   getFormsForAppointMentById,
 } from "../../services/services";
 import "./dynamicForms.scss";
+import {
+  buildAutofill,
+  hasVisibleSections,
+  isDateOfBirthField,
+  withBusinessName,
+} from "./formAutofill";
 import { renderFormFields } from "./RenderFormFields";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
-
-const fieldToUserInfoMapping = {
-  client_name: ["client_name"],
-  "client-name": ["client_name"],
-
-  "AEA66A04-E": ["date_of_birth"],
-  date_of_birth: ["date_of_birth"],
-  "date-of-birth": ["date_of_birth"],
-
-  home_address: ["home_address"],
-  "home-address": ["home_address"],
-
-  emergency_contact_name: ["emergency_contact_name"],
-  "emergency-contact-name": ["emergency_contact_name"],
-
-  emergency_contact_phone: ["emergency_contact_phone"],
-  "emergency-contact-phone": ["emergency_contact_phone"],
-
-  home_phone: ["cell_phone"],
-  "home-phone": ["cell_phone"],
-};
 
 const DynamicForms = () => {
   const { appointmentId } = useParams();
@@ -57,8 +42,6 @@ const DynamicForms = () => {
   const { showAlert } = useSnackbar();
   const [requiredFieldsOnSubmit, setRequiredFieldsOnSubmit] = useState([]);
   const [autofilledFields, setAutofilledFields] = useState(new Set());
-  const [artistcustomerId, setArtistCustomerId] = useState(null);
-  const isArtist = localStorage.getItem("isArtist");
 
   useEffect(() => {
     const fetchFilledForms = async () => {
@@ -67,11 +50,6 @@ const DynamicForms = () => {
           appointmentId
         );
         setFilledForms(fetchedFilledForms?.filledForms || []);
-        if (isArtist) {
-          setArtistCustomerId(
-            fetchedFilledForms?.filledForms?.[0]?.clientId || null
-          );
-        }
 
         const formattedResponses = {};
         fetchedFilledForms?.filledForms.forEach((filledForm) => {
@@ -88,15 +66,8 @@ const DynamicForms = () => {
       try {
         const fetchedForms = await getFormsForAppointMentById(appointmentId);
         const updatedForms = fetchedForms?.forms
-          .filter((form) => form.sections.some((section) => !section.skip))
-          .map((form) =>
-            JSON.parse(
-              JSON.stringify(form).replace(
-                /\(?\{\{user\.businessName\}\}\)?/g,
-                businessName
-              )
-            )
-          );
+          .filter(hasVisibleSections)
+          .map((form) => withBusinessName(form, businessName));
 
         setForms(updatedForms || []);
       } catch (error) {
@@ -112,9 +83,6 @@ const DynamicForms = () => {
     if (!forms.length) return;
     const currentForm = forms[currentTab];
     if (!currentForm) return;
-    if (isArtist === "true" || isArtist === true) {
-      return;
-    }
 
     const filledForm = filledForms.find(
       (f) => f?.formTemplateId === currentForm.id
@@ -128,78 +96,16 @@ const DynamicForms = () => {
       return;
     }
 
-    if (currentForm?.sections.some((section) => section.isClientInformation)) {
-      const autofillResponse = {};
-      const autofilledFieldIds = new Set();
-
-      currentForm.sections.forEach((section) => {
-        if (section.isClientInformation) {
-          section.data.forEach((field) => {
-            const userInfoKeys = fieldToUserInfoMapping[field.id];
-            if (userInfoKeys) {
-              userInfoKeys.forEach((key) => {
-                if (user?.info?.[key]) {
-                  let value = user.info[key];
-
-                  if (
-                    field.id === "date-of-birth" ||
-                    field.id === "date_of_birth"
-                  ) {
-                    value = dayjs(value).format("YYYY-MM-DD");
-                  }
-
-                  autofillResponse[field.id] = value;
-                  autofilledFieldIds.add(field.id);
-                }
-              });
-            }
-          });
-        }
-      });
-
-      const dob =
-        autofillResponse["date-of-birth"] || autofillResponse["date_of_birth"];
-      if (dob) {
-        const age = dayjs().diff(dayjs(dob), "year");
-        autofillResponse["age"] = age.toString();
-        autofilledFieldIds.add("age");
-      }
-
-      if (
-        currentForm.sections.some((section) =>
-          section.data.some((f) => f.id === "date_of_signing")
-        )
-      ) {
-        autofillResponse["date_of_signing"] = dayjs().format("YYYY-MM-DD");
-        autofilledFieldIds.add("date_of_signing");
-      } else if (
-        currentForm.sections.some((section) =>
-          section.data.some((f) => f.id === "date-of-signing")
-        )
-      ) {
-        autofillResponse["date-of-signing"] = dayjs().format("YYYY-MM-DD");
-        autofilledFieldIds.add("date-of-signing");
-      }
-
-      if (
-        currentForm.sections.some((section) =>
-          section.data.some((f) => f.id === "todays_date")
-        )
-      ) {
-        autofillResponse["todays_date"] = dayjs().format("YYYY-MM-DD");
-        autofilledFieldIds.add("todays_date");
-      }
-
-      if (Object.keys(autofillResponse).length > 0) {
-        setFormResponse((prev) => ({
-          ...prev,
-          [currentForm.id]: {
-            ...prev[currentForm.id],
-            ...autofillResponse,
-          },
-        }));
-        setAutofilledFields(autofilledFieldIds);
-      }
+    const { response, fieldIds } = buildAutofill(currentForm, user?.info);
+    if (Object.keys(response).length > 0) {
+      setFormResponse((prev) => ({
+        ...prev,
+        [currentForm.id]: {
+          ...prev[currentForm.id],
+          ...response,
+        },
+      }));
+      setAutofilledFields(fieldIds);
     }
   }, [forms, filledForms, currentTab, user]);
 
@@ -214,11 +120,7 @@ const DynamicForms = () => {
       },
     }));
 
-    if (
-      fieldId === "date_of_birth" ||
-      fieldId === "date-of-birth" ||
-      fieldId === "AEA66A04-E"
-    ) {
+    if (isDateOfBirthField(fieldId)) {
       if (value) {
         const age = dayjs().diff(dayjs(value), "year");
         setFormResponse((prev) => ({
@@ -287,7 +189,6 @@ const DynamicForms = () => {
         appointmentId,
         formTemplateId: currentForm.id,
         data: formResponse[currentForm.id] || {},
-        customerId: isArtist ? artistcustomerId : null,
       });
 
       setSaving(false);

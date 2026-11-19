@@ -8,6 +8,7 @@ export const ROUTE_PATHS = {
   PRIVACY_POLICY: `/privacy-policy`,
   SUPPORT: `/support`,
   TERMS_AND_AGREEMENT: `/terms-and-agreement`,
+  FORM_LINK: `/form-link/:token`,
 
   // Authenticated routes (business URI required)
   VERIFY_EMAIL: `${BASE_URL}/verify-email`,

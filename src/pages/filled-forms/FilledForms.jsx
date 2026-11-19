@@ -40,7 +40,6 @@ const FilledForms = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const businessUri = localStorage?.getItem("businessUri");
-  const isArtist = localStorage?.getItem("isArtist");
 
   useEffect(() => {
     const fetchAllFilledFormsForAppointment = async () => {
@@ -59,14 +58,6 @@ const FilledForms = () => {
 
   const handleCompleteForm = () =>
     navigate(ROUTE_PATHS.APPOINTMENTS.replace(":businessUri", businessUri));
-
-  const handleGoToDashboard = () =>
-    navigate(
-      ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(":businessUri", businessUri)
-    );
-
-  const handleFillAnotherForm = () =>
-    navigate(ROUTE_PATHS.BOOK_APPOINTMENT.replace(":businessUri", businessUri));
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -101,52 +92,9 @@ const FilledForms = () => {
         )}
       </div>
 
-      {isArtist ? (
-        <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            width: "100%",
-            justifyContent: "center",
-            marginTop: "20px",
-          }}
-        >
-          <button
-            style={{
-              backgroundColor: "#F4EAF4",
-              color: "#8E2D8E",
-              padding: "10px 20px",
-              width: "100%",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontSize: "16px",
-            }}
-            onClick={handleGoToDashboard}
-          >
-            Go to Dashboard
-          </button>
-          <button
-            style={{
-              backgroundColor: "#8E2D8E",
-              width: "100%",
-              color: "#fff",
-              padding: "10px 20px",
-              border: "none",
-              borderRadius: "5px",
-              cursor: "pointer",
-              fontSize: "16px",
-            }}
-            onClick={handleFillAnotherForm}
-          >
-            Fill Another Form
-          </button>
-        </div>
-      ) : (
-        <button className="complete-button" onClick={handleCompleteForm}>
-          View Appointment Forms
-        </button>
-      )}
+      <button className="complete-button" onClick={handleCompleteForm}>
+        View Appointment Forms
+      </button>
 
       {isModalOpen && selectedForm ? (
         <Dialog open={isModalOpen} onClose={handleCloseModal} maxWidth={true}>
