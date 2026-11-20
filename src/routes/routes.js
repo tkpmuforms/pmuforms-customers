@@ -9,6 +9,7 @@ export const ROUTE_PATHS = {
   SUPPORT: `/support`,
   TERMS_AND_AGREEMENT: `/terms-and-agreement`,
   FORM_LINK: `/form-link/:token`,
+  HEALING_PHOTO: `/healing-photo/:token`,
 
   // Authenticated routes (business URI required)
   VERIFY_EMAIL: `${BASE_URL}/verify-email`,

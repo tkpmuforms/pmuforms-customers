@@ -20,6 +20,9 @@ const DynamicForms = lazy(() => import("../pages/forms/DynamicForms"));
 const ContactSupportAuth = lazy(() => import("../pages/contact-us/ContactUs"));
 const FilledForms = lazy(() => import("../pages/filled-forms/FilledForms"));
 const FormLinkPage = lazy(() => import("../pages/formLink/FormLinkPage"));
+const HealingPhotoPage = lazy(() =>
+  import("../pages/healingPhoto/HealingPhotoPage")
+);
 
 export const nonAuthRoutes = [
   // Static routes first
@@ -45,6 +48,16 @@ export const nonAuthRoutes = [
     element: (
       <Suspense fallback={null}>
         <FormLinkPage />
+      </Suspense>
+    ),
+    breadcrumbs: [],
+  },
+  // No-login link from an artist's healing check-in email, to send photos.
+  {
+    path: ROUTE_PATHS.HEALING_PHOTO,
+    element: (
+      <Suspense fallback={null}>
+        <HealingPhotoPage />
       </Suspense>
     ),
     breadcrumbs: [],
