@@ -20,17 +20,9 @@ const AuthPage = () => {
 
   const handlePageChange = (page) => setPage(page);
 
-  // Business URI handling logic
+  // Business URI handling logic (non-authenticated only)
   useEffect(() => {
-    if (isAuthenticated) {
-      const rawUri = localStorage.getItem("businessUri");
-      const businessAuthUri =
-        rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
-      navigate(
-        ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(":businessUri", businessAuthUri)
-      );
-      return;
-    }
+    if (isAuthenticated) return;
     const pathSegments = location.pathname.split("/").filter(Boolean);
     const businessUri = location.pathname === "/" ? "" : pathSegments[0] || "";
     if (location.pathname === "/") {
@@ -46,6 +38,27 @@ const AuthPage = () => {
       navigate("/");
     }
   }, [location, isAuthenticated]);
+
+  // Effect-based redirect for authenticated users — safe against React Strict Mode
+  // (render-time removeItem caused double-render to see null and fall through to dashboard)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+    const redirectPath = localStorage.getItem("redirectAfterLogin");
+    if (redirectPath) {
+      localStorage.removeItem("redirectAfterLogin");
+      navigate(redirectPath, { replace: true });
+    } else {
+      const rawUri = localStorage.getItem("businessUri");
+      const businessAuthUri =
+        rawUri && rawUri !== "null" && rawUri !== "undefined" ? rawUri : null;
+      navigate(
+        ROUTE_PATHS.CUSTOMER_DASHBOARD.replace(":businessUri", businessAuthUri),
+        { replace: true }
+      );
+    }
+  }, [isAuthenticated]);
+
+  if (isAuthenticated) return null;
 
   return (
     <>

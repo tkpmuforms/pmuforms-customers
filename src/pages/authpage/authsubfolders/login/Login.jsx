@@ -25,7 +25,7 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const result = await signInWithEmailAndPassword(auth, email, password);
-      SignInSuccessWithAuthResult(
+      await SignInSuccessWithAuthResult(
         result,
         navigate,
         handleAuthSuccess,

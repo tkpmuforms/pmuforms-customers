@@ -2,7 +2,7 @@ import { CircularProgress, Dialog, Typography } from "@mui/material";
 import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { EditFormSvg, GoBackSvg } from "../../assets/svgs/DashboardSvg";
+import { GoBackSvg } from "../../assets/svgs/DashboardSvg";
 import {
   getAllFilledFormsForAppointment,
   getAppointmentById,
@@ -29,7 +29,9 @@ const RenderFormsCard = ({ title, status, onEditClick, onViewClick }) => {
             View Form
           </button>
         ) : (
-          <EditFormSvg onClick={onEditClick} className="edit-form-svg" />
+          <button className="fill-forms-button" onClick={onEditClick}>
+            Fill Form
+          </button>
         )}
       </div>
     </div>

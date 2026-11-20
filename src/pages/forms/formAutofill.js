@@ -27,25 +27,24 @@ const DATE_OF_BIRTH_FIELDS = ["date_of_birth", "date-of-birth", "AEA66A04-E"];
 export const isDateOfBirthField = (fieldId) =>
   DATE_OF_BIRTH_FIELDS.includes(fieldId);
 
-const hasField = (form, fieldId) =>
-  form?.sections?.some((section) =>
-    section?.data?.some((field) => field?.id === fieldId)
-  );
+// filled with today's date on every form, whichever section they are in
+const TODAY_FIELD_IDS = new Set([
+  "todays_date",
+  "todays-date",
+  "date_of_signing",
+  "date-of-signing",
+]);
 
 /**
- * Pre-fills a form's "client information" section from the client's saved
- * details, plus age and today's date fields. Returns the values to merge into
- * the form response and the ids of the fields that were filled.
+ * Pre-fills a form's "client information" sections from the client's saved
+ * details (plus age), and any today's-date or date-of-signing field. Returns
+ * the values to merge into the form response and the ids of the fields filled.
  */
 export const buildAutofill = (form, info) => {
   const response = {};
   const fieldIds = new Set();
 
-  if (!form?.sections?.some((section) => section.isClientInformation)) {
-    return { response, fieldIds };
-  }
-
-  form.sections.forEach((section) => {
+  form?.sections?.forEach((section) => {
     if (!section.isClientInformation) return;
 
     section.data?.forEach((field) => {
@@ -71,18 +70,14 @@ export const buildAutofill = (form, info) => {
   }
 
   const today = dayjs().format("YYYY-MM-DD");
-  if (hasField(form, "date_of_signing")) {
-    response["date_of_signing"] = today;
-    fieldIds.add("date_of_signing");
-  } else if (hasField(form, "date-of-signing")) {
-    response["date-of-signing"] = today;
-    fieldIds.add("date-of-signing");
-  }
-
-  if (hasField(form, "todays_date")) {
-    response["todays_date"] = today;
-    fieldIds.add("todays_date");
-  }
+  form?.sections?.forEach((section) => {
+    section.data?.forEach((field) => {
+      if (TODAY_FIELD_IDS.has(field?.id)) {
+        response[field.id] = today;
+        fieldIds.add(field.id);
+      }
+    });
+  });
 
   return { response, fieldIds };
 };

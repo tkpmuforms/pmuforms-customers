@@ -46,9 +46,8 @@ const DynamicForms = () => {
   useEffect(() => {
     const fetchFilledForms = async () => {
       try {
-        const fetchedFilledForms = await getAllFilledFormsForAppointment(
-          appointmentId
-        );
+        const fetchedFilledForms =
+          await getAllFilledFormsForAppointment(appointmentId);
         setFilledForms(fetchedFilledForms?.filledForms || []);
 
         const formattedResponses = {};
@@ -85,7 +84,7 @@ const DynamicForms = () => {
     if (!currentForm) return;
 
     const filledForm = filledForms.find(
-      (f) => f?.formTemplateId === currentForm.id
+      (f) => f?.formTemplateId === currentForm.id,
     );
 
     if (filledForm && Object.keys(filledForm?.data || {}).length > 0) {
@@ -169,16 +168,17 @@ const DynamicForms = () => {
     if (!currentForm) return;
 
     const requiredFields = currentForm?.sections.flatMap(
-      (section) => section.data?.filter((field) => field.required) || []
+      (section) => section.data?.filter((field) => field.required) || [],
     );
 
     const missingFields = requiredFields?.filter(
-      (field) => !formResponse[currentForm.id]?.[field?.id]
+      (field) => !formResponse[currentForm.id]?.[field?.id],
     );
 
     setRequiredFieldsOnSubmit(missingFields?.map((field) => field.id));
 
     if (missingFields.length > 0) {
+      console.warn("Missing required fields:", missingFields);
       showAlert("error", "Please fill out all required fields");
       return;
     }
@@ -192,9 +192,8 @@ const DynamicForms = () => {
       });
 
       setSaving(false);
-      const fetchedFilledForms = await getAllFilledFormsForAppointment(
-        appointmentId
-      );
+      const fetchedFilledForms =
+        await getAllFilledFormsForAppointment(appointmentId);
       setFilledForms(fetchedFilledForms?.filledForms || []);
 
       if (currentTab < forms.length - 1) {
@@ -204,8 +203,8 @@ const DynamicForms = () => {
         navigate(
           ROUTE_PATHS.FILLED_FORMS.replace(":id", appointmentId).replace(
             ":businessUri",
-            businessUri
-          )
+            businessUri,
+          ),
         );
       }
     } catch (error) {
@@ -262,7 +261,7 @@ const DynamicForms = () => {
                 requiredFieldsOnSubmit,
                 autofilledFields,
                 handleInputChange,
-                handleImageChange
+                handleImageChange,
               )}
             </div>
           ))}
@@ -287,7 +286,7 @@ const DynamicForms = () => {
             <button
               onClick={
                 filledForms.some(
-                  (f) => f.formTemplateId === forms[currentTab]?.id
+                  (f) => f.formTemplateId === forms[currentTab]?.id,
                 )
                   ? handleSubmit
                   : handleSubmit
@@ -295,7 +294,7 @@ const DynamicForms = () => {
               disabled={saving}
             >
               {filledForms.some(
-                (f) => f.formTemplateId === forms[currentTab]?.id
+                (f) => f.formTemplateId === forms[currentTab]?.id,
               )
                 ? "Next"
                 : "Submit Form"}
